@@ -9,6 +9,7 @@ var safe_prop: StoryNPC
 
 func _ready() -> void:
 	_build_environment()
+	_build_ambience()
 	_build_player()
 	_build_npcs()
 	_build_ui()
@@ -42,10 +43,24 @@ func _build_environment() -> void:
 	crew_deck.outline = Color(0.4, 0.45, 0.55, 0.4)
 	add_child(crew_deck)
 
+func _build_ambience() -> void:
+	var path := "res://sfx/ambience/boat_engine_idle_v01.ogg"
+	if not ResourceLoader.exists(path):
+		return
+	var stream: AudioStream = load(path)
+	if stream is AudioStreamOggVorbis:
+		stream.loop = true
+	var loop_player := AudioStreamPlayer.new()
+	loop_player.stream = stream
+	loop_player.volume_db = -10.0
+	add_child(loop_player)
+	loop_player.play()
+
 func _build_player() -> void:
 	player = preload("res://scripts/Player.gd").new()
 	player.position = Vector2(300, 650)
 	player.movement_bounds = Rect2(Vector2(120, 260), Vector2(1260, 480))
+	player.footstep_sound = load("res://sfx/foley/footstep_metal_deck_v01.ogg") if ResourceLoader.exists("res://sfx/foley/footstep_metal_deck_v01.ogg") else null
 	add_child(player)
 	player.set_character_visual(_make_character_visual(
 		"res://art/characters/chapter3/dana",
@@ -164,6 +179,7 @@ func _on_safe_interact() -> void:
 	var dana_visual := player.get("character_visual") as AnimatedCharacter2D if player else null
 	if dana_visual:
 		dana_visual.play_interact()
+	GameState.play_sfx("res://sfx/mechanical/safe_dial_rotate_v01.ogg")
 	if GameState.get_flag("sal_gave_code", false):
 		dialogue.play([
 			{"speaker": "DANA", "text": "Thank you, Sal.", "audio": "res://vo/chapter3/D-004a.mp3"},
@@ -174,6 +190,7 @@ func _on_safe_interact() -> void:
 			{"speaker": "DANA", "text": "Wrong code. Of course it is.", "audio": "res://vo/chapter3/D-004b.mp3"},
 			{"speaker": "DANA", "text": "No time to figure out why. Whatever's on top of that desk goes in her pocket instead.", "audio": "res://vo/chapter3/D-004c.mp3"},
 		])
+	GameState.play_sfx("res://sfx/mechanical/safe_unlock_click_v01.ogg")
 	GameState.set_flag("safe_done", true)
 	dialogue.advanced.connect(_check_success_ending, CONNECT_ONE_SHOT)
 
@@ -185,6 +202,7 @@ func _on_voss_confrontation() -> void:
 
 	var times: int = GameState.get_flag("times_spotted", 0) + 1
 	GameState.set_flag("times_spotted", times)
+	GameState.play_sfx("res://sfx/tension/tense_sting_v01.ogg")
 
 	if times >= 2:
 		_forced_retreat()
@@ -205,6 +223,7 @@ func _on_voss_confrontation() -> void:
 func _forced_retreat() -> void:
 	GameState.set_flag("chapter3_retreat", true)
 	GameState.set_flag("chapter3_complete", true)
+	GameState.play_sfx("res://sfx/tension/retreat_sting_v01.ogg")
 	dialogue.play([
 		{"speaker": "VOSS", "text": "Costigan's not on this boat to vouch for anyone tonight. Neither are you, in about ninety seconds.", "audio": "res://vo/chapter3/V-004.mp3"},
 		{"speaker": "VOSS", "text": "Walk. Don't make this the part of your night that goes in a report.", "audio": "res://vo/chapter3/V-005.mp3"},

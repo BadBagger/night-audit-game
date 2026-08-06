@@ -121,6 +121,7 @@ func _check_solved() -> void:
 
 	if flagged_ids == required_sorted:
 		status_label.text = "That's the pattern: a ghost vendor, a cross-account bleed, and a structuring run. Audit complete."
+		GameState.play_sfx("res://sfx/ui/board_solve_stinger_v01.ogg")
 		solved.emit()
 	elif flagged_ids.size() > required_sorted.size():
 		status_label.text = "Too many flags — at least one of those actually reconciles fine. Look again."

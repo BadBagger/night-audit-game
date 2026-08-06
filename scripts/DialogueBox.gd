@@ -12,14 +12,21 @@ var choice_container: VBoxContainer
 var hint_label: Label
 var audio_player: AudioStreamPlayer
 
+const BLIP_SFX := "res://sfx/ui/dialogue_advance_blip_v01.ogg"
+const CHOICE_SFX := "res://sfx/ui/choice_select_v01.ogg"
+
 var queue: Array = []
 var box_visible := false
+var ui_player: AudioStreamPlayer
 
 func _ready() -> void:
 	layer = 10
 
 	audio_player = AudioStreamPlayer.new()
 	add_child(audio_player)
+
+	ui_player = AudioStreamPlayer.new()
+	add_child(ui_player)
 
 	panel = Panel.new()
 	panel.anchor_left = 0
@@ -90,6 +97,10 @@ func _advance() -> void:
 	text_label.text = line.get("text", "")
 	line_started.emit(name_label.text)
 
+	if ResourceLoader.exists(BLIP_SFX):
+		ui_player.stream = load(BLIP_SFX)
+		ui_player.play()
+
 	audio_player.stop()
 	var audio_path: String = line.get("audio", "")
 	if audio_path != "" and ResourceLoader.exists(audio_path):
@@ -114,6 +125,9 @@ func _clear_choices() -> void:
 		c.queue_free()
 
 func _on_choice(id: String) -> void:
+	if ResourceLoader.exists(CHOICE_SFX):
+		ui_player.stream = load(CHOICE_SFX)
+		ui_player.play()
 	_clear_choices()
 	hide_box()
 	choice_made.emit(id)

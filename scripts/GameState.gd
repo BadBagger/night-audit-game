@@ -20,6 +20,22 @@ var ledger := {
 	"flags": {},
 }
 
+var sfx_player: AudioStreamPlayer
+
+func _ready() -> void:
+	sfx_player = AudioStreamPlayer.new()
+	add_child(sfx_player)
+
+func play_sfx(path: String, volume_db: float = 0.0) -> void:
+	if not ResourceLoader.exists(path):
+		return
+	var stream: AudioStream = load(path)
+	if stream:
+		sfx_player.stop()
+		sfx_player.stream = stream
+		sfx_player.volume_db = volume_db
+		sfx_player.play()
+
 func apply_action(npc_id: String, action: String) -> void:
 	npc_actions[npc_id] = action
 	if not ledger["trust"].has(npc_id):
@@ -36,6 +52,7 @@ func add_clue(clue_id: String, tag: String, label: String) -> void:
 		return
 	collected_clues[clue_id] = {"tag": tag, "label": label}
 	clue_added.emit(clue_id)
+	play_sfx("res://sfx/ui/clue_pickup_chime_v01.ogg")
 
 func has_all_required_clues() -> bool:
 	var found := {}

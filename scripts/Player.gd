@@ -1,15 +1,21 @@
 extends CharacterBody2D
 
 const SPEED := 170.0
+const FOOTSTEP_INTERVAL := 0.38
 
 var nearby_interactables: Array = []
 var reach: Area2D
 var movement_bounds: Rect2 = Rect2()
 var character_visual: AnimatedCharacter2D
 var use_placeholder_art := true
+var footstep_sound: AudioStream = null
+var footstep_player: AudioStreamPlayer
+var _footstep_timer := 0.0
 
 func _ready() -> void:
 	add_to_group("player")
+	footstep_player = AudioStreamPlayer.new()
+	add_child(footstep_player)
 	var body_shape := CapsuleShape2D.new()
 	body_shape.radius = 10
 	body_shape.height = 26
@@ -45,7 +51,7 @@ func _draw() -> void:
 	draw_polyline(PackedVector2Array([Vector2(10, -6), Vector2(13, 18)]), Color(0.851, 0.522, 0.184), 2.0)
 	draw_circle(Vector2(0, -18), 8, Color(0.043, 0.047, 0.063))
 
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	var dir := Vector2.ZERO
 	if Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP):
 		dir.y -= 1
@@ -59,8 +65,14 @@ func _physics_process(_delta: float) -> void:
 		velocity = dir.normalized() * SPEED
 		if character_visual:
 			character_visual.play_walk(dir)
+		_footstep_timer += delta
+		if _footstep_timer >= FOOTSTEP_INTERVAL and footstep_sound:
+			_footstep_timer = 0.0
+			footstep_player.stream = footstep_sound
+			footstep_player.play()
 	else:
 		velocity = Vector2.ZERO
+		_footstep_timer = FOOTSTEP_INTERVAL
 		if character_visual:
 			character_visual.play_idle()
 	move_and_slide()

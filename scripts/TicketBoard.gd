@@ -94,6 +94,7 @@ func _try_ticket(ticket_number: int, day_num: int) -> void:
 	var rhs := day_num % 7
 	if ticket_number == CORRECT_TICKET:
 		status_label.text = "Digit sum %d mod 7 = %d. Day %d mod 7 = %d. That's the match." % [ds, lhs, day_num, rhs]
+		GameState.play_sfx("res://sfx/ui/board_solve_stinger_v01.ogg")
 		solved.emit(ticket_number)
 	else:
 		status_label.text = "Digit sum %d mod 7 = %d. Day %d mod 7 = %d. Doesn't line up. Try another." % [ds, lhs, day_num, rhs]

@@ -14,6 +14,7 @@ var costigan_hostile_misses := 0
 
 func _ready() -> void:
 	_build_environment()
+	_build_ambience()
 	_build_player()
 	_build_npcs()
 	_build_ui()
@@ -52,9 +53,23 @@ func _build_environment() -> void:
 	dockshack.outline = Color(0.851, 0.522, 0.184, 0.5)
 	add_child(dockshack)
 
+func _build_ambience() -> void:
+	var path := "res://sfx/ambience/warehouse_room_tone_v01.ogg"
+	if not ResourceLoader.exists(path):
+		return
+	var stream: AudioStream = load(path)
+	if stream is AudioStreamOggVorbis:
+		stream.loop = true
+	var loop_player := AudioStreamPlayer.new()
+	loop_player.stream = stream
+	loop_player.volume_db = -10.0
+	add_child(loop_player)
+	loop_player.play()
+
 func _build_player() -> void:
 	player = preload("res://scripts/Player.gd").new()
 	player.position = Vector2(700, 460)
+	player.footstep_sound = load("res://sfx/foley/footstep_concrete_wet_v01.ogg") if ResourceLoader.exists("res://sfx/foley/footstep_concrete_wet_v01.ogg") else null
 	add_child(player)
 	player.set_character_visual(_make_character_visual(
 		"res://art/characters/chapter2/dana",

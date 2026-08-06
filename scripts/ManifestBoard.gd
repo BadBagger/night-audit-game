@@ -107,6 +107,7 @@ func _check_solved() -> void:
 	var correct: bool = flagged["G1"] and flagged["G3"] and flagged["account"] and not flagged["G2"] and not flagged["G4"]
 	if correct:
 		status_label.text = "Three findings logged: G1, G3, and the shared account. That's the pattern."
+		GameState.play_sfx("res://sfx/ui/board_solve_stinger_v01.ogg")
 		solved.emit()
 	elif flagged["G2"] or flagged["G4"]:
 		status_label.text = "One of those doesn't actually line up with a flagged delay event -- check the timing again."

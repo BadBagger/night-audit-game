@@ -42,6 +42,7 @@ const BOARD_SLOTS = [
 
 func _ready() -> void:
 	_build_environment()
+	_build_ambience()
 	_build_scene_art()
 	_build_player()
 	_build_body()
@@ -72,6 +73,22 @@ func _build_environment() -> void:
 	foreground_occluder.position = Vector2(1280, 720)
 	foreground_occluder.z_index = 40
 	add_child(foreground_occluder)
+
+func _build_ambience() -> void:
+	for entry in [
+		{"path": "res://sfx/ambience/dock_ambience_night_v01.ogg", "volume_db": -10.0},
+		{"path": "res://sfx/ambience/rain_loop_v01.ogg", "volume_db": -6.0},
+	]:
+		if not ResourceLoader.exists(entry["path"]):
+			continue
+		var stream: AudioStream = load(entry["path"])
+		if stream is AudioStreamOggVorbis:
+			stream.loop = true
+		var loop_player := AudioStreamPlayer.new()
+		loop_player.stream = stream
+		loop_player.volume_db = entry["volume_db"]
+		add_child(loop_player)
+		loop_player.play()
 
 func _build_scene_art() -> void:
 	set_dressing_root = Node2D.new()
@@ -131,6 +148,7 @@ func _build_player() -> void:
 	# actually visible on the plate.
 	player.movement_bounds = Rect2(Vector2(300, 320), Vector2(1650, 720))
 	player.z_index = 10
+	player.footstep_sound = load("res://sfx/foley/footstep_wood_dock_v01.ogg") if ResourceLoader.exists("res://sfx/foley/footstep_wood_dock_v01.ogg") else null
 	add_child(player)
 	player.set_character_visual(_make_character_visual(
 		"res://art/characters/chapter1/dana",

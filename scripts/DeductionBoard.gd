@@ -119,6 +119,7 @@ func _check_solved() -> void:
 		if s["filled"] == "":
 			return
 	status_label.text = "Board complete."
+	GameState.play_sfx("res://sfx/ui/board_solve_stinger_v01.ogg")
 	solved.emit()
 
 func _close() -> void:
