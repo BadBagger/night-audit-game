@@ -137,6 +137,21 @@ These should be made as separate props so character sprites can interact with th
 5. Chapter III/V boat kit.
 6. Chapter IV apartment/case-table kit.
 
+## Rendered Meshy Batches
+
+### 2026-08-06 - Universal Dock Props Pass 1
+
+Rendered from Meshy FBX exports through Blender fixed isometric camera into `art/reusable/props`.
+
+| Asset ID | Status |
+| --- | --- |
+| `wet_wooden_crate` | Rendered and imported |
+| `rusty_oil_drum` | Rendered and imported |
+| `coiled_rope` | Rendered and imported |
+| `portable_dock_lamp` | Rendered and imported |
+| `straight_hazard_tape` | Rendered and imported |
+| `evidence_marker_card` | Rendered and imported; usable but slightly shiny/raw, may get a later paintover |
+
 ## Suggested File Layout
 
 ```text
