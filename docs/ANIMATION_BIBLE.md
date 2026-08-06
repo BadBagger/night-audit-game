@@ -527,10 +527,11 @@ Project-specific, not synced from upstream.
 No character sprite sheets exist yet — every character and prop is currently drawn
 procedurally in code (`Chapter1SetPiece.gd`, `PatrolNPC.gd`'s placeholder silhouette
 draw calls), not authored art. `tools/check_registration.py` and
-`templates/*.example.json` are in place, but there is nothing to register yet:
-neither `registration.json` per sheet nor a project-wide `cast_scale.json` has been
-authored. **The hard gate is not wired into CI yet** — do this before the first real
-character sheet is treated as final, not after.
+`templates/*.example.json` are in place, and **the hard gate is now wired into CI**
+(`.github/workflows/ci.yml`'s `animation-bible-hard-gate` job) — it currently no-ops
+cleanly (glob finds no `registration.json`/`cast_scale.json` yet) and activates
+automatically the moment a real character sheet is added under `art/`, no workflow
+edit required.
 
 One real background exists: `art/backgrounds/pier9_ch1_background_pass01.png`
 (Chapter I, from the Blender graybox pass), composited as a single `Sprite2D`, not a

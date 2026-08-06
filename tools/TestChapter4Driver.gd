@@ -12,7 +12,7 @@ func _ready() -> void:
 	await _phase_lean_branch()
 
 	_report()
-	get_tree().quit()
+	get_tree().quit(1 if failures.size() > 0 else 0)
 
 func _phase_truth_branch() -> void:
 	_seed_priya_intact("work")

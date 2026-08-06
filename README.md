@@ -83,6 +83,19 @@ whether Voss's 75-second patrol cycle makes the stealth beat feel tense or
 just slow) — that needs a real playthrough in the editor. Only Chapter I
 has had one so far.
 
+**CI**: `.github/workflows/ci.yml` runs the load check and all five chapters'
+test drivers headless on every push/PR, plus `tools/check_registration.py`
+against any character sheets that exist (currently a clean no-op — see
+`docs/ANIMATION_BIBLE.md`'s Current status section). One thing worth knowing:
+all five `TestChapterNDriver.gd` scripts previously called `get_tree().quit()`
+with no exit code, so Godot always returned 0 regardless of whether any check
+had actually failed — a CI job built on top of that would have been green no
+matter what the printed output said. Fixed to `quit(1 if failures.size() > 0
+else 0)` in all five. This workflow has not been execution-verified end-to-end
+(no Godot binary available in the environment that wrote it) — the commands
+match exactly what this README already documents as manually verified working,
+but confirm the Actions run actually goes green on the first real push.
+
 ## Running it
 
 1. Open Godot 4, choose "Import", and select this folder's `project.godot`.
@@ -153,9 +166,18 @@ has had one so far.
 
 ## What's not implemented yet
 
-- Any of Chapters IV–V (including their VO). Mick and Calloway are cast
-  (see `vo/elevenlabs_voice_shortlist.md`) but have no lines generated
-  yet — they don't appear until Chapter IV/V.
+- **Voice for Chapters IV–V.** Mick and Calloway are cast (see
+  `vo/elevenlabs_voice_shortlist.md`) but have no lines generated yet — no
+  `vo/chapter4/` or `vo/chapter5/` exists, and neither `Chapter4.gd` nor
+  `Chapter5.gd` references an `"audio"` key anywhere. This line previously read
+  as if Chapters IV–V themselves weren't built yet; that's stale. `Chapter4.gd`
+  (191 lines, a truth/lie/lean branch structure) and `Chapter5.gd` (204 lines,
+  multiple named endings) are real, implemented, and wired into the chapter
+  progression (`Chapter3.gd`'s `_go_to_chapter4()` really does transition
+  there), each with its own test driver
+  (`tools/TestChapter4Driver.gd`/`TestChapter5Driver.gd`). They just haven't
+  had a pass through this README to get documented the way I–III were, and
+  neither has voice yet.
 - Sprite animation (the player is a static silhouette; movement has no walk
   cycle).
 - Save/load.

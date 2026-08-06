@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  godot-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Godot 4.7.1
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+
+      - name: Import project (populate .godot cache before headless runs)
+        run: godot --headless --path . --import
+        continue-on-error: true # first import can warn on fresh checkouts; the load check below is the real gate
+
+      - name: Load check (scene builds, every script parses)
+        run: godot --headless --path . --quit-after 3
+
+      - name: Chapter I full-flow test (15/15 checks)
+        run: godot --headless --path . res://tools/TestChapter1.tscn
+
+      - name: Chapter II full-flow test (23/23 checks)
+        run: godot --headless --path . res://tools/TestChapter2.tscn
+
+      - name: Chapter III full-flow test (14/14 checks)
+        run: godot --headless --path . res://tools/TestChapter3.tscn
+
+      - name: Chapter IV full-flow test
+        run: godot --headless --path . res://tools/TestChapter4.tscn
+
+      - name: Chapter V full-flow test
+        run: godot --headless --path . res://tools/TestChapter5.tscn
+
+  animation-bible-hard-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Run check_registration.py against any real character sheets
+        run: |
+          set -e
+          shopt -s globstar nullglob
+
+          reg_files=(art/**/registration.json)
+          if [ ${#reg_files[@]} -eq 0 ]; then
+            echo "No registration.json files yet -- no character sheets exist to check."
+            echo "This step activates automatically the moment one is added under art/."
+          else
+            for f in "${reg_files[@]}"; do
+              echo "=== check_registration.py frames $f ==="
+              python3 tools/check_registration.py frames "$f"
+            done
+          fi
+
+          if [ -f art/cast_scale.json ]; then
+            echo "=== check_registration.py cast-scale art/cast_scale.json ==="
+            python3 tools/check_registration.py cast-scale art/cast_scale.json
+          else
+            echo "No art/cast_scale.json yet -- nothing to check."
+          fi

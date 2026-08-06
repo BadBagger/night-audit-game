@@ -98,7 +98,7 @@ func _ready() -> void:
 	_check("chapter2_complete set once all three are done", GameState.get_flag("chapter2_complete", false))
 
 	_report()
-	get_tree().quit()
+	get_tree().quit(1 if failures.size() > 0 else 0)
 
 func _drain_dialogue(max_steps: int = 25) -> void:
 	var steps := 0

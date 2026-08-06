@@ -15,7 +15,7 @@ func _ready() -> void:
 	_reset_gamestate()
 	await _phase_blood_ending()
 	_report()
-	get_tree().quit()
+	get_tree().quit(1 if failures.size() > 0 else 0)
 
 func _phase_ledger_ending() -> void:
 	_seed_full_evidence()

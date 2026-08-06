@@ -10,7 +10,7 @@ func _ready() -> void:
 	await _phase_success_path()
 
 	_report()
-	get_tree().quit()
+	get_tree().quit(1 if failures.size() > 0 else 0)
 
 # --- Phase 1: the "second spot always forces retreat" rule, in isolation,
 # with conditions that would otherwise favor a cover-holds outcome. ---

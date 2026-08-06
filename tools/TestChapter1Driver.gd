@@ -95,7 +95,7 @@ func _ready() -> void:
 	_check("phone_pocketed flag NOT set on 'leave' branch", not GameState.get_flag("phone_pocketed", false))
 
 	_report()
-	get_tree().quit()
+	get_tree().quit(1 if failures.size() > 0 else 0)
 
 func _find_clues() -> Array:
 	var out := []
