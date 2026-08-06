@@ -18,6 +18,8 @@ func _ready() -> void:
 	_build_npcs()
 	_build_ui()
 
+	dialogue.line_started.connect(_on_dialogue_line_started)
+	dialogue.advanced.connect(_on_dialogue_finished)
 	dialogue.play([
 		{"speaker": "DANA", "text": "Three names, three doors. Sal's shop, Priya's picket line, Costigan's shack. Doesn't matter which order."},
 	])
@@ -54,6 +56,12 @@ func _build_player() -> void:
 	player = preload("res://scripts/Player.gd").new()
 	player.position = Vector2(700, 460)
 	add_child(player)
+	player.set_character_visual(_make_character_visual(
+		"res://art/characters/chapter2/dana",
+		{"idle": {"fps": 1.0}, "walk": {"fps": 10.0}, "talk": {"fps": 6.0}, "interact": {"fps": 8.0, "loop": false}},
+		0.64,
+		Vector2(0, -76)
+	))
 
 	var cam := Camera2D.new()
 	cam.zoom = Vector2(0.85, 0.85)
@@ -66,18 +74,36 @@ func _build_npcs() -> void:
 	sal.position = Vector2(260, 320)
 	sal.npc_name = "SAL"
 	add_child(sal)
+	sal.set_character_visual(_make_character_visual(
+		"res://art/characters/chapter2/sal",
+		{"idle": {"fps": 1.0}, "walk": {"fps": 7.0}, "talk": {"fps": 5.0}},
+		0.64,
+		Vector2(0, -76)
+	))
 	sal.interacted.connect(_on_sal_interact)
 
 	priya = preload("res://scripts/StoryNPC.gd").new()
 	priya.position = Vector2(1140, 320)
 	priya.npc_name = "PRIYA"
 	add_child(priya)
+	priya.set_character_visual(_make_character_visual(
+		"res://art/characters/chapter2/priya",
+		{"idle": {"fps": 1.0}, "walk": {"fps": 8.0}, "talk": {"fps": 5.0}},
+		0.66,
+		Vector2(0, -76)
+	))
 	priya.interacted.connect(_on_priya_interact)
 
 	costigan = preload("res://scripts/StoryNPC.gd").new()
 	costigan.position = Vector2(700, 720)
 	costigan.npc_name = "COSTIGAN"
 	add_child(costigan)
+	costigan.set_character_visual(_make_character_visual(
+		"res://art/characters/chapter2/costigan",
+		{"idle": {"fps": 1.0}, "walk": {"fps": 7.0}, "talk": {"fps": 4.0}},
+		0.66,
+		Vector2(0, -76)
+	))
 	costigan.interacted.connect(_on_costigan_interact)
 
 func _build_ui() -> void:
@@ -101,6 +127,36 @@ func _build_ui() -> void:
 	hint.add_theme_font_size_override("font_size", 12)
 	hint.add_theme_color_override("font_color", Color(0.6, 0.62, 0.68))
 	hud.add_child(hint)
+
+func _make_character_visual(root_path: String, animations: Dictionary, scale: float, offset: Vector2) -> AnimatedCharacter2D:
+	var visual: AnimatedCharacter2D = preload("res://scripts/AnimatedCharacter2D.gd").new()
+	visual.visual_scale = scale
+	visual.visual_offset = offset
+	visual.setup_from_folders(root_path, animations)
+	return visual
+
+func _on_dialogue_line_started(speaker: String) -> void:
+	var dana_visual := player.get("character_visual") as AnimatedCharacter2D if player else null
+	if dana_visual:
+		if speaker == "DANA":
+			dana_visual.play_talk()
+		else:
+			dana_visual.play_idle()
+	for npc in [sal, priya, costigan]:
+		if npc == null:
+			continue
+		if speaker == npc.npc_name:
+			npc.play_talk()
+		else:
+			npc.play_idle()
+
+func _on_dialogue_finished() -> void:
+	var dana_visual := player.get("character_visual") as AnimatedCharacter2D if player else null
+	if dana_visual:
+		dana_visual.play_idle()
+	for npc in [sal, priya, costigan]:
+		if npc:
+			npc.play_idle()
 
 # ---------------------------------------------------------------- Sal
 

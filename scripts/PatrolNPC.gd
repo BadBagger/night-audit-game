@@ -17,6 +17,8 @@ var dwell_b: float = 30.0
 var state: int = State.AT_A
 var state_timer: float = 0.0
 var sight: Area2D
+var character_visual: AnimatedCharacter2D
+var use_placeholder_art := true
 
 func _ready() -> void:
 	position = point_a
@@ -38,11 +40,28 @@ func _ready() -> void:
 
 	queue_redraw()
 
+func set_character_visual(visual: AnimatedCharacter2D) -> void:
+	if character_visual != null and character_visual.get_parent() == self:
+		character_visual.queue_free()
+	character_visual = visual
+	use_placeholder_art = false
+	add_child(character_visual)
+	queue_redraw()
+
+func play_idle() -> void:
+	if character_visual:
+		character_visual.play_idle()
+
+func play_talk() -> void:
+	if character_visual:
+		character_visual.play_talk()
+
 func _draw() -> void:
-	draw_circle(Vector2(0, -18), 9, Color(0.043, 0.047, 0.063))
-	var coat := PackedVector2Array([Vector2(-11, -8), Vector2(11, -8), Vector2(15, 20), Vector2(-15, 20)])
-	draw_colored_polygon(coat, Color(0.043, 0.047, 0.063))
-	draw_polyline(PackedVector2Array([Vector2(11, -8), Vector2(15, 20)]), Color(0.851, 0.522, 0.184), 2.0)
+	if use_placeholder_art:
+		draw_circle(Vector2(0, -18), 9, Color(0.043, 0.047, 0.063))
+		var coat := PackedVector2Array([Vector2(-11, -8), Vector2(11, -8), Vector2(15, 20), Vector2(-15, 20)])
+		draw_colored_polygon(coat, Color(0.043, 0.047, 0.063))
+		draw_polyline(PackedVector2Array([Vector2(11, -8), Vector2(15, 20)]), Color(0.851, 0.522, 0.184), 2.0)
 	# sight-cone hint, only really meaningful when detection is active
 	if is_detection_active():
 		draw_arc(Vector2.ZERO, 90, 0, TAU, 32, Color(0.851, 0.522, 0.184, 0.12), 2.0)
@@ -54,20 +73,26 @@ func advance_patrol(delta: float) -> void:
 	state_timer += delta
 	match state:
 		State.AT_A:
+			play_idle()
 			if state_timer >= dwell_a:
 				state = State.TRANSIT_TO_B
 				state_timer = 0.0
 		State.TRANSIT_TO_B:
+			if character_visual:
+				character_visual.play_walk(point_b - point_a)
 			position = point_a.lerp(point_b, min(state_timer / transit_time, 1.0))
 			if state_timer >= transit_time:
 				state = State.AT_B
 				state_timer = 0.0
 				position = point_b
 		State.AT_B:
+			play_idle()
 			if state_timer >= dwell_b:
 				state = State.TRANSIT_TO_A
 				state_timer = 0.0
 		State.TRANSIT_TO_A:
+			if character_visual:
+				character_visual.play_walk(point_a - point_b)
 			position = point_b.lerp(point_a, min(state_timer / transit_time, 1.0))
 			if state_timer >= transit_time:
 				state = State.AT_A

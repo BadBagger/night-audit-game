@@ -26,6 +26,12 @@ func _phase_retreat_rule() -> void:
 	await get_tree().process_frame
 	await _drain_dialogue()
 
+	_check("chapter3 retreat phase Dana has animated visual", _has_visual(ch3.player))
+	_check("Voss has animated patrol visual", _has_visual(ch3.voss))
+	ch3.voss.advance_patrol(ch3.voss.dwell_a + 0.1)
+	ch3.voss.advance_patrol(0.2)
+	_check("Voss uses walk animation while patrolling", ch3.voss.character_visual.current_mode == "walk")
+
 	ch3.voss.player_spotted.emit()
 	await _drain_dialogue()
 	_check("second spot forces retreat despite favorable cover", GameState.get_flag("chapter3_retreat", false))
@@ -58,6 +64,8 @@ func _phase_success_path() -> void:
 
 	_check("chapter3 intro dialogue opened", ch3.dialogue.box_visible)
 	_check("intro line has audio loaded", ch3.dialogue.audio_player.stream != null)
+	_check("chapter3 success phase Dana has animated visual", _has_visual(ch3.player))
+	_check("chapter3 success phase Voss has animated visual", _has_visual(ch3.voss))
 	await _drain_dialogue()
 
 	ch3.voss.player_spotted.emit()
@@ -99,6 +107,9 @@ func _drain_dialogue(max_steps: int = 25) -> void:
 		steps += 1
 	if steps >= max_steps:
 		_check("dialogue drained without hitting step cap (possible infinite loop)", false)
+
+func _has_visual(node: Node) -> bool:
+	return node.get("character_visual") != null
 
 func _check(label: String, ok: bool) -> void:
 	checks += 1

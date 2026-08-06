@@ -12,12 +12,17 @@ func _ready() -> void:
 	await get_tree().process_frame
 
 	_check("chapter2 intro dialogue opened", ch2.dialogue.box_visible)
+	_check("chapter2 Dana has animated visual", _has_visual(ch2.player))
+	_check("Sal has animated visual", _has_visual(ch2.sal))
+	_check("Priya has animated visual", _has_visual(ch2.priya))
+	_check("Costigan has animated visual", _has_visual(ch2.costigan))
 	await _drain_dialogue()
 
 	# --- Sal: WORK branch ---
 	ch2.sal.interact()
 	await get_tree().process_frame
 	_check("sal intro line has audio loaded", ch2.dialogue.audio_player.stream != null)
+	_check("Sal talk animation starts on Sal line", ch2.sal.character_visual.current_mode == "talk")
 	await _drain_dialogue()
 	_check("ticket board opened after Sal intro", ch2.ticket_board.visible)
 
@@ -104,6 +109,9 @@ func _drain_dialogue(max_steps: int = 25) -> void:
 		steps += 1
 	if steps >= max_steps:
 		_check("dialogue drained without hitting step cap (possible infinite loop)", false)
+
+func _has_visual(node: Node) -> bool:
+	return node.get("character_visual") != null
 
 func _check(label: String, ok: bool) -> void:
 	checks += 1

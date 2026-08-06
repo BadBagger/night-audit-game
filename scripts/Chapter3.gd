@@ -13,6 +13,8 @@ func _ready() -> void:
 	_build_npcs()
 	_build_ui()
 
+	dialogue.line_started.connect(_on_dialogue_line_started)
+	dialogue.advanced.connect(_on_dialogue_finished)
 	dialogue.play([
 		{"speaker": "DANA", "text": "Costigan's badge gets me as far as the crew corridor. After that I'm improvising.", "audio": "res://vo/chapter3/D-001.mp3"},
 		{"speaker": "VOSS", "text": "New cleaning rotation, don't care whose idea it was, verify everyone against the manifest before they get past deck two.", "audio": "res://vo/chapter3/V-001.mp3"},
@@ -45,6 +47,12 @@ func _build_player() -> void:
 	player.position = Vector2(300, 650)
 	player.movement_bounds = Rect2(Vector2(120, 260), Vector2(1260, 480))
 	add_child(player)
+	player.set_character_visual(_make_character_visual(
+		"res://art/characters/chapter3/dana",
+		{"idle": {"fps": 1.0}, "walk": {"fps": 10.0}, "talk": {"fps": 6.0}, "interact": {"fps": 8.0, "loop": false}},
+		0.64,
+		Vector2(0, -76)
+	))
 
 	var cam := Camera2D.new()
 	cam.zoom = Vector2(0.85, 0.85)
@@ -58,6 +66,12 @@ func _build_npcs() -> void:
 	voss.point_a = Vector2(300, 300)
 	voss.point_b = Vector2(1100, 300)
 	add_child(voss)
+	voss.set_character_visual(_make_character_visual(
+		"res://art/characters/chapter3/voss",
+		{"idle": {"fps": 1.0}, "walk": {"fps": 8.0}, "talk": {"fps": 5.0}},
+		0.66,
+		Vector2(0, -76)
+	))
 	voss.interacted.connect(_on_voss_confrontation)
 	voss.player_spotted.connect(_on_voss_confrontation)
 
@@ -91,6 +105,33 @@ func _build_ui() -> void:
 	hint.add_theme_color_override("font_color", Color(0.6, 0.62, 0.68))
 	hud.add_child(hint)
 
+func _make_character_visual(root_path: String, animations: Dictionary, scale: float, offset: Vector2) -> AnimatedCharacter2D:
+	var visual: AnimatedCharacter2D = preload("res://scripts/AnimatedCharacter2D.gd").new()
+	visual.visual_scale = scale
+	visual.visual_offset = offset
+	visual.setup_from_folders(root_path, animations)
+	return visual
+
+func _on_dialogue_line_started(speaker: String) -> void:
+	var dana_visual := player.get("character_visual") as AnimatedCharacter2D if player else null
+	if dana_visual:
+		if speaker == "DANA":
+			dana_visual.play_talk()
+		else:
+			dana_visual.play_idle()
+	if voss:
+		if speaker == "VOSS":
+			voss.play_talk()
+		else:
+			voss.play_idle()
+
+func _on_dialogue_finished() -> void:
+	var dana_visual := player.get("character_visual") as AnimatedCharacter2D if player else null
+	if dana_visual:
+		dana_visual.play_idle()
+	if voss:
+		voss.play_idle()
+
 # ---------------------------------------------------------------- Ledger / Safe
 
 func _on_ledger_interact() -> void:
@@ -99,6 +140,9 @@ func _on_ledger_interact() -> void:
 	if GameState.get_flag("audit_solved", false):
 		dialogue.play([{"speaker": "DANA", "text": "(Already been through this one.)"}])
 		return
+	var dana_visual := player.get("character_visual") as AnimatedCharacter2D if player else null
+	if dana_visual:
+		dana_visual.play_interact()
 	audit_board.open()
 
 func _on_audit_solved() -> void:
@@ -117,6 +161,9 @@ func _on_safe_interact() -> void:
 	if GameState.get_flag("safe_done", false):
 		dialogue.play([{"speaker": "DANA", "text": "(Already got what was in here.)"}])
 		return
+	var dana_visual := player.get("character_visual") as AnimatedCharacter2D if player else null
+	if dana_visual:
+		dana_visual.play_interact()
 	if GameState.get_flag("sal_gave_code", false):
 		dialogue.play([
 			{"speaker": "DANA", "text": "Thank you, Sal.", "audio": "res://vo/chapter3/D-004a.mp3"},
