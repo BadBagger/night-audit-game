@@ -56,7 +56,7 @@ func _build_player() -> void:
 	player.add_child(cam)
 
 func _build_npcs() -> void:
-	calloway = _make_npc("CALLOWAY", Vector2(790, 540), "res://art/characters/chapter2/sal", 0.62)
+	calloway = _make_npc("CALLOWAY", Vector2(790, 540), "res://art/characters/chapter5/calloway", 0.62)
 	voss = _make_npc("VOSS", Vector2(940, 550), "res://art/characters/chapter3/voss", 0.66)
 	reyes = _make_npc("REYES", Vector2(370, 560), "res://art/characters/chapter1/reyes", 0.66)
 	priya = _make_npc("PRIYA", Vector2(260, 545), "res://art/characters/chapter2/priya", 0.66)

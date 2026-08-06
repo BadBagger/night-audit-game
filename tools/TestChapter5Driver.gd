@@ -7,6 +7,10 @@ var checks := 0
 func _ready() -> void:
 	await _phase_ledger_ending()
 	_reset_gamestate()
+	await _phase_clean_ending()
+	_reset_gamestate()
+	await _phase_paid_ending()
+	_reset_gamestate()
 	await _phase_blood_ending()
 	_report()
 	get_tree().quit()
@@ -28,6 +32,7 @@ func _phase_ledger_ending() -> void:
 	_check("chapter5 intro dialogue opened", ch5.dialogue.box_visible)
 	_check("chapter5 Dana has animated visual", ch5.player.get("character_visual") != null)
 	_check("Calloway has animated visual", ch5.calloway.character_visual != null)
+	_check("Calloway uses dedicated chapter5 sprite path", ch5.calloway.character_visual.sprite.sprite_frames.get_frame_texture("idle", 0).resource_path.contains("/chapter5/calloway/"))
 	_check("Voss has animated visual", ch5.voss.character_visual != null)
 	await _drain_dialogue()
 	_check("final evidence choice offered", ch5.dialogue.choice_container.get_child_count() == 2)
@@ -36,6 +41,48 @@ func _phase_ledger_ending() -> void:
 	await _drain_until_flag("game_complete")
 	_check("ledger ending selected", GameState.get_flag("final_ending", "") == "ledger")
 	_check("game_complete set on ledger ending", GameState.get_flag("game_complete", false))
+
+	ch5.get_parent().remove_child(ch5)
+	ch5.queue_free()
+
+func _phase_clean_ending() -> void:
+	_seed_full_evidence()
+	GameState.npc_actions = {"sal": "work", "priya": "pay"}
+	GameState.ledger["trust"]["sal"] = 2
+	GameState.ledger["trust"]["priya"] = 1
+	GameState.ledger["trust"]["costigan"] = 2
+
+	ch5 = load("res://scenes/Chapter5.tscn").instantiate()
+	get_tree().root.add_child.call_deferred(ch5)
+	await get_tree().process_frame
+	await get_tree().process_frame
+	await get_tree().process_frame
+	await _drain_dialogue()
+
+	ch5.dialogue._on_choice("evidence")
+	await _drain_until_flag("game_complete")
+	_check("clean ending selected for full evidence with no lean", GameState.get_flag("final_ending", "") == "clean")
+
+	ch5.get_parent().remove_child(ch5)
+	ch5.queue_free()
+
+func _phase_paid_ending() -> void:
+	_seed_full_evidence()
+	GameState.npc_actions = {"sal": "pay", "priya": "lean"}
+	GameState.ledger["trust"]["sal"] = 1
+	GameState.ledger["trust"]["priya"] = -1
+	GameState.ledger["trust"]["costigan"] = 2
+
+	ch5 = load("res://scenes/Chapter5.tscn").instantiate()
+	get_tree().root.add_child.call_deferred(ch5)
+	await get_tree().process_frame
+	await get_tree().process_frame
+	await get_tree().process_frame
+	await _drain_dialogue()
+
+	ch5.dialogue._on_choice("evidence")
+	await _drain_until_flag("game_complete")
+	_check("paid ending selected for complete but compromised evidence path", GameState.get_flag("final_ending", "") == "paid")
 
 	ch5.get_parent().remove_child(ch5)
 	ch5.queue_free()
