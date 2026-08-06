@@ -524,14 +524,37 @@ Before a new animation is called playable or published as final, provide:
 
 Project-specific, not synced from upstream.
 
-No character sprite sheets exist yet — every character and prop is currently drawn
-procedurally in code (`Chapter1SetPiece.gd`, `PatrolNPC.gd`'s placeholder silhouette
-draw calls), not authored art. `tools/check_registration.py` and
-`templates/*.example.json` are in place, and **the hard gate is now wired into CI**
-(`.github/workflows/ci.yml`'s `animation-bible-hard-gate` job) — it currently no-ops
-cleanly (glob finds no `registration.json`/`cast_scale.json` yet) and activates
-automatically the moment a real character sheet is added under `art/`, no workflow
-edit required.
+**Correction to an earlier version of this section:** it previously claimed no
+character sprite sheets exist yet, based on the README's "procedural placeholder
+art" line without actually checking `art/characters/`. That was wrong — verified
+directly (not from the README) while confirming the CI workflow actually runs:
+**11 real character sheets exist, 155 frame images total**, `art/characters/`:
+
+```
+chapter1/  dana, frank, mick_body, reyes
+chapter2/  costigan, dana, priya, sal
+chapter3/  dana, voss
+chapter5/  calloway
+```
+
+Each has `walk/`/`idle/`/`talk/` subfolders (Dana additionally has `interact/` in
+Chapters I–II), numbered frames (`walk_00.png`...`walk_07.png` etc.), real rendered
+art (not placeholder silhouettes — that claim was also just the README's, unverified
+until now). A spot check of one full walk cycle (`chapter1/dana/walk/`) found
+consistent 384×384 canvas across all 8 frames — a good sign, but canvas-size
+consistency alone doesn't prove anchor-point consistency, which is exactly what
+`check_registration.py frames` actually checks and hasn't been run against any of
+this yet.
+
+**This means the hard gate isn't waiting on future art — it's already overdue
+against 11 real, unregistered sheets.** `tools/check_registration.py` and
+`templates/*.example.json` are in place, and the hard gate is wired into CI
+(`.github/workflows/ci.yml`'s `animation-bible-hard-gate` job), but it still no-ops
+today because no `registration.json`/`cast_scale.json` has been authored for any of
+these 11 sheets — that's a real gap to close, not a hypothetical one waiting for art
+that doesn't exist yet. Authoring those files (canvas, anchor per sheet, one
+project-wide `cast_scale.json`) is the actual next step, not "wait until a character
+sheet shows up."
 
 One real background exists: `art/backgrounds/pier9_ch1_background_pass01.png`
 (Chapter I, from the Blender graybox pass), composited as a single `Sprite2D`, not a

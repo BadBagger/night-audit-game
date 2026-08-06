@@ -25,28 +25,38 @@ Two levels of automated verification exist per chapter:
    builds and every script parses. Caught and fixed one real bug this way:
    `Camera2D.current` doesn't exist in Godot 4 (renamed to `enabled` from
    Godot 3) — the camera setup was silently broken until this was corrected.
-2. **Full flow check**: `tools/TestChapter1Driver.gd`,
-   `tools/TestChapter2Driver.gd`, and `tools/TestChapter3Driver.gd` (run via
-   `godot --headless --path . res://tools/TestChapter1.tscn`, `TestChapter2.tscn`,
-   or `TestChapter3.tscn`) drive each chapter's *entire* loop end-to-end
-   against the real game logic — not just "does it load." These are
-   regression tests: rerun the relevant one(s) after touching `Main.gd`,
-   `Chapter2.gd`, `Chapter3.gd`, `DialogueBox.gd`, `DeductionBoard.gd`,
-   `TicketBoard.gd`, `ManifestBoard.gd`, `AuditBoard.gd`, `PatrolNPC.gd`,
-   or `GameState.gd` — 52/52 checks currently pass across all three.
-   - Chapter I: 15/15, including audio-loads-on-a-line, a deliberate wrong
+2. **Full flow check**: `tools/TestChapter1Driver.gd` through
+   `tools/TestChapter5Driver.gd` (run via `godot --headless --path .
+   res://tools/TestChapterN.tscn`) drive each chapter's *entire* loop
+   end-to-end against the real game logic — not just "does it load." These
+   are regression tests: rerun the relevant one(s) after touching a chapter's
+   own script, `DialogueBox.gd`, `DeductionBoard.gd`, `TicketBoard.gd`,
+   `ManifestBoard.gd`, `AuditBoard.gd`, `PatrolNPC.gd`, or `GameState.gd`.
+   Actually run against real Godot 4.7.1 (not just claimed) — **96/96 checks
+   currently pass across all five chapters**: I 20/20, II 28/28, III 19/19,
+   IV 14/14, V 15/15. (These counts grew since this section was first
+   written and had gone stale at 15/23/14 for I–III with no mention of IV–V
+   at all, despite both existing and passing — fixed here after actually
+   re-running everything.)
+   - Chapter I: includes audio-loads-on-a-line, a deliberate wrong
      deduction-board answer, and a repeat-examine.
-   - Chapter II: 23/23, including audio-loads, a wrong ticket on Sal's
-     cipher, a wrong donation flag on Priya's manifest, and Costigan's
-     full state machine (one soft miss from `hostile`, then the correct
-     grief → case → offer sequence to reach `open`).
-   - Chapter III: 14/14, including audio-loads, an over-flagged audit
-     attempt that correctly rejects before the exact set solves it, a
-     first Voss spot that cover-holds under favorable conditions, and —
-     tested in a separate isolated phase, since the guard that blocks
-     re-triggering the confrontation after a successful ending would
-     otherwise mask it — the rule that a *second* spot always forces
-     retreat regardless of how good Dana's cover is.
+   - Chapter II: includes audio-loads, a wrong ticket on Sal's cipher, a
+     wrong donation flag on Priya's manifest, and Costigan's full state
+     machine (one soft miss from `hostile`, then the correct grief → case →
+     offer sequence to reach `open`).
+   - Chapter III: includes audio-loads, an over-flagged audit attempt that
+     correctly rejects before the exact set solves it, a first Voss spot
+     that cover-holds under favorable conditions, and — tested in a separate
+     isolated phase, since the guard that blocks re-triggering the
+     confrontation after a successful ending would otherwise mask it — the
+     rule that a *second* spot always forces retreat regardless of how good
+     Dana's cover is.
+   - Chapter IV: covers Priya's post-Chapter-II revisit across all three
+     trust outcomes (intact/lied-to/burned), gating whether the truth beat
+     is even reachable.
+   - Chapter V: covers all five named endings (ledger, clean, paid, blood,
+     and the hidden-truth-liability case where a concealed Chapter IV lie
+     blocks the clean ending from being reachable).
 
 **A real bug this testing caught**: `AuditBoard`'s exact-match win check
 could fire `solved` twice in a row if a player toggled a flag off right
@@ -85,16 +95,31 @@ has had one so far.
 
 **CI**: `.github/workflows/ci.yml` runs the load check and all five chapters'
 test drivers headless on every push/PR, plus `tools/check_registration.py`
-against any character sheets that exist (currently a clean no-op — see
-`docs/ANIMATION_BIBLE.md`'s Current status section). One thing worth knowing:
-all five `TestChapterNDriver.gd` scripts previously called `get_tree().quit()`
-with no exit code, so Godot always returned 0 regardless of whether any check
-had actually failed — a CI job built on top of that would have been green no
-matter what the printed output said. Fixed to `quit(1 if failures.size() > 0
-else 0)` in all five. This workflow has not been execution-verified end-to-end
-(no Godot binary available in the environment that wrote it) — the commands
-match exactly what this README already documents as manually verified working,
-but confirm the Actions run actually goes green on the first real push.
+against any character sheets that exist (currently a clean no-op — see below).
+One thing worth knowing: all five `TestChapterNDriver.gd` scripts previously
+called `get_tree().quit()` with no exit code, so Godot always returned 0
+regardless of whether any check had actually failed — a CI job built on top of
+that would have been green no matter what the printed output said. Fixed to
+`quit(1 if failures.size() > 0 else 0)` in all five.
+
+**This has actually been run**, not just written and assumed correct: downloaded
+Godot 4.7.1 headless, ran the exact load check and all five `TestChapterN.tscn`
+drivers for real. All 96/96 checks pass (counts reconciled below). Also
+deliberately broke one real assertion
+(`TicketBoard.gd`'s `CORRECT_TICKET`) to confirm the exit-code fix actually
+produces a nonzero exit on a real failure, not just 0 on success — it does (exit
+1, correctly caught; the first check of this used `$?` after a pipe through
+`grep` and wrongly reported 0, a bash artifact, not a real result — worth
+flagging since it's an easy mistake to repeat).
+
+**One correction while doing this**: `art/characters/` actually has 11 real
+character sheets (155 frame images, walk/idle/talk/interact, real rendered art)
+across Chapters I, II, III, and V — not "no image assets yet" as this doc
+previously implied by citing "What's implemented" below without checking.
+None of them are registered against `check_registration.py` yet. See
+`docs/ANIMATION_BIBLE.md`'s Current status section for the corrected picture —
+the hard gate isn't waiting on future art, it's already overdue against art
+that exists today.
 
 ## Running it
 
