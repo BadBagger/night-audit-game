@@ -1,0 +1,14 @@
+# Godot 4 editor cache — regenerated automatically, never hand-edited
+.godot/
+
+# Godot import cache/temp
+*.translation
+export.cfg
+export_presets.cfg
+
+# Godot import temp files (leftover in-progress import scratch)
+*.tmp
+
+# OS cruft
+.DS_Store
+Thumbs.db
