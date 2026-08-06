@@ -4,6 +4,7 @@ var player: CharacterBody2D
 var dialogue: DialogueBoxUI
 var board: DeductionBoardUI
 var reyes: StoryNPC
+var foreground_occluder: Sprite2D
 
 const CLUE_DEFS = [
 	{"id": "spatter", "tag": "cause_location_mismatch", "label": "Arterial spatter, low, wrong wall",
@@ -48,20 +49,27 @@ func _ready() -> void:
 
 func _build_environment() -> void:
 	var background := Sprite2D.new()
-	background.texture = preload("res://art/backgrounds/pier9_ch1_background_pass01.png")
+	background.texture = preload("res://art/backgrounds/pier9_ch1_background_no_foreground_occluder.png")
 	background.position = Vector2(1280, 720)
 	background.z_index = -100
 	add_child(background)
 
+	foreground_occluder = Sprite2D.new()
+	foreground_occluder.texture = preload("res://art/backgrounds/pier9_ch1_foreground_occluder_layer.png")
+	foreground_occluder.position = Vector2(1280, 720)
+	foreground_occluder.z_index = 40
+	add_child(foreground_occluder)
+
 func _build_player() -> void:
 	player = preload("res://scripts/Player.gd").new()
-	player.position = Vector2(620, 820)
+	player.position = Vector2(652, 758)
 	# Handoff's rect (250,480)-(2000,1040) leaves the spatter/receipt clues
 	# (y=410/370) unreachably above the top edge, so this is widened to
 	# actually cover every marker in GODOT_INTEGRATION_HANDOFF.md with
 	# margin for the player's 40px interact radius; retune once Dana is
 	# actually visible on the plate.
 	player.movement_bounds = Rect2(Vector2(300, 320), Vector2(1650, 720))
+	player.z_index = 10
 	add_child(player)
 
 	var cam := Camera2D.new()
@@ -76,7 +84,8 @@ func _build_player() -> void:
 
 func _build_npc() -> void:
 	reyes = preload("res://scripts/StoryNPC.gd").new()
-	reyes.position = Vector2(900, 760)
+	reyes.position = Vector2(860, 842)
+	reyes.z_index = 10
 	reyes.npc_name = "REYES"
 	add_child(reyes)
 	reyes.interacted.connect(_on_reyes_interact)
