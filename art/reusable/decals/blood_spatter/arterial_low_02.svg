@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Wider, flatter pool -- variant for a lower-impact / smeared spatter reading -->
+  <g>
+    <ellipse cx="100" cy="120" rx="46" ry="20" transform="rotate(5 100 120)" fill="#39100f" opacity="0.9"/>
+    <ellipse cx="70" cy="114" rx="16" ry="11" transform="rotate(-20 70 114)" fill="#341010" opacity="0.86"/>
+    <ellipse cx="132" cy="116" rx="14" ry="10" transform="rotate(22 132 116)" fill="#2e0c0c" opacity="0.85"/>
+  </g>
+
+  <!-- Sparse, wider-flung droplets -- reads as a glancing spray rather than dense impact -->
+  <circle cx="118" cy="90" r="7" fill="#39100f" opacity="0.85"/>
+  <circle cx="132" cy="72" r="4.5" fill="#39100f" opacity="0.8"/>
+  <circle cx="142" cy="58" r="2.8" fill="#39100f" opacity="0.75"/>
+  <circle cx="60" cy="92" r="5" fill="#39100f" opacity="0.82"/>
+  <circle cx="46" cy="76" r="3.2" fill="#39100f" opacity="0.76"/>
+  <circle cx="150" cy="100" r="2.4" fill="#39100f" opacity="0.7"/>
+  <circle cx="150" cy="130" r="1.8" fill="#39100f" opacity="0.65"/>
+
+  <!-- Fine mist -->
+  <circle cx="150" cy="46" r="1.2" fill="#39100f" opacity="0.55"/>
+  <circle cx="36" cy="64" r="1.3" fill="#39100f" opacity="0.55"/>
+  <circle cx="110" cy="62" r="1" fill="#39100f" opacity="0.5"/>
+
+  <!-- Wet-sheen highlight -->
+  <ellipse cx="92" cy="116" rx="12" ry="4" transform="rotate(4 92 116)" fill="#5a7d8c" opacity="0.09"/>
+
+  <!-- Faint dark edge definition -->
+  <ellipse cx="100" cy="120" rx="46" ry="20" transform="rotate(5 100 120)" fill="none" stroke="#170505" stroke-width="0.6" opacity="0.3"/>
+</svg>
