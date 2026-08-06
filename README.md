@@ -159,7 +159,10 @@ has had one so far.
 - Sprite animation (the player is a static silhouette; movement has no walk
   cycle).
 - Save/load.
-- Sound effects / music (VO only, no SFX or score yet).
+- A full score/stinger pass (SFX is wired: ambience beds per chapter, per-surface
+  footsteps, UI blips, board-solve stinger, Chapter III's safe dial/unlock and
+  tension/retreat stings — see `sfx/CREDITS.md` for the source list — but there's no
+  music/score layer yet, just VO and SFX).
 - Visual "in range" highlighting on interactables (currently invisible —
   you'll know you're close enough when E does something).
 - The Chapter I → Chapter II and Chapter II → Chapter III transitions are

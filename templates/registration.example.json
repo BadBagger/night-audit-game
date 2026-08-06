@@ -1,0 +1,32 @@
+{
+  "_comment": "Annotated example. Copy this alongside a real character sheet's frames, rename to registration.json, and fill in real values. See tools/check_registration.py's docstring for the full schema.",
+
+  "sheet": "example-actor-walk",
+  "actor_type": "walk-plane",
+  "_actor_type_comment": "'walk-plane' for a freely-walking actor, 'furniture-anchored' for a fixed/windowed actor (behind a counter, desk, gate, etc).",
+
+  "canvas": { "width": 384, "height": 512 },
+  "_canvas_comment": "Every frame file in this sheet must be exactly this pixel size. A mismatch is a hard fail.",
+
+  "anchor_tolerance_px": 2,
+  "_tolerance_comment": "How many pixels of anchor drift between frames is tolerated before the frames check fails. Keep this small — it exists to catch registration mistakes, not to permit them.",
+
+  "frames": [
+    {
+      "file": "walk_01.png",
+      "anchor": [192, 480],
+      "_anchor_comment": "The confirmed contact point for THIS frame: foot-ground contact for a walk-plane actor, or the counter/desk-contact line's center point for a furniture-anchored actor. This is authored/confirmed by a human, never inferred from pixel content.",
+      "role": "left-contact",
+      "_role_comment": "Free-text label for what this frame is in the walk-cycle contract (see ANIMATION_BIBLE.md) — not read by the tool, but keeps the sheet self-documenting."
+    },
+    {
+      "file": "idle.png",
+      "anchor": [192, 480],
+      "role": "idle-neutral-pose",
+      "canonical": true,
+      "_canonical_comment": "Exactly one frame per sheet should be marked canonical:true — the character's neutral/idle standing pose. This is the frame cast-scale measures from.",
+      "scale_reference": [192, 40],
+      "_scale_reference_comment": "Only required on the canonical frame. A second landmark point, by convention the character's head-top in that pose. The vertical distance between 'anchor' and 'scale_reference' on the canonical frame is this character's measured standing height, in this sheet's own source pixels — that measurement is what cast-scale compares across the whole roster."
+    }
+  ]
+}

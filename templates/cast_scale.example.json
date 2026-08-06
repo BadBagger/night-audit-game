@@ -1,0 +1,29 @@
+{
+  "_comment": "Annotated example. One of these per project, listing the full cast. Copy, rename to cast_scale.json, fill in real registration paths and director-declared proportions.",
+
+  "world_unit": "define your project's baseline here, e.g. 'protagonist's standing height = 1.0'",
+  "_world_unit_comment": "A single sentence defining what 1.0 world_height_units means for this project. Every other actor's proportion is declared relative to that baseline.",
+
+  "tolerance_pct": 8,
+  "_tolerance_comment": "How far (in percent) an actor's measured px-per-world-unit is allowed to deviate from the cast mean before cast-scale fails. Tune per project, but don't set this so loose it stops catching real mistakes.",
+
+  "actors": [
+    {
+      "name": "protagonist",
+      "registration": "protagonist-walk/registration.json",
+      "_registration_comment": "Path (relative to this file) to that actor's registration.json — must have a frame marked canonical:true with a scale_reference.",
+      "world_height_units": 1.0
+    },
+    {
+      "name": "example-huge-character",
+      "registration": "example-huge-character-idle/registration.json",
+      "world_height_units": 2.4,
+      "_comment_on_this_entry": "A large ratio like this is a legitimate, intentional design choice — the check exists to verify the SOURCE ART actually matches this declared ratio, not to flag big size differences as errors."
+    },
+    {
+      "name": "example-tiny-character",
+      "registration": "example-tiny-character-walk/registration.json",
+      "world_height_units": 0.35
+    }
+  ]
+}
