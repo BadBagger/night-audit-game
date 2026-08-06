@@ -7,6 +7,7 @@ var reach: Area2D
 var movement_bounds: Rect2 = Rect2()
 
 func _ready() -> void:
+	add_to_group("player")
 	var body_shape := CapsuleShape2D.new()
 	body_shape.radius = 10
 	body_shape.height = 26

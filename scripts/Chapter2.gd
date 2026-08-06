@@ -322,3 +322,7 @@ func _show_chapter2_summary() -> void:
 		GameState.ledger["trust"]["costigan"], GameState.cash
 	]
 	dialogue.play([{"speaker": "", "text": summary}])
+	dialogue.advanced.connect(_go_to_chapter3, CONNECT_ONE_SHOT)
+
+func _go_to_chapter3() -> void:
+	get_tree().change_scene_to_file("res://scenes/Chapter3.tscn")

@@ -13,6 +13,7 @@ const ACTION_EFFECTS = {
 
 var collected_clues: Dictionary = {}
 var cash: int = 400
+var heat: int = 0
 var npc_actions: Dictionary = {}
 var ledger := {
 	"trust": {"reyes": 0, "sal": 0, "priya": 0, "costigan": 0},

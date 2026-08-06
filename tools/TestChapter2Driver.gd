@@ -74,13 +74,22 @@ func _ready() -> void:
 	_check("costigan advances to listening on case", ch2.costigan_state == "listening")
 
 	ch2.dialogue._on_choice("offer")
-	await _drain_dialogue()
+	# This is the LAST of the three encounters to finish, so draining its
+	# response fully would chain straight through _check_chapter2_complete()
+	# -> the summary line -> change_scene_to_file() into Chapter3, which
+	# this harness (Chapter2 instantiated as a plain child, not the true
+	# current_scene) can't survive -- same failure mode TestChapter1Driver.gd
+	# hit. Stop the instant chapter2_complete lands instead of draining to
+	# the summary line itself.
+	var steps := 0
+	while not GameState.get_flag("chapter2_complete", false) and steps < 25:
+		if ch2.dialogue.box_visible and ch2.dialogue.choice_container.get_child_count() == 0:
+			ch2.dialogue._advance()
+		await get_tree().process_frame
+		steps += 1
 	_check("costigan reaches open state", ch2.costigan_state == "open")
 	_check("costigan_boat_lead flag set", GameState.get_flag("costigan_boat_lead", false))
-
-	await _drain_dialogue()
 	_check("costigan_done set", GameState.get_flag("costigan_done", false))
-
 	_check("chapter2_complete set once all three are done", GameState.get_flag("chapter2_complete", false))
 
 	_report()
