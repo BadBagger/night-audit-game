@@ -13,6 +13,11 @@ func _ready() -> void:
 
 	_check("intro dialogue opened", main_scene.dialogue.box_visible)
 	_check("intro line has audio loaded", main_scene.dialogue.audio_player.stream != null)
+	_check("chapter1 atmosphere layer exists", main_scene.atmosphere != null and main_scene.atmosphere.is_in_group("chapter1_atmosphere"))
+	_check("chapter1 set dressing root exists", main_scene.set_dressing_root != null)
+	_check("chapter1 has dense dockyard set dressing", main_scene.set_dressing_root.get_child_count() >= 16)
+	_check("chapter1 has rain, puddles, and light pools", main_scene.atmosphere.rain_lines >= 80 and main_scene.atmosphere.puddles.size() >= 4 and main_scene.atmosphere.light_pools.size() >= 3)
+	_check("chapter1 key props are named for tuning", main_scene.set_dressing_root.has_node("security_barrier_gate") and main_scene.set_dressing_root.has_node("container_office_clutter") and main_scene.set_dressing_root.has_node("dock_edge_harbor"))
 
 	await _drain_dialogue()
 

@@ -8,6 +8,8 @@ var frank: StoryNPC
 var mick_body: AnimatedCharacter2D
 var foreground_occluder: Sprite2D
 var occlusion_controller: Pier9OcclusionController
+var atmosphere: Node2D
+var set_dressing_root: Node2D
 
 const CLUE_DEFS = [
 	{"id": "spatter", "tag": "cause_location_mismatch", "label": "Arterial spatter, low, wrong wall",
@@ -40,6 +42,7 @@ const BOARD_SLOTS = [
 
 func _ready() -> void:
 	_build_environment()
+	_build_scene_art()
 	_build_player()
 	_build_body()
 	_build_npc()
@@ -69,6 +72,54 @@ func _build_environment() -> void:
 	foreground_occluder.position = Vector2(1280, 720)
 	foreground_occluder.z_index = 40
 	add_child(foreground_occluder)
+
+func _build_scene_art() -> void:
+	set_dressing_root = Node2D.new()
+	set_dressing_root.name = "Chapter1SetDressing"
+	add_child(set_dressing_root)
+
+	_add_set_piece("dock_edge_harbor", "dock_edge", Vector2(1500, 1088), Vector2(1120, 96), Color(0.04, 0.052, 0.06, 0.92), Color(0.42, 0.52, 0.56, 0.62), -5)
+	_add_set_piece("container_office_clutter", "office_clutter", Vector2(630, 350), Vector2(280, 110), Color(0.12, 0.08, 0.05, 0.82), Color(0.84, 0.56, 0.28, 0.7), 3)
+	_add_set_piece("work_lamp_container", "work_lamp", Vector2(730, 330), Vector2(120, 70), Color(1.0, 0.72, 0.32, 0.8), Color(1.0, 0.72, 0.32, 0.8), 5)
+	_add_set_piece("crime_scene_tape_left", "tape", Vector2(558, 624), Vector2(430, 16), Color(0.95, 0.72, 0.22, 0.9), Color(0.95, 0.72, 0.22, 0.9), 8)
+	_add_set_piece("crime_scene_tape_right", "tape", Vector2(890, 655), Vector2(500, 16), Color(0.95, 0.72, 0.22, 0.9), Color(0.95, 0.72, 0.22, 0.9), 8)
+	_add_set_piece("security_barrier_gate", "barrier", Vector2(1135, 685), Vector2(230, 42), Color(0.12, 0.13, 0.14, 0.9), Color(0.92, 0.58, 0.18, 0.82), 8)
+	_add_set_piece("police_barrier_car_area", "barrier", Vector2(1430, 850), Vector2(270, 46), Color(0.12, 0.13, 0.14, 0.9), Color(0.3, 0.58, 0.96, 0.55), 8)
+	_add_set_piece("crate_stack_near_gate", "crate", Vector2(1215, 575), Vector2(150, 92), Color(0.19, 0.11, 0.055, 0.92), Color(0.75, 0.46, 0.2, 0.7), 4)
+	_add_set_piece("crate_stack_container_shadow", "crate", Vector2(900, 492), Vector2(128, 82), Color(0.13, 0.085, 0.055, 0.9), Color(0.58, 0.36, 0.17, 0.6), 4)
+	_add_set_piece("barrel_cluster_gate", "barrel", Vector2(1330, 610), Vector2(86, 110), Color(0.14, 0.18, 0.2, 0.9), Color(0.52, 0.62, 0.66, 0.45), 4)
+	_add_set_piece("barrel_near_harbor", "barrel", Vector2(1640, 948), Vector2(92, 118), Color(0.16, 0.13, 0.1, 0.88), Color(0.52, 0.5, 0.45, 0.42), 6)
+	_add_set_piece("rope_coil_tiedown", "rope", Vector2(424, 536), Vector2(90, 64), Color(0.63, 0.48, 0.28, 0.92), Color(0.63, 0.48, 0.28, 0.92), 5)
+	_add_set_piece("rope_coil_harbor", "rope", Vector2(1775, 980), Vector2(120, 80), Color(0.58, 0.42, 0.24, 0.88), Color(0.58, 0.42, 0.24, 0.88), 6)
+	_add_set_piece("evidence_marker_spatter", "evidence_card", Vector2(570, 428), Vector2(34, 24), Color(0.92, 0.84, 0.55, 0.92), Color(0.18, 0.13, 0.05, 0.78), 7)
+	_add_set_piece("evidence_marker_receipt", "evidence_card", Vector2(721, 386), Vector2(34, 24), Color(0.92, 0.84, 0.55, 0.92), Color(0.18, 0.13, 0.05, 0.78), 7)
+	_add_set_piece("evidence_marker_phone", "evidence_card", Vector2(645, 456), Vector2(30, 22), Color(0.92, 0.84, 0.55, 0.92), Color(0.18, 0.13, 0.05, 0.78), 7)
+
+	atmosphere = preload("res://scripts/Chapter1Atmosphere.gd").new()
+	atmosphere.name = "Chapter1RainAndLighting"
+	add_child(atmosphere)
+	atmosphere.configure(
+		[
+			{"pos": Vector2(552, 700), "radius": Vector2(170, 34), "color": Color(0.46, 0.58, 0.62, 0.18)},
+			{"pos": Vector2(860, 820), "radius": Vector2(230, 42), "color": Color(0.32, 0.48, 0.58, 0.16)},
+			{"pos": Vector2(1510, 920), "radius": Vector2(260, 46), "color": Color(0.26, 0.42, 0.52, 0.18)},
+			{"pos": Vector2(1110, 570), "radius": Vector2(135, 24), "color": Color(0.5, 0.58, 0.6, 0.12)},
+		],
+		[
+			{"pos": Vector2(705, 360), "radius": 260.0, "color": Color(1.0, 0.62, 0.24, 0.12)},
+			{"pos": Vector2(1410, 815), "radius": 240.0, "color": Color(0.24, 0.48, 1.0, 0.08)},
+			{"pos": Vector2(1660, 1040), "radius": 220.0, "color": Color(0.36, 0.78, 0.9, 0.07)},
+		]
+	)
+
+func _add_set_piece(piece_name: String, kind: String, pos: Vector2, piece_size: Vector2, color: Color, accent: Color, z: int) -> Node2D:
+	var piece: Node2D = preload("res://scripts/Chapter1SetPiece.gd").new()
+	piece.name = piece_name
+	piece.position = pos
+	piece.z_index = z
+	piece.configure(kind, piece_size, color, accent)
+	set_dressing_root.add_child(piece)
+	return piece
 
 func _build_player() -> void:
 	player = preload("res://scripts/Player.gd").new()
