@@ -4,7 +4,10 @@ var player: CharacterBody2D
 var dialogue: DialogueBoxUI
 var board: DeductionBoardUI
 var reyes: StoryNPC
+var frank: StoryNPC
+var mick_body: AnimatedCharacter2D
 var foreground_occluder: Sprite2D
+var occlusion_controller: Pier9OcclusionController
 
 const CLUE_DEFS = [
 	{"id": "spatter", "tag": "cause_location_mismatch", "label": "Arterial spatter, low, wrong wall",
@@ -38,12 +41,19 @@ const BOARD_SLOTS = [
 func _ready() -> void:
 	_build_environment()
 	_build_player()
+	_build_body()
 	_build_npc()
+	_build_occlusion()
 	_build_clues()
 	_build_ui()
 
+	dialogue.line_started.connect(_on_dialogue_line_started)
+	dialogue.advanced.connect(_on_dialogue_finished)
 	dialogue.play([
-		{"speaker": "DANA", "text": "He's in there. Pier 9. I got here before anyone else did.", "audio": "res://vo/chapter1/D-001.mp3"},
+		{"speaker": "DANA", "text": "Mick.", "audio": "res://vo/chapter1/D-001.mp3"},
+		{"speaker": "DANA", "text": "You still tie them like that."},
+		{"speaker": "", "text": "Sirens start somewhere beyond the rain. Pier 9 snaps into focus."},
+		{"speaker": "DANA", "text": "He's in there. Pier 9. I got here before anyone else did."},
 		{"speaker": "", "text": "(Walk with WASD or the arrow keys. Press E near something to examine it.)"},
 	])
 
@@ -71,6 +81,12 @@ func _build_player() -> void:
 	player.movement_bounds = Rect2(Vector2(300, 320), Vector2(1650, 720))
 	player.z_index = 10
 	add_child(player)
+	player.set_character_visual(_make_character_visual(
+		"res://art/characters/chapter1/dana",
+		{"idle": {"fps": 1.0}, "walk": {"fps": 10.0}, "talk": {"fps": 6.0}, "interact": {"fps": 8.0, "loop": false}},
+		0.64,
+		Vector2(0, -76)
+	))
 
 	var cam := Camera2D.new()
 	cam.zoom = Vector2(1.0, 1.0)
@@ -82,13 +98,52 @@ func _build_player() -> void:
 	cam.enabled = true
 	player.add_child(cam)
 
+func _build_body() -> void:
+	mick_body = _make_character_visual(
+		"res://art/characters/chapter1/mick_body",
+		{"idle": {"fps": 1.0}},
+		0.88,
+		Vector2(0, -48)
+	)
+	mick_body.position = Vector2(610, 452)
+	mick_body.z_index = 4
+	add_child(mick_body)
+
 func _build_npc() -> void:
 	reyes = preload("res://scripts/StoryNPC.gd").new()
 	reyes.position = Vector2(860, 842)
 	reyes.z_index = 10
 	reyes.npc_name = "REYES"
 	add_child(reyes)
+	reyes.set_character_visual(_make_character_visual(
+		"res://art/characters/chapter1/reyes",
+		{"idle": {"fps": 1.0}, "walk": {"fps": 8.0}, "talk": {"fps": 5.0}},
+		0.66,
+		Vector2(0, -76)
+	))
 	reyes.interacted.connect(_on_reyes_interact)
+
+	frank = preload("res://scripts/StoryNPC.gd").new()
+	frank.position = Vector2(1260, 918)
+	frank.z_index = 10
+	frank.npc_name = "FRANK"
+	frank.interact_enabled = false
+	add_child(frank)
+	frank.set_character_visual(_make_character_visual(
+		"res://art/characters/chapter1/frank",
+		{"idle": {"fps": 1.0}, "walk": {"fps": 7.0}, "talk": {"fps": 4.0}},
+		0.66,
+		Vector2(0, -76)
+	))
+
+func _build_occlusion() -> void:
+	occlusion_controller = preload("res://scripts/Pier9OcclusionController.gd").new()
+	add_child(occlusion_controller)
+	occlusion_controller.setup(
+		player,
+		foreground_occluder,
+		preload("res://art/backgrounds/pier9_ch1_foreground_occluder_trigger_mask_pass01.png")
+	)
 
 func _build_clues() -> void:
 	for def in CLUE_DEFS:
@@ -122,6 +177,37 @@ func _build_ui() -> void:
 	hint.add_theme_font_size_override("font_size", 12)
 	hint.add_theme_color_override("font_color", Color(0.6, 0.62, 0.68))
 	hud.add_child(hint)
+
+func _make_character_visual(root_path: String, animations: Dictionary, scale: float, offset: Vector2) -> AnimatedCharacter2D:
+	var visual: AnimatedCharacter2D = preload("res://scripts/AnimatedCharacter2D.gd").new()
+	visual.visual_scale = scale
+	visual.visual_offset = offset
+	visual.setup_from_folders(root_path, animations)
+	return visual
+
+func _on_dialogue_line_started(speaker: String) -> void:
+	var dana_visual := player.get("character_visual") as AnimatedCharacter2D if player else null
+	if dana_visual:
+		if speaker == "DANA":
+			dana_visual.play_talk()
+		else:
+			dana_visual.play_idle()
+	if reyes:
+		if speaker == "REYES":
+			reyes.play_talk()
+		else:
+			reyes.play_idle()
+	if frank:
+		frank.play_idle()
+
+func _on_dialogue_finished() -> void:
+	var dana_visual := player.get("character_visual") as AnimatedCharacter2D if player else null
+	if dana_visual:
+		dana_visual.play_idle()
+	if reyes:
+		reyes.play_idle()
+	if frank:
+		frank.play_idle()
 
 func _on_show_message(title: String, body: String, audio: String) -> void:
 	if audio != "":

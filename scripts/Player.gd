@@ -5,6 +5,8 @@ const SPEED := 170.0
 var nearby_interactables: Array = []
 var reach: Area2D
 var movement_bounds: Rect2 = Rect2()
+var character_visual: AnimatedCharacter2D
+var use_placeholder_art := true
 
 func _ready() -> void:
 	add_to_group("player")
@@ -27,7 +29,17 @@ func _ready() -> void:
 
 	queue_redraw()
 
+func set_character_visual(visual: AnimatedCharacter2D) -> void:
+	if character_visual != null and character_visual.get_parent() == self:
+		character_visual.queue_free()
+	character_visual = visual
+	use_placeholder_art = false
+	add_child(character_visual)
+	queue_redraw()
+
 func _draw() -> void:
+	if not use_placeholder_art:
+		return
 	var coat := PackedVector2Array([Vector2(-10, -6), Vector2(10, -6), Vector2(13, 18), Vector2(-13, 18)])
 	draw_colored_polygon(coat, Color(0.043, 0.047, 0.063))
 	draw_polyline(PackedVector2Array([Vector2(10, -6), Vector2(13, 18)]), Color(0.851, 0.522, 0.184), 2.0)
@@ -45,8 +57,12 @@ func _physics_process(_delta: float) -> void:
 		dir.x += 1
 	if dir != Vector2.ZERO:
 		velocity = dir.normalized() * SPEED
+		if character_visual:
+			character_visual.play_walk(dir)
 	else:
 		velocity = Vector2.ZERO
+		if character_visual:
+			character_visual.play_idle()
 	move_and_slide()
 
 	if movement_bounds.size != Vector2.ZERO:
@@ -63,4 +79,6 @@ func _on_reach_exited(area: Area2D) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_E:
 		if nearby_interactables.size() > 0:
+			if character_visual:
+				character_visual.play_interact()
 			nearby_interactables[0].interact()

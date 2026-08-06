@@ -3,6 +3,7 @@ class_name DialogueBoxUI
 
 signal advanced
 signal choice_made(id: String)
+signal line_started(speaker: String)
 
 var panel: Panel
 var name_label: Label
@@ -87,6 +88,7 @@ func _advance() -> void:
 	var line = queue.pop_front()
 	name_label.text = line.get("speaker", "")
 	text_label.text = line.get("text", "")
+	line_started.emit(name_label.text)
 
 	audio_player.stop()
 	var audio_path: String = line.get("audio", "")
