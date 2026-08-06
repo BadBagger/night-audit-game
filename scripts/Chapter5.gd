@@ -147,7 +147,7 @@ func _resolve_ending(choice_id: String) -> String:
 		return "blood"
 	if full_evidence and sal_action == "work" and priya_action == "work" and GameState.get_flag("costigan_boat_lead", false) and GameState.heat == 0 and GameState.get_flag("priya_truth_told", false):
 		return "ledger"
-	if full_evidence and leaned_count == 0:
+	if full_evidence and leaned_count == 0 and not GameState.get_flag("priya_truth_hidden", false):
 		return "clean"
 	if full_evidence:
 		return "paid"

@@ -5,6 +5,10 @@ var dialogue: DialogueBoxUI
 var reyes: StoryNPC
 var priya: StoryNPC
 
+const PRIYA_SCENE_POSITION := Vector2(940, 520)
+const PRIYA_ENTRY_POSITION := Vector2(1080, 520)
+const PRIYA_DOOR_POSITION := Vector2(1040, 500)
+
 func _ready() -> void:
 	_build_environment()
 	_build_player()
@@ -55,7 +59,7 @@ func _build_player() -> void:
 
 func _build_npcs() -> void:
 	reyes = _make_npc("REYES", Vector2(790, 540), "res://art/characters/chapter1/reyes")
-	priya = _make_npc("PRIYA", Vector2(940, 520), "res://art/characters/chapter2/priya")
+	priya = _make_npc("PRIYA", PRIYA_ENTRY_POSITION, "res://art/characters/chapter2/priya")
 	priya.interact_enabled = false
 	priya.visible = false
 
@@ -85,6 +89,7 @@ func _start_apartment_scene() -> void:
 
 func _start_priya_scene() -> void:
 	if GameState.get_action("priya") == "lean":
+		priya.position = PRIYA_DOOR_POSITION
 		priya.visible = true
 		dialogue.play([
 			{"speaker": "PRIYA", "text": "I already told you what I know. We're done."},
@@ -95,7 +100,7 @@ func _start_priya_scene() -> void:
 		return
 
 	if GameState.get_flag("priya_done", false):
-		priya.visible = true
+		_stage_priya_entrance()
 		dialogue.play([
 			{"speaker": "PRIYA", "text": "So it was real money. Just not clean money."},
 			{"speaker": "", "text": "(What do you tell her?)",
@@ -108,6 +113,16 @@ func _start_priya_scene() -> void:
 	else:
 		dialogue.play([{"speaker": "DANA", "text": "No one else is answering tonight. Then I take this straight to Calloway."}])
 		dialogue.advanced.connect(_finish_chapter4, CONNECT_ONE_SHOT)
+
+func _stage_priya_entrance() -> void:
+	priya.position = PRIYA_ENTRY_POSITION
+	priya.visible = true
+	if priya.character_visual:
+		priya.character_visual.set_facing(-1.0)
+		priya.character_visual.play_walk(Vector2.LEFT)
+	var tween := create_tween()
+	tween.tween_property(priya, "position", PRIYA_SCENE_POSITION, 0.45).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_callback(priya.play_idle)
 
 func _on_priya_truth_choice(id: String) -> void:
 	if id == "truth":

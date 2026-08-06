@@ -9,6 +9,8 @@ func _ready() -> void:
 	_reset_gamestate()
 	await _phase_clean_ending()
 	_reset_gamestate()
+	await _phase_hidden_truth_liability()
+	_reset_gamestate()
 	await _phase_paid_ending()
 	_reset_gamestate()
 	await _phase_blood_ending()
@@ -34,6 +36,7 @@ func _phase_ledger_ending() -> void:
 	_check("Calloway has animated visual", ch5.calloway.character_visual != null)
 	_check("Calloway uses dedicated chapter5 sprite path", ch5.calloway.character_visual.sprite.sprite_frames.get_frame_texture("idle", 0).resource_path.contains("/chapter5/calloway/"))
 	_check("Voss has animated visual", ch5.voss.character_visual != null)
+	_check("Priya is present after Chapter IV truth branch", ch5.priya.visible)
 	await _drain_dialogue()
 	_check("final evidence choice offered", ch5.dialogue.choice_container.get_child_count() == 2)
 
@@ -62,6 +65,30 @@ func _phase_clean_ending() -> void:
 	ch5.dialogue._on_choice("evidence")
 	await _drain_until_flag("game_complete")
 	_check("clean ending selected for full evidence with no lean", GameState.get_flag("final_ending", "") == "clean")
+
+	ch5.get_parent().remove_child(ch5)
+	ch5.queue_free()
+
+func _phase_hidden_truth_liability() -> void:
+	_seed_full_evidence()
+	GameState.npc_actions = {"sal": "work", "priya": "work"}
+	GameState.ledger["trust"]["sal"] = 2
+	GameState.ledger["trust"]["priya"] = 2
+	GameState.ledger["trust"]["costigan"] = 2
+	GameState.set_flag("priya_truth_hidden", true)
+
+	ch5 = load("res://scenes/Chapter5.tscn").instantiate()
+	get_tree().root.add_child.call_deferred(ch5)
+	await get_tree().process_frame
+	await get_tree().process_frame
+	await get_tree().process_frame
+
+	_check("Priya absent from finale after Chapter IV lie", not ch5.priya.visible)
+	await _drain_dialogue()
+
+	ch5.dialogue._on_choice("evidence")
+	await _drain_until_flag("game_complete")
+	_check("hidden Priya truth blocks clean ending", GameState.get_flag("final_ending", "") == "paid")
 
 	ch5.get_parent().remove_child(ch5)
 	ch5.queue_free()
