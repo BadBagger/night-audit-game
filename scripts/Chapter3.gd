@@ -235,3 +235,7 @@ func _show_chapter3_summary() -> void:
 		outcome, GameState.heat, GameState.cash
 	]
 	dialogue.play([{"speaker": "", "text": summary}])
+	dialogue.advanced.connect(_go_to_chapter4, CONNECT_ONE_SHOT)
+
+func _go_to_chapter4() -> void:
+	get_tree().change_scene_to_file("res://scenes/Chapter4.tscn")

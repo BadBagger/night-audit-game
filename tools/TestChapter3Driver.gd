@@ -33,7 +33,7 @@ func _phase_retreat_rule() -> void:
 	_check("Voss uses walk animation while patrolling", ch3.voss.character_visual.current_mode == "walk")
 
 	ch3.voss.player_spotted.emit()
-	await _drain_dialogue()
+	await _drain_until_flag("chapter3_retreat")
 	_check("second spot forces retreat despite favorable cover", GameState.get_flag("chapter3_retreat", false))
 	ch3.ledger_prop.interact()
 	await get_tree().process_frame
@@ -90,7 +90,7 @@ func _phase_success_path() -> void:
 	await _drain_dialogue()
 
 	ch3.safe_prop.interact()
-	await _drain_dialogue()
+	await _drain_until_flag("chapter3_complete")
 	_check("safe_done set on code branch", GameState.get_flag("safe_done", false))
 	_check("heat unchanged on correct-code safe branch", GameState.heat == 0)
 
@@ -107,6 +107,17 @@ func _drain_dialogue(max_steps: int = 25) -> void:
 		steps += 1
 	if steps >= max_steps:
 		_check("dialogue drained without hitting step cap (possible infinite loop)", false)
+
+func _drain_until_flag(flag_name: String, max_steps: int = 30) -> void:
+	var steps := 0
+	await get_tree().process_frame
+	while not GameState.get_flag(flag_name, false) and steps < max_steps:
+		if ch3.dialogue.box_visible and ch3.dialogue.choice_container.get_child_count() == 0:
+			ch3.dialogue._advance()
+		await get_tree().process_frame
+		steps += 1
+	if steps >= max_steps:
+		_check("%s set before step cap" % flag_name, false)
 
 func _has_visual(node: Node) -> bool:
 	return node.get("character_visual") != null
