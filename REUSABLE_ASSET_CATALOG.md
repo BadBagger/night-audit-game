@@ -1,0 +1,155 @@
+# Night Audit Reusable Asset Catalog
+
+Use this as the shared generation list for modular assets that should be created once, styled consistently, and reused across chapters. Prefer clean isolated assets on transparent or neutral backgrounds, with enough angle consistency for isometric/top-down placement.
+
+## Style Rules
+
+- Painterly noir adventure-game assets, not photoreal props.
+- Camera target: isometric/top-down 3/4, compatible with the Chapter I Pier 9 plate.
+- Materials: wet metal, worn wood, damp paper, black rubber, brass, sodium-vapor amber, cold blue harbor light.
+- Surfaces should have visible wear, edge highlights, grime, rain sheen, and dark readable outlines.
+- Avoid text baked into props unless the prop specifically needs legible writing.
+- Generate each reusable prop as an isolated asset first; placement, scale, tint, and repetition happen in Godot.
+
+## Priority 1 - Universal Dock / Noir Props
+
+These can be reused in Chapters I, II, III, and exterior parts of V.
+
+| Asset | Needed Variants | Reuse |
+| --- | --- | --- |
+| Shipping container module | closed, open doorway, side wall, stacked top | Chapter I container office, dock framing, Chapter III boat-adjacent cargo |
+| Wet wooden crate | small, medium, stacked pair | Pier 9, dockmaster office, boat cargo/storage |
+| Metal barrel | upright, tipped, cluster | Pier 9, strike line, boat service areas |
+| Rope coil | neat coil, loose line, tiedown loop | Pier 9 clues, dock edge, boat deck |
+| Police barrier | straight, angled, damaged | Pier 9, later police/case staging |
+| Crime-scene tape | straight strip, sagging strip, tied-off corner | Chapter I, possible memory/case-board overlays |
+| Puddle decals | small, long reflection, oil-slick | All rainy exteriors |
+| Rain streak overlay | thin, heavy, foreground streaks | All exterior rain scenes |
+| Evidence marker card | numbered blank, folded, wet | Chapter I clue zones, later evidence table |
+| Work lamp / dock lamp | warm cone, hanging, tripod | Container office, pawn shop, dock office |
+| Chain-link fence section | full panel, gate, broken edge | Pier 9, strike line, security barrier |
+| Harbor bollard | clean, rusty, rope-wrapped | Dock edge, boat scenes |
+
+## Priority 2 - Paper / Ledger / Investigation Props
+
+These support the actual puzzle language across the whole game.
+
+| Asset | Needed Variants | Reuse |
+| --- | --- | --- |
+| Ledger book | closed, open, water-stained, clipped pages | Sal, Dana apartment, finale evidence |
+| Receipt slip | clean, soaked, torn, carbon copy | Chapter I clue, Sal ticket puzzle, finale board |
+| Pawn ticket | blank, stamped, annotated | Sal puzzle, evidence chain |
+| Shipping manifest | clipboard, loose sheet, pinned sheet | Priya puzzle, Chapter III audit |
+| Donation ledger sheet | table page, highlighted lines | Priya strike fund, Chapter IV truth beat |
+| Audit worksheet | two-column reconciliation, flagged rows | Chapter III skim audit, Chapter IV table |
+| Legal bill stack | folded envelopes, paid-stamp bundle | Chapter IV emotional reveal |
+| Evidence folder | manila, black binder, clipped packet | Dana apartment, finale table |
+| Cracked phone | face-up, half-hidden, evidence bag | Chapter I phone choice, Chapter III backup route |
+| Pocket watch | closed, open engraved back | Sal puzzle, safe-code payoff |
+
+## Priority 3 - Location Kits
+
+These are modular packs for building each chapter without one-off custom art every time.
+
+### Pier 9 / Container Yard Kit
+
+- Container office exterior shell
+- Open container doorway/interior shadow
+- Desk inside container
+- Body tarp/body staging shadow
+- Dock gate/security arm
+- Police car light splash decal
+- Harbor edge and water reflection strip
+- Distant luxury ship silhouette
+
+### Pawn Shop Kit
+
+- Glass display counter
+- Pawn shelf modules
+- Ticket box
+- Old cash register
+- Security grate/window
+- Desk lamp
+- Back-room curtain
+
+### Strike Line Kit
+
+- Picket signs without text
+- Barrel fire
+- Pallet stack
+- Folding table
+- Rain poncho/coat rack shapes
+- Dockworker barricade
+- Flare light decal
+
+### Dockmaster Office Kit
+
+- Metal desk
+- Wall map / berth board
+- Coffee mug
+- Radio handset
+- File cabinet
+- Key hook board
+- Window blinds
+
+### Calloway Star Kit
+
+- Luxury dining table module
+- Brass rail
+- Carpet runner
+- Service corridor panel
+- Cargo hold crate stack
+- Security camera
+- Safe
+- Glassware/table setting
+
+### Dana Apartment Kit
+
+- Evidence table
+- Case board
+- Legal bill stack
+- Desk lamp
+- Rainy window
+- Takeout cup
+- File boxes
+- Old answering machine / recorder
+
+## Priority 4 - Character-Adjacent Reusable Animation Props
+
+These should be made as separate props so character sprites can interact with them later.
+
+| Asset | Use |
+| --- | --- |
+| Brass rubber stamp | Calloway/Chairman-style bureaucratic beats, evidence stamping |
+| Headset / security earpiece | Voss/security variants |
+| Police notebook | Reyes talk/interact poses |
+| Dana audit pen | deduction board and inspect animations |
+| Umbrella silhouette | background passerby/harbor atmosphere |
+| Coffee cup | red herring, Priya/Mick memory motif |
+| Evidence bag | phone/pocket watch/receipt variants |
+
+## Generation Batch Order
+
+1. Universal dock/noir props: crate, barrel, rope, barrier, puddles, lamp, evidence marker.
+2. Paper/evidence pack: ledger, receipt, pawn ticket, manifest, legal bills, phone, pocket watch.
+3. Chapter I replacements: container office shell, dock gate, police light splash, harbor edge, distant ship silhouette.
+4. Chapter II location kits: pawn shop, strike line, dockmaster office.
+5. Chapter III/V boat kit.
+6. Chapter IV apartment/case-table kit.
+
+## Suggested File Layout
+
+```text
+art/reusable/props/<asset_id>/<variant>.png
+art/reusable/decals/<asset_id>/<variant>.png
+art/reusable/location_kits/<kit_id>/<asset_id>.png
+art/reusable/paper/<asset_id>/<variant>.png
+```
+
+## Asset Delivery Notes
+
+- Ideal source: high-resolution PNG with transparent background.
+- Also keep the Blender/Meshy source outside the Godot repo unless the asset is final and lightweight.
+- Use consistent light direction: upper-left warm key plus cool ambient rim.
+- Give each asset a clean silhouette; Godot will downscale them heavily.
+- Avoid baking large shadows into the asset unless the shadow is part of the object. Scene lighting/shadow decals should stay separate.
