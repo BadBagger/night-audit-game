@@ -2,6 +2,8 @@ extends Node2D
 
 const SAVE_PATH := "res://art/navigation/chapter1_navigation_authoring.json"
 const DEFAULT_BACKGROUND := "res://art/backgrounds/pier9_ch1_background_v2.png"
+const POINT_PICK_RADIUS := 14.0
+const EDGE_PICK_DISTANCE := 12.0
 
 var background: Sprite2D
 var camera: Camera2D
@@ -14,6 +16,10 @@ var polygons := {
 }
 var current_points := PackedVector2Array()
 var mouse_world := Vector2.ZERO
+var selected_kind := ""
+var selected_polygon_index := -1
+var selected_point_index := -1
+var dragging_point := false
 
 func _ready() -> void:
 	_build_background()
@@ -64,17 +70,28 @@ func _process(delta: float) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		mouse_world = get_global_mouse_position()
+		if dragging_point:
+			_move_selected_point(mouse_world)
 		_update_hud()
 		queue_redraw()
-	elif event is InputEventMouseButton and event.pressed:
-		if event.button_index == MOUSE_BUTTON_LEFT:
-			current_points.append(get_global_mouse_position())
+	elif event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			var click_pos := get_global_mouse_position()
+			if _select_nearest_point(click_pos):
+				dragging_point = true
+			elif event.shift_pressed and _insert_point_on_nearest_edge(click_pos):
+				pass
+			else:
+				_clear_selection()
+				current_points.append(click_pos)
 			queue_redraw()
-		elif event.button_index == MOUSE_BUTTON_RIGHT:
+		elif event.button_index == MOUSE_BUTTON_LEFT and not event.pressed:
+			dragging_point = false
+		elif event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
 			_commit_current_polygon()
-		elif event.button_index == MOUSE_BUTTON_WHEEL_UP:
+		elif event.button_index == MOUSE_BUTTON_WHEEL_UP and event.pressed:
 			camera.zoom *= 1.08
-		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN and event.pressed:
 			camera.zoom /= 1.08
 	elif event is InputEventKey and event.pressed and not event.echo:
 		_handle_key(event)
@@ -84,25 +101,36 @@ func _handle_key(event: InputEventKey) -> void:
 		KEY_1:
 			mode = "walkable"
 			current_points.clear()
+			_clear_selection()
 		KEY_2:
 			mode = "blocked"
 			current_points.clear()
+			_clear_selection()
 		KEY_3:
 			mode = "occluder_foreground"
 			current_points.clear()
+			_clear_selection()
 		KEY_ENTER:
 			_commit_current_polygon()
 		KEY_BACKSPACE:
 			if current_points.size() > 0:
 				current_points.remove_at(current_points.size() - 1)
+			elif _has_selection():
+				_delete_selected_point()
 		KEY_Z:
 			if polygons[mode].size() > 0:
 				polygons[mode].pop_back()
+				_clear_selection()
 		KEY_C:
 			current_points.clear()
+			_clear_selection()
 		KEY_DELETE:
-			polygons[mode].clear()
-			current_points.clear()
+			if _has_selection():
+				_delete_selected_point()
+			elif event.shift_pressed:
+				polygons[mode].clear()
+				current_points.clear()
+				_clear_selection()
 		KEY_F:
 			camera.position = Vector2(840, 472)
 			camera.zoom = Vector2.ONE
@@ -128,15 +156,20 @@ func _draw() -> void:
 	_draw_current()
 
 func _draw_polygons(kind: String, fill: Color, stroke: Color) -> void:
-	for polygon in polygons[kind]:
+	for polygon_index in range(polygons[kind].size()):
+		var polygon = polygons[kind][polygon_index]
 		if polygon.size() < 3:
 			continue
 		draw_polygon(polygon, PackedColorArray([fill]))
 		var line := PackedVector2Array(polygon)
 		line.append(polygon[0])
 		draw_polyline(line, stroke, 3.0)
-		for point in polygon:
-			draw_circle(point, 4.0, stroke)
+		for point_index in range(polygon.size()):
+			var point: Vector2 = polygon[point_index]
+			var is_selected := selected_kind == kind and selected_polygon_index == polygon_index and selected_point_index == point_index
+			draw_circle(point, 6.5 if is_selected else 4.0, Color.WHITE if is_selected else stroke)
+			if is_selected:
+				draw_arc(point, 10.0, 0.0, TAU, 24, stroke, 2.0)
 
 func _draw_current() -> void:
 	var stroke := _mode_stroke()
@@ -155,6 +188,95 @@ func _mode_stroke() -> Color:
 			return Color(0.72, 0.46, 1.0, 1.0)
 		_:
 			return Color(0.3, 1.0, 0.48, 1.0)
+
+func _select_nearest_point(pos: Vector2) -> bool:
+	var best := {
+		"distance": POINT_PICK_RADIUS,
+		"kind": "",
+		"polygon_index": -1,
+		"point_index": -1,
+	}
+	for kind in [mode, "walkable", "blocked", "occluder_foreground"]:
+		for polygon_index in range(polygons[kind].size()):
+			var polygon = polygons[kind][polygon_index]
+			for point_index in range(polygon.size()):
+				var distance := pos.distance_to(polygon[point_index])
+				if distance <= best["distance"]:
+					best = {
+						"distance": distance,
+						"kind": kind,
+						"polygon_index": polygon_index,
+						"point_index": point_index,
+					}
+	if best["kind"] == "":
+		return false
+	selected_kind = best["kind"]
+	selected_polygon_index = best["polygon_index"]
+	selected_point_index = best["point_index"]
+	mode = selected_kind
+	return true
+
+func _move_selected_point(pos: Vector2) -> void:
+	if not _has_selection():
+		return
+	var polygon: PackedVector2Array = polygons[selected_kind][selected_polygon_index]
+	polygon[selected_point_index] = pos
+	polygons[selected_kind][selected_polygon_index] = polygon
+
+func _delete_selected_point() -> void:
+	if not _has_selection():
+		return
+	var polygon: PackedVector2Array = polygons[selected_kind][selected_polygon_index]
+	polygon.remove_at(selected_point_index)
+	if polygon.size() < 3:
+		polygons[selected_kind].remove_at(selected_polygon_index)
+	else:
+		polygons[selected_kind][selected_polygon_index] = polygon
+	_clear_selection()
+
+func _insert_point_on_nearest_edge(pos: Vector2) -> bool:
+	var best := {
+		"distance": EDGE_PICK_DISTANCE,
+		"polygon_index": -1,
+		"insert_index": -1,
+	}
+	for polygon_index in range(polygons[mode].size()):
+		var polygon = polygons[mode][polygon_index]
+		for point_index in range(polygon.size()):
+			var a: Vector2 = polygon[point_index]
+			var b: Vector2 = polygon[(point_index + 1) % polygon.size()]
+			var distance := _distance_to_segment(pos, a, b)
+			if distance <= best["distance"]:
+				best = {
+					"distance": distance,
+					"polygon_index": polygon_index,
+					"insert_index": point_index + 1,
+				}
+	if best["polygon_index"] < 0:
+		return false
+	var target: PackedVector2Array = polygons[mode][best["polygon_index"]]
+	target.insert(best["insert_index"], pos)
+	polygons[mode][best["polygon_index"]] = target
+	selected_kind = mode
+	selected_polygon_index = best["polygon_index"]
+	selected_point_index = best["insert_index"]
+	return true
+
+func _distance_to_segment(point: Vector2, a: Vector2, b: Vector2) -> float:
+	var ab := b - a
+	if ab.length_squared() <= 0.0001:
+		return point.distance_to(a)
+	var t := clamp((point - a).dot(ab) / ab.length_squared(), 0.0, 1.0)
+	return point.distance_to(a + ab * t)
+
+func _has_selection() -> bool:
+	return selected_kind != "" and selected_polygon_index >= 0 and selected_point_index >= 0 and selected_polygon_index < polygons[selected_kind].size() and selected_point_index < polygons[selected_kind][selected_polygon_index].size()
+
+func _clear_selection() -> void:
+	selected_kind = ""
+	selected_polygon_index = -1
+	selected_point_index = -1
+	dragging_point = false
 
 func _load_existing() -> void:
 	if not FileAccess.file_exists(SAVE_PATH):
@@ -210,8 +332,12 @@ func _print_export() -> void:
 func _update_hud() -> void:
 	if hud_label == null:
 		return
-	hud_label.text = "Navigation Authoring | mode: %s | mouse: %d,%d | polygons W:%d B:%d O:%d\n1 walkable  2 blocked  3 foreground/3D occluder | Left click point  Right click/Enter close | Backspace undo point  Z undo polygon  Delete clear mode  F frame  Ctrl+S save | WASD pan  wheel zoom" % [
+	var selected_text := "none"
+	if _has_selection():
+		selected_text = "%s poly %d point %d" % [selected_kind, selected_polygon_index + 1, selected_point_index + 1]
+	hud_label.text = "Navigation Authoring | mode: %s | selected: %s | mouse: %d,%d | polygons W:%d B:%d O:%d\n1 walkable  2 blocked/no-travel  3 foreground/3D occluder | Left click add/select  Drag selected point  Shift+click edge insert | Right click/Enter close | Backspace/Delete selected point  Z undo polygon  Shift+Delete clear mode  F frame  Ctrl+S save | WASD pan  wheel zoom" % [
 		mode,
+		selected_text,
 		round(mouse_world.x),
 		round(mouse_world.y),
 		polygons["walkable"].size(),

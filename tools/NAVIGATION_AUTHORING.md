@@ -6,11 +6,15 @@ Controls:
 - `1`: draw walkable area polygons
 - `2`: draw blocked/collision polygons
 - `3`: draw foreground/3D occluder polygons for objects Dana should be able to walk behind
-- Left click: add a point
+- Left click empty space: add a new point to the polygon currently being drawn
+- Left click an existing point: select it
+- Drag selected point: move it
+- Shift+click an existing polygon edge: insert a new point on that edge
 - Right click, `Enter`, or `Space`: close the current polygon
 - `Backspace`: remove the last point
+- `Backspace` or `Delete` with a point selected: remove the selected point
 - `Z`: remove the last polygon in the current mode
-- `Delete`: clear all polygons in the current mode
+- `Shift+Delete`: clear all polygons in the current mode
 - `WASD`: pan
 - Mouse wheel: zoom
 - `F`: frame the background
