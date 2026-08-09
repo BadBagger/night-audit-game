@@ -171,6 +171,22 @@ Rendered from Meshy FBX exports through the same Blender fixed isometric camera.
 | --- | --- |
 | `long_pier_dock_edge_strip` | Rendered and wired into Chapter I; dark industrial strip, may get a brighter paintover later |
 
+### 2026-08-09 - Whole-Game Fast Asset Pass 1
+
+Direct-generated background plates now replace procedural environment rectangles
+in Chapters II-V. Direct-generated clue props and deterministic reusable packs
+cover the first paper/decal/simple-prop library pass.
+
+| Asset ID | Status |
+| --- | --- |
+| `chapter2_debts_owed_plate` | Generated and wired into Chapter II |
+| `chapter3_calloway_star_plate` | Generated and wired into Chapter III |
+| `chapter4_apartment_plate` | Generated and wired into Chapter IV |
+| `chapter5_settlement_plate` | Generated and wired into Chapter V |
+| `cracked_phone_evidence` | Generated and wired into Chapter I |
+| `receipt_wet_close_prop` | Generated and wired into Chapter I |
+| paper/decal/simple-prop packs | Generated under `art/reusable/paper`, `art/reusable/decals`, and `art/reusable/props` |
+
 ## Suggested File Layout
 
 ```text

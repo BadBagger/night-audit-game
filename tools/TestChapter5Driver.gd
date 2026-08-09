@@ -32,6 +32,8 @@ func _phase_ledger_ending() -> void:
 	await get_tree().process_frame
 
 	_check("chapter5 intro dialogue opened", ch5.dialogue.box_visible)
+	_check("chapter5 uses generated background plate", ch5.has_node("chapter5_settlement_plate") and ch5.get_node("chapter5_settlement_plate") is Sprite2D)
+	_check("chapter5 environment has no procedural Prop rectangles", _count_props(ch5) == 0)
 	_check("chapter5 Dana has animated visual", ch5.player.get("character_visual") != null)
 	_check("Calloway has animated visual", ch5.calloway.character_visual != null)
 	_check("Calloway uses dedicated chapter5 sprite path", ch5.calloway.character_visual.sprite.sprite_frames.get_frame_texture("idle", 0).resource_path.contains("/chapter5/calloway/"))
@@ -177,6 +179,13 @@ func _check(label: String, ok: bool) -> void:
 	else:
 		print("FAIL  ", label)
 		failures.append(label)
+
+func _count_props(root: Node) -> int:
+	var count := 0
+	for child in root.get_children():
+		if child is Prop:
+			count += 1
+	return count
 
 func _report() -> void:
 	print("")

@@ -120,6 +120,8 @@ func _build_scene_art() -> void:
 	_add_reusable_prop("evidence_marker_spatter", "res://art/reusable/props/evidence_marker_card/evidence_marker_card_trim.png", Vector2(570, 428), Vector2(0.02, 0.02), 7, false, -8.0, Color(1.0, 0.92, 0.64, 0.86))
 	_add_reusable_prop("evidence_marker_receipt", "res://art/reusable/props/evidence_marker_card/evidence_marker_card_trim.png", Vector2(721, 386), Vector2(0.02, 0.02), 7, true, 6.0, Color(1.0, 0.92, 0.64, 0.86))
 	_add_reusable_prop("evidence_marker_phone", "res://art/reusable/props/evidence_marker_card/evidence_marker_card_trim.png", Vector2(645, 456), Vector2(0.018, 0.018), 7, false, 12.0, Color(1.0, 0.92, 0.64, 0.86))
+	_add_reusable_prop("cracked_phone_evidence", "res://art/reusable/props/cracked_phone_evidence/cracked_phone_evidence_trim.png", Vector2(647, 459), Vector2(0.034, 0.034), 6, false, 12.0, Color(0.76, 0.84, 0.9, 0.84))
+	_add_reusable_prop("receipt_wet_close_prop", "res://art/reusable/props/receipt_wet_close_prop/receipt_wet_close_prop_trim.png", Vector2(692, 371), Vector2(0.032, 0.032), 6, false, -7.0, Color(0.94, 0.9, 0.78, 0.84))
 	_add_reusable_prop("ironbound_crate_office_left", "res://art/reusable/props/ironbound_crate/ironbound_crate_trim.png", Vector2(468, 468), Vector2(0.048, 0.048), 3, false, 0.0, Color(0.72, 0.74, 0.72, 0.78))
 	_add_reusable_prop("ironbound_crate_gate_block", "res://art/reusable/props/ironbound_crate/ironbound_crate_trim.png", Vector2(1114, 642), Vector2(0.058, 0.058), 5, true, 0.0, Color(0.74, 0.76, 0.74, 0.8))
 	_add_reusable_prop("wet_crate_police_stack_low", "res://art/reusable/props/wet_wooden_crate/wet_wooden_crate_trim.png", Vector2(1516, 790), Vector2(0.058, 0.058), 5, false, 0.0, Color(0.66, 0.7, 0.72, 0.78))
@@ -131,6 +133,7 @@ func _build_scene_art() -> void:
 	_add_reusable_prop("dock_strip_inner_edge", "res://art/reusable/props/long_pier_dock_edge_strip/long_pier_dock_edge_strip_trim.png", Vector2(1010, 1018), Vector2(1.25, 0.14), -4, false, 0.0, Color(0.5, 0.58, 0.62, 0.46))
 	_add_reusable_decal("blood_spatter_low_wall_a", "res://art/reusable/decals/blood_spatter/arterial_low_01.svg", Vector2(528, 395), Vector2(0.18, 0.18), 8, -6.0, Color(0.36, 0.03, 0.025, 0.72))
 	_add_reusable_decal("blood_spatter_low_wall_b", "res://art/reusable/decals/blood_spatter/arterial_low_02.svg", Vector2(584, 418), Vector2(0.13, 0.13), 8, 7.0, Color(0.34, 0.025, 0.025, 0.62))
+	_add_reusable_decal("drag_scuff_wetness_decal", "res://art/reusable/decals/drag_scuff_wetness_decal/a.png", Vector2(598, 492), Vector2(0.22, 0.12), 5, -9.0, Color(0.6, 0.72, 0.74, 0.32))
 
 	atmosphere = preload("res://scripts/Chapter1Atmosphere.gd").new()
 	atmosphere.name = "Chapter1RainAndLighting"

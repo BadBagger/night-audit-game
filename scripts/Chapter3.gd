@@ -23,25 +23,13 @@ func _ready() -> void:
 	])
 
 func _build_environment() -> void:
-	var ground := Prop.new()
-	ground.size = Vector2(1400, 900)
-	ground.position = Vector2(700, 450)
-	ground.color = Color(0.06, 0.07, 0.09)
-	add_child(ground)
-
-	var counting_room := Prop.new()
-	counting_room.size = Vector2(320, 240)
-	counting_room.position = Vector2(300, 320)
-	counting_room.color = Color(0.14, 0.12, 0.09)
-	counting_room.outline = Color(0.851, 0.522, 0.184, 0.5)
-	add_child(counting_room)
-
-	var crew_deck := Prop.new()
-	crew_deck.size = Vector2(320, 240)
-	crew_deck.position = Vector2(1100, 320)
-	crew_deck.color = Color(0.09, 0.11, 0.15)
-	crew_deck.outline = Color(0.4, 0.45, 0.55, 0.4)
-	add_child(crew_deck)
+	var plate := Sprite2D.new()
+	plate.name = "chapter3_calloway_star_plate"
+	plate.texture = preload("res://art/backgrounds/chapter3_calloway_star_plate.png")
+	plate.position = Vector2(700, 450)
+	plate.scale = Vector2(0.84, 0.84)
+	plate.z_index = -100
+	add_child(plate)
 
 func _build_ambience() -> void:
 	var path := "res://sfx/ambience/boat_engine_idle_v01.ogg"

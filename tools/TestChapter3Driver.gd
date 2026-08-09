@@ -27,6 +27,8 @@ func _phase_retreat_rule() -> void:
 	await _drain_dialogue()
 
 	_check("chapter3 retreat phase Dana has animated visual", _has_visual(ch3.player))
+	_check("chapter3 uses generated background plate", ch3.has_node("chapter3_calloway_star_plate") and ch3.get_node("chapter3_calloway_star_plate") is Sprite2D)
+	_check("chapter3 environment has no procedural Prop rectangles", _count_props(ch3) == 0)
 	_check("Voss has animated patrol visual", _has_visual(ch3.voss))
 	ch3.voss.advance_patrol(ch3.voss.dwell_a + 0.1)
 	ch3.voss.advance_patrol(0.2)
@@ -121,6 +123,13 @@ func _drain_until_flag(flag_name: String, max_steps: int = 30) -> void:
 
 func _has_visual(node: Node) -> bool:
 	return node.get("character_visual") != null
+
+func _count_props(root: Node) -> int:
+	var count := 0
+	for child in root.get_children():
+		if child is Prop:
+			count += 1
+	return count
 
 func _check(label: String, ok: bool) -> void:
 	checks += 1

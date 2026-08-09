@@ -12,6 +12,8 @@ func _ready() -> void:
 	await get_tree().process_frame
 
 	_check("chapter2 intro dialogue opened", ch2.dialogue.box_visible)
+	_check("chapter2 uses generated background plate", ch2.has_node("chapter2_debts_owed_plate") and ch2.get_node("chapter2_debts_owed_plate") is Sprite2D)
+	_check("chapter2 environment has no procedural Prop rectangles", _count_props(ch2) == 0)
 	_check("chapter2 Dana has animated visual", _has_visual(ch2.player))
 	_check("Sal has animated visual", _has_visual(ch2.sal))
 	_check("Priya has animated visual", _has_visual(ch2.priya))
@@ -112,6 +114,13 @@ func _drain_dialogue(max_steps: int = 25) -> void:
 
 func _has_visual(node: Node) -> bool:
 	return node.get("character_visual") != null
+
+func _count_props(root: Node) -> int:
+	var count := 0
+	for child in root.get_children():
+		if child is Prop:
+			count += 1
+	return count
 
 func _check(label: String, ok: bool) -> void:
 	checks += 1

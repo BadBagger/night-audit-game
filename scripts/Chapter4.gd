@@ -19,25 +19,13 @@ func _ready() -> void:
 	_start_apartment_scene()
 
 func _build_environment() -> void:
-	var ground := Prop.new()
-	ground.size = Vector2(1280, 760)
-	ground.position = Vector2(640, 380)
-	ground.color = Color(0.068, 0.064, 0.074)
-	add_child(ground)
-
-	var table := Prop.new()
-	table.size = Vector2(360, 160)
-	table.position = Vector2(640, 390)
-	table.color = Color(0.17, 0.12, 0.08)
-	table.outline = Color(0.851, 0.522, 0.184, 0.45)
-	add_child(table)
-
-	var case_spread := Prop.new()
-	case_spread.size = Vector2(270, 90)
-	case_spread.position = Vector2(640, 372)
-	case_spread.color = Color(0.78, 0.74, 0.62, 0.55)
-	case_spread.outline = Color(0.93, 0.88, 0.72, 0.5)
-	add_child(case_spread)
+	var plate := Sprite2D.new()
+	plate.name = "chapter4_apartment_plate"
+	plate.texture = preload("res://art/backgrounds/chapter4_apartment_plate.png")
+	plate.position = Vector2(640, 380)
+	plate.scale = Vector2(0.765, 0.765)
+	plate.z_index = -100
+	add_child(plate)
 
 func _build_player() -> void:
 	player = preload("res://scripts/Player.gd").new()

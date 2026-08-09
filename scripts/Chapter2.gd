@@ -26,32 +26,13 @@ func _ready() -> void:
 	])
 
 func _build_environment() -> void:
-	var ground := Prop.new()
-	ground.size = Vector2(1360, 860)
-	ground.position = Vector2(700, 450)
-	ground.color = Color(0.078, 0.086, 0.11)
-	add_child(ground)
-
-	var pawnshop := Prop.new()
-	pawnshop.size = Vector2(180, 120)
-	pawnshop.position = Vector2(260, 260)
-	pawnshop.color = Color(0.16, 0.13, 0.08)
-	pawnshop.outline = Color(0.851, 0.522, 0.184, 0.5)
-	add_child(pawnshop)
-
-	var picket := Prop.new()
-	picket.size = Vector2(180, 120)
-	picket.position = Vector2(1140, 260)
-	picket.color = Color(0.10, 0.14, 0.10)
-	picket.outline = Color(0.851, 0.522, 0.184, 0.5)
-	add_child(picket)
-
-	var dockshack := Prop.new()
-	dockshack.size = Vector2(180, 120)
-	dockshack.position = Vector2(700, 660)
-	dockshack.color = Color(0.10, 0.12, 0.16)
-	dockshack.outline = Color(0.851, 0.522, 0.184, 0.5)
-	add_child(dockshack)
+	var plate := Sprite2D.new()
+	plate.name = "chapter2_debts_owed_plate"
+	plate.texture = preload("res://art/backgrounds/chapter2_debts_owed_plate.png")
+	plate.position = Vector2(700, 450)
+	plate.scale = Vector2(0.84, 0.84)
+	plate.z_index = -100
+	add_child(plate)
 
 func _build_ambience() -> void:
 	var path := "res://sfx/ambience/warehouse_room_tone_v01.ogg"

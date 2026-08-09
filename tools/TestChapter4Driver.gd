@@ -20,6 +20,8 @@ func _phase_truth_branch() -> void:
 	await _settle_scene()
 
 	_check("chapter4 intro dialogue opened", ch4.dialogue.box_visible)
+	_check("chapter4 uses generated background plate", ch4.has_node("chapter4_apartment_plate") and ch4.get_node("chapter4_apartment_plate") is Sprite2D)
+	_check("chapter4 environment has no procedural Prop rectangles", _count_props(ch4) == 0)
 	_check("chapter4 Dana has animated visual", ch4.player.get("character_visual") != null)
 	_check("chapter4 Reyes has animated visual", ch4.reyes.character_visual != null)
 	_check("Priya starts hidden before revisit beat", not ch4.priya.visible)
@@ -115,6 +117,13 @@ func _check(label: String, ok: bool) -> void:
 	else:
 		print("FAIL  ", label)
 		failures.append(label)
+
+func _count_props(root: Node) -> int:
+	var count := 0
+	for child in root.get_children():
+		if child is Prop:
+			count += 1
+	return count
 
 func _report() -> void:
 	print("")

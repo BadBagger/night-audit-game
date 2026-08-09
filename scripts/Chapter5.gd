@@ -17,25 +17,13 @@ func _ready() -> void:
 	_start_finale()
 
 func _build_environment() -> void:
-	var ground := Prop.new()
-	ground.size = Vector2(1400, 840)
-	ground.position = Vector2(700, 420)
-	ground.color = Color(0.055, 0.062, 0.075)
-	add_child(ground)
-
-	var room := Prop.new()
-	room.size = Vector2(700, 360)
-	room.position = Vector2(700, 380)
-	room.color = Color(0.12, 0.10, 0.085)
-	room.outline = Color(0.851, 0.522, 0.184, 0.45)
-	add_child(room)
-
-	var evidence_table := Prop.new()
-	evidence_table.size = Vector2(280, 130)
-	evidence_table.position = Vector2(650, 455)
-	evidence_table.color = Color(0.19, 0.14, 0.09)
-	evidence_table.outline = Color(0.93, 0.88, 0.72, 0.4)
-	add_child(evidence_table)
+	var plate := Sprite2D.new()
+	plate.name = "chapter5_settlement_plate"
+	plate.texture = preload("res://art/backgrounds/chapter5_settlement_plate.png")
+	plate.position = Vector2(700, 420)
+	plate.scale = Vector2(0.84, 0.84)
+	plate.z_index = -100
+	add_child(plate)
 
 func _build_player() -> void:
 	player = preload("res://scripts/Player.gd").new()

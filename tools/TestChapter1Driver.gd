@@ -24,6 +24,7 @@ func _ready() -> void:
 	_check("chapter1 uses real reusable prop sprites", _count_reusable_props() >= 26)
 	_check("chapter1 uses imported reusable crime decals", _count_reusable_decals() >= 2)
 	_check("chapter1 reusable props load expected assets", _has_reusable_asset("portable_dock_lamp") and _has_reusable_asset("straight_hazard_tape") and _has_reusable_asset("wet_wooden_crate") and _has_reusable_asset("rusty_oil_drum") and _has_reusable_asset("coiled_rope") and _has_reusable_asset("evidence_marker_card"))
+	_check("chapter1 clue props use dedicated sprites", _has_reusable_asset("cracked_phone_evidence") and _has_reusable_asset("receipt_wet_close_prop"))
 	_check("chapter1 structural placeholders use reusable sprites", _has_reusable_asset("long_pier_dock_edge_strip") and _has_reusable_asset("open_container_office_clutter") and _has_reusable_asset("dock_security_gate") and _has_reusable_asset("portable_police_barricade") and _has_reusable_asset("harbor_tiedown_ropeburn_fixture"))
 	_check("chapter1 uses tarp body reusable prop", _has_reusable_asset("mick_tarp_body") and main_scene.mick_body.texture != null and main_scene.mick_body.scale.x <= 0.2)
 	_check("chapter1 player has walkable areas and building blockers", main_scene.player.walkable_areas.size() >= 3 and main_scene.player.blocked_areas.size() >= 3)

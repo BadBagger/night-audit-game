@@ -28,3 +28,5 @@ acceptance gate.
 | Asset ID | Description | Placement Sprite | Source |
 | --- | --- | --- | --- |
 | `mick_tarp_body` | Low tarp-covered staged body prop for Chapter 1 | `art/reusable/props/mick_tarp_body/mick_tarp_body_trim.png` | Direct generated replacement with chroma-key extraction; validated against revised tarp silhouette gate |
+| `cracked_phone_evidence` | Cracked wet smartphone evidence prop for Chapter 1 | `art/reusable/props/cracked_phone_evidence/cracked_phone_evidence_trim.png` | Direct generated prop with chroma-key extraction |
+| `receipt_wet_close_prop` | Soaked receipt evidence prop for Chapter 1 | `art/reusable/props/receipt_wet_close_prop/receipt_wet_close_prop_trim.png` | Direct generated prop with chroma-key extraction |
