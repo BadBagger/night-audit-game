@@ -14,14 +14,16 @@ func _ready() -> void:
 	_check("intro dialogue opened", main_scene.dialogue.box_visible)
 	_check("intro line has audio loaded", main_scene.dialogue.audio_player.stream != null)
 	_check("chapter1 atmosphere layer exists", main_scene.atmosphere != null and main_scene.atmosphere.is_in_group("chapter1_atmosphere"))
+	_check("chapter1 atmosphere separates ground effects from foreground rain", main_scene.atmosphere.draw_ground_effects and not main_scene.atmosphere.draw_foreground_effects and main_scene.foreground_atmosphere != null and main_scene.foreground_atmosphere.draw_foreground_effects and not main_scene.foreground_atmosphere.draw_ground_effects)
 	_check("chapter1 world audio layer exists", main_scene.world_audio != null and main_scene.world_audio.is_in_group("chapter1_world_audio"))
 	_check("chapter1 set dressing root exists", main_scene.set_dressing_root != null)
 	_check("chapter1 has dense dockyard set dressing", main_scene.set_dressing_root.get_child_count() >= 28)
 	_check("chapter1 has no procedural set-piece drawings in scene", _count_procedural_set_pieces() == 0)
 	_check("chapter1 has deeper rain, puddles, splashes, and light pools", main_scene.atmosphere.rain_lines >= 180 and main_scene.atmosphere.foreground_rain_lines >= 80 and main_scene.atmosphere.splash_count >= 50 and main_scene.atmosphere.puddles.size() >= 8 and main_scene.atmosphere.light_pools.size() >= 5)
-	_check("chapter1 spatial soundscape uses imported audio", main_scene.world_audio.ambient_players.size() >= 4 and main_scene.world_audio.one_shot_players.size() >= 3)
+	_check("chapter1 spatial soundscape uses imported audio", main_scene.world_audio.ambient_players.size() >= 5 and main_scene.world_audio.one_shot_players.size() >= 6)
 	_check("chapter1 key props are named for tuning", main_scene.set_dressing_root.has_node("security_barrier_gate") and main_scene.set_dressing_root.has_node("container_office_clutter") and main_scene.set_dressing_root.has_node("dock_edge_harbor"))
 	_check("chapter1 uses real reusable prop sprites", _count_reusable_props() >= 26)
+	_check("chapter1 reusable props are not scene-faded gray overlays", _all_reusable_props_opaque())
 	_check("chapter1 uses imported reusable crime decals", _count_reusable_decals() >= 2)
 	_check("chapter1 reusable props load expected assets", _has_reusable_asset("portable_dock_lamp") and _has_reusable_asset("straight_hazard_tape") and _has_reusable_asset("wet_wooden_crate") and _has_reusable_asset("rusty_oil_drum") and _has_reusable_asset("coiled_rope") and _has_reusable_asset("evidence_marker_card"))
 	_check("chapter1 clue props use dedicated sprites", _has_reusable_asset("cracked_phone_evidence") and _has_reusable_asset("receipt_wet_close_prop"))
@@ -29,9 +31,10 @@ func _ready() -> void:
 	_check("chapter1 uses tarp body reusable prop", _has_reusable_asset("mick_tarp_body") and main_scene.mick_body.texture != null and main_scene.mick_body.scale.x <= 0.2)
 	_check("chapter1 player has walkable areas and building blockers", main_scene.player.walkable_areas.size() >= 3 and main_scene.player.blocked_areas.size() >= 3)
 	_check("chapter1 blocks roof and building stand positions", not main_scene.player.can_stand_at(Vector2(1220, 710)) and not main_scene.player.can_stand_at(Vector2(1640, 500)))
+	_check("chapter1 blocks body, tape, and prop footprints", not main_scene.player.can_stand_at(Vector2(590, 438)) and not main_scene.player.can_stand_at(Vector2(610, 620)) and not main_scene.player.can_stand_at(Vector2(760, 635)))
 	_check("chapter1 keeps evidence reachable from legal walk path", _has_reachable_standpoint(Vector2(520, 410)) and _has_reachable_standpoint(Vector2(690, 370)) and _has_reachable_standpoint(Vector2(425, 515)))
 	_check("chapter1 living idles use animated source frames", main_scene.player.character_visual.sprite.sprite_frames.get_frame_count("idle") > 1 and main_scene.reyes.character_visual.sprite.sprite_frames.get_frame_count("idle") > 1 and main_scene.frank.character_visual.sprite.sprite_frames.get_frame_count("idle") > 1)
-	_check("chapter1 body is staged as background evidence", main_scene.mick_body.modulate.a < 0.9 and main_scene.mick_body.z_index < main_scene.player.z_index)
+	_check("chapter1 body is opaque reusable evidence staged behind actors", main_scene.mick_body.modulate.a == 1.0 and main_scene.mick_body.z_index < main_scene.player.z_index)
 
 	await _drain_dialogue()
 
@@ -147,6 +150,14 @@ func _has_reusable_asset(asset_id: String) -> bool:
 		if child.get("asset_id") == asset_id and child.get("texture") != null:
 			return true
 	return false
+
+func _all_reusable_props_opaque() -> bool:
+	for child in main_scene.set_dressing_root.get_children():
+		if not child.is_in_group("reusable_prop_sprite"):
+			continue
+		if child.modulate.a < 0.99:
+			return false
+	return true
 
 func _has_reachable_standpoint(target: Vector2) -> bool:
 	for x_offset in range(-56, 57, 14):

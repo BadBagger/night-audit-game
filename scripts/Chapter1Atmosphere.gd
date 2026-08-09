@@ -11,9 +11,12 @@ var gust_phase := 0.0
 var scene_size := Vector2(2560, 1440)
 var puddles: Array = []
 var light_pools: Array = []
+var draw_ground_effects := true
+var draw_foreground_effects := true
+var layer_z_index := 35
 
 func _ready() -> void:
-	z_index = 35
+	z_index = layer_z_index
 	add_to_group("chapter1_atmosphere")
 	queue_redraw()
 
@@ -27,14 +30,23 @@ func configure(new_puddles: Array, new_light_pools: Array) -> void:
 	light_pools = new_light_pools
 	queue_redraw()
 
+func set_layer_mode(mode: String, new_z_index: int) -> void:
+	draw_ground_effects = mode != "foreground"
+	draw_foreground_effects = mode != "ground"
+	layer_z_index = new_z_index
+	z_index = new_z_index
+	queue_redraw()
+
 func _draw() -> void:
-	_draw_puddles()
-	_draw_light_pools()
-	_draw_wet_ground_sheen()
-	_draw_rain_sheet()
-	_draw_rain()
-	_draw_splashes()
-	_draw_vignette()
+	if draw_ground_effects:
+		_draw_puddles()
+		_draw_light_pools()
+		_draw_wet_ground_sheen()
+	if draw_foreground_effects:
+		_draw_rain_sheet()
+		_draw_rain()
+		_draw_splashes()
+		_draw_vignette()
 
 func _draw_puddles() -> void:
 	for puddle in puddles:

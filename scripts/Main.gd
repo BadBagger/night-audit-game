@@ -9,6 +9,7 @@ var mick_body: Sprite2D
 var foreground_occluder: Sprite2D
 var occlusion_controller: Pier9OcclusionController
 var atmosphere: Node2D
+var foreground_atmosphere: Node2D
 var world_audio: Node2D
 var set_dressing_root: Node2D
 
@@ -90,11 +91,15 @@ func _build_ambience() -> void:
 			{"name": "HarborAir", "path": "res://sfx/ambience/dock_ambience_night_v01.ogg", "pos": Vector2(1450, 980), "volume_db": -10.0, "max_distance": 2200.0},
 			{"name": "CallowayEngineMass", "path": "res://sfx/ambience/boat_engine_idle_v01.ogg", "pos": Vector2(2060, 520), "volume_db": -18.0, "max_distance": 1600.0},
 			{"name": "DistantHarborHorn", "path": "res://sfx/ambience/foghorn_distant_v01.ogg", "pos": Vector2(2180, 360), "volume_db": -20.0, "max_distance": 2000.0},
+			{"name": "ContainerRoomTone", "path": "res://sfx/ambience/warehouse_room_tone_v01.ogg", "pos": Vector2(650, 360), "volume_db": -17.0, "max_distance": 900.0},
 		],
 		[
 			{"name": "PoliceRadioBursts", "path": "res://sfx/mechanical/radio_static_burst_v01.ogg", "pos": Vector2(1460, 850), "volume_db": -17.0, "max_distance": 900.0},
 			{"name": "BarrierMetalCreak", "path": "res://sfx/foley/gate_creak_v01.ogg", "pos": Vector2(1142, 692), "volume_db": -18.0, "max_distance": 760.0},
 			{"name": "DistantAlarmWash", "path": "res://sfx/tension/alarm_klaxon_distant_v01.ogg", "pos": Vector2(1980, 610), "volume_db": -24.0, "max_distance": 1200.0},
+			{"name": "OfficePaperFlutter", "path": "res://sfx/foley/paper_rustle_v01.ogg", "pos": Vector2(690, 370), "volume_db": -22.0, "max_distance": 520.0},
+			{"name": "ContainerDoorGroan", "path": "res://sfx/foley/door_creak_v01.ogg", "pos": Vector2(785, 430), "volume_db": -23.0, "max_distance": 620.0},
+			{"name": "MicksPhoneBuzz", "path": "res://sfx/mechanical/phone_buzz_v01.ogg", "pos": Vector2(645, 456), "volume_db": -25.0, "max_distance": 460.0},
 		]
 	)
 
@@ -103,40 +108,55 @@ func _build_scene_art() -> void:
 	set_dressing_root.name = "Chapter1SetDressing"
 	add_child(set_dressing_root)
 
-	_add_reusable_prop("dock_edge_harbor", "res://art/reusable/props/long_pier_dock_edge_strip/long_pier_dock_edge_strip_trim.png", Vector2(1500, 1088), Vector2(1.65, 0.2), -5, false, 0.0, Color(0.72, 0.78, 0.82, 0.78))
-	_add_reusable_prop("container_office_clutter", "res://art/reusable/props/open_container_office_clutter/open_container_office_clutter_trim.png", Vector2(610, 354), Vector2(0.16, 0.16), 3, false, 0.0, Color(0.86, 0.82, 0.76, 0.82))
-	_add_reusable_prop("work_lamp_container", "res://art/reusable/props/portable_dock_lamp/portable_dock_lamp_trim.png", Vector2(710, 336), Vector2(0.07, 0.07), 5, false, 0.0, Color(1.0, 0.88, 0.72, 0.8))
-	_add_reusable_prop("crime_scene_tape_left", "res://art/reusable/props/straight_hazard_tape/straight_hazard_tape_trim.png", Vector2(552, 620), Vector2(0.24, 0.018), 6, false, -2.5, Color(0.95, 0.9, 0.7, 0.7))
-	_add_reusable_prop("crime_scene_tape_right", "res://art/reusable/props/straight_hazard_tape/straight_hazard_tape_trim.png", Vector2(888, 655), Vector2(0.28, 0.018), 6, false, 2.0, Color(0.95, 0.9, 0.7, 0.7))
-	_add_reusable_prop("security_barrier_gate", "res://art/reusable/props/dock_security_gate/dock_security_gate_trim.png", Vector2(1142, 692), Vector2(0.12, 0.12), 6, false, 0.0, Color(0.78, 0.82, 0.84, 0.82))
-	_add_reusable_prop("police_barrier_car_area", "res://art/reusable/props/portable_police_barricade/portable_police_barricade_trim.png", Vector2(1430, 850), Vector2(0.12, 0.12), 6, true, -4.0, Color(0.82, 0.84, 0.84, 0.82))
-	_add_reusable_prop("crate_stack_near_gate", "res://art/reusable/props/wet_wooden_crate/wet_wooden_crate_trim.png", Vector2(1215, 575), Vector2(0.065, 0.065), 4, false, 0.0, Color(0.78, 0.78, 0.74, 0.82))
-	_add_reusable_prop("crate_stack_container_shadow", "res://art/reusable/props/wet_wooden_crate/wet_wooden_crate_trim.png", Vector2(900, 492), Vector2(0.055, 0.055), 4, true, 0.0, Color(0.72, 0.72, 0.7, 0.78))
-	_add_reusable_prop("barrel_cluster_gate", "res://art/reusable/props/rusty_oil_drum/rusty_oil_drum_trim.png", Vector2(1330, 610), Vector2(0.045, 0.045), 4, false, 0.0, Color(0.68, 0.74, 0.8, 0.8))
-	_add_reusable_prop("barrel_near_harbor", "res://art/reusable/props/rusty_oil_drum/rusty_oil_drum_trim.png", Vector2(1640, 948), Vector2(0.052, 0.052), 6, true, 0.0, Color(0.68, 0.74, 0.8, 0.8))
-	_add_reusable_prop("rope_coil_tiedown", "res://art/reusable/props/coiled_rope/coiled_rope_trim.png", Vector2(424, 536), Vector2(0.045, 0.045), 5, false, 0.0, Color(0.88, 0.82, 0.7, 0.86))
-	_add_reusable_prop("rope_coil_harbor", "res://art/reusable/props/coiled_rope/coiled_rope_trim.png", Vector2(1775, 980), Vector2(0.055, 0.055), 6, true, 0.0, Color(0.82, 0.78, 0.68, 0.84))
-	_add_reusable_prop("ropeburn_tiedown_fixture", "res://art/reusable/props/harbor_tiedown_ropeburn_fixture/harbor_tiedown_ropeburn_fixture_trim.png", Vector2(430, 515), Vector2(0.052, 0.052), 4, false, 0.0, Color(0.72, 0.74, 0.76, 0.82))
-	_add_reusable_prop("evidence_marker_spatter", "res://art/reusable/props/evidence_marker_card/evidence_marker_card_trim.png", Vector2(570, 428), Vector2(0.02, 0.02), 7, false, -8.0, Color(1.0, 0.92, 0.64, 0.86))
-	_add_reusable_prop("evidence_marker_receipt", "res://art/reusable/props/evidence_marker_card/evidence_marker_card_trim.png", Vector2(721, 386), Vector2(0.02, 0.02), 7, true, 6.0, Color(1.0, 0.92, 0.64, 0.86))
-	_add_reusable_prop("evidence_marker_phone", "res://art/reusable/props/evidence_marker_card/evidence_marker_card_trim.png", Vector2(645, 456), Vector2(0.018, 0.018), 7, false, 12.0, Color(1.0, 0.92, 0.64, 0.86))
-	_add_reusable_prop("cracked_phone_evidence", "res://art/reusable/props/cracked_phone_evidence/cracked_phone_evidence_trim.png", Vector2(647, 459), Vector2(0.034, 0.034), 6, false, 12.0, Color(0.76, 0.84, 0.9, 0.84))
-	_add_reusable_prop("receipt_wet_close_prop", "res://art/reusable/props/receipt_wet_close_prop/receipt_wet_close_prop_trim.png", Vector2(692, 371), Vector2(0.032, 0.032), 6, false, -7.0, Color(0.94, 0.9, 0.78, 0.84))
-	_add_reusable_prop("ironbound_crate_office_left", "res://art/reusable/props/ironbound_crate/ironbound_crate_trim.png", Vector2(468, 468), Vector2(0.048, 0.048), 3, false, 0.0, Color(0.72, 0.74, 0.72, 0.78))
-	_add_reusable_prop("ironbound_crate_gate_block", "res://art/reusable/props/ironbound_crate/ironbound_crate_trim.png", Vector2(1114, 642), Vector2(0.058, 0.058), 5, true, 0.0, Color(0.74, 0.76, 0.74, 0.8))
-	_add_reusable_prop("wet_crate_police_stack_low", "res://art/reusable/props/wet_wooden_crate/wet_wooden_crate_trim.png", Vector2(1516, 790), Vector2(0.058, 0.058), 5, false, 0.0, Color(0.66, 0.7, 0.72, 0.78))
-	_add_reusable_prop("wet_crate_police_stack_high", "res://art/reusable/props/wet_wooden_crate/wet_wooden_crate_trim.png", Vector2(1565, 742), Vector2(0.052, 0.052), 6, true, 0.0, Color(0.64, 0.68, 0.7, 0.78))
-	_add_reusable_prop("barrel_row_left_shadow", "res://art/reusable/props/rusty_oil_drum/rusty_oil_drum_trim.png", Vector2(812, 635), Vector2(0.04, 0.04), 4, true, 0.0, Color(0.56, 0.62, 0.66, 0.72))
-	_add_reusable_prop("barrel_row_left_lit", "res://art/reusable/props/rusty_oil_drum/rusty_oil_drum_trim.png", Vector2(770, 604), Vector2(0.038, 0.038), 4, false, 0.0, Color(0.76, 0.72, 0.64, 0.76))
-	_add_reusable_prop("hand_plane_on_desk", "res://art/reusable/props/rusty_hand_plane/rusty_hand_plane_trim.png", Vector2(648, 360), Vector2(0.018, 0.018), 8, false, -8.0, Color(0.78, 0.74, 0.66, 0.9))
-	_add_reusable_prop("tape_container_backline", "res://art/reusable/props/straight_hazard_tape/straight_hazard_tape_trim.png", Vector2(742, 516), Vector2(0.22, 0.016), 7, true, -1.5, Color(0.95, 0.86, 0.58, 0.62))
-	_add_reusable_prop("dock_strip_inner_edge", "res://art/reusable/props/long_pier_dock_edge_strip/long_pier_dock_edge_strip_trim.png", Vector2(1010, 1018), Vector2(1.25, 0.14), -4, false, 0.0, Color(0.5, 0.58, 0.62, 0.46))
+	_add_reusable_prop("dock_edge_harbor", "res://art/reusable/props/long_pier_dock_edge_strip/long_pier_dock_edge_strip_trim.png", Vector2(1500, 1088), Vector2(1.65, 0.2), -5)
+	_add_reusable_prop("container_office_clutter", "res://art/reusable/props/open_container_office_clutter/open_container_office_clutter_trim.png", Vector2(610, 354), Vector2(0.16, 0.16), 3)
+	_add_reusable_prop("work_lamp_container", "res://art/reusable/props/portable_dock_lamp/portable_dock_lamp_trim.png", Vector2(710, 336), Vector2(0.07, 0.07), 5)
+	_add_reusable_prop("crime_scene_tape_left", "res://art/reusable/props/straight_hazard_tape/straight_hazard_tape_trim.png", Vector2(552, 620), Vector2(0.24, 0.018), 9, false, -2.5)
+	_add_reusable_prop("crime_scene_tape_right", "res://art/reusable/props/straight_hazard_tape/straight_hazard_tape_trim.png", Vector2(888, 655), Vector2(0.28, 0.018), 9, false, 2.0)
+	_add_reusable_prop("security_barrier_gate", "res://art/reusable/props/dock_security_gate/dock_security_gate_trim.png", Vector2(1142, 692), Vector2(0.12, 0.12), 12)
+	_add_reusable_prop("police_barrier_car_area", "res://art/reusable/props/portable_police_barricade/portable_police_barricade_trim.png", Vector2(1430, 850), Vector2(0.12, 0.12), 12, true, -4.0)
+	_add_reusable_prop("crate_stack_near_gate", "res://art/reusable/props/wet_wooden_crate/wet_wooden_crate_trim.png", Vector2(1215, 575), Vector2(0.065, 0.065), 8)
+	_add_reusable_prop("crate_stack_container_shadow", "res://art/reusable/props/wet_wooden_crate/wet_wooden_crate_trim.png", Vector2(900, 492), Vector2(0.055, 0.055), 8, true)
+	_add_reusable_prop("barrel_cluster_gate", "res://art/reusable/props/rusty_oil_drum/rusty_oil_drum_trim.png", Vector2(1330, 610), Vector2(0.045, 0.045), 8)
+	_add_reusable_prop("barrel_near_harbor", "res://art/reusable/props/rusty_oil_drum/rusty_oil_drum_trim.png", Vector2(1640, 948), Vector2(0.052, 0.052), 12, true)
+	_add_reusable_prop("rope_coil_tiedown", "res://art/reusable/props/coiled_rope/coiled_rope_trim.png", Vector2(424, 536), Vector2(0.045, 0.045), 9)
+	_add_reusable_prop("rope_coil_harbor", "res://art/reusable/props/coiled_rope/coiled_rope_trim.png", Vector2(1775, 980), Vector2(0.055, 0.055), 12, true)
+	_add_reusable_prop("ropeburn_tiedown_fixture", "res://art/reusable/props/harbor_tiedown_ropeburn_fixture/harbor_tiedown_ropeburn_fixture_trim.png", Vector2(430, 515), Vector2(0.052, 0.052), 8)
+	_add_reusable_prop("evidence_marker_spatter", "res://art/reusable/props/evidence_marker_card/evidence_marker_card_trim.png", Vector2(570, 428), Vector2(0.02, 0.02), 14, false, -8.0)
+	_add_reusable_prop("evidence_marker_receipt", "res://art/reusable/props/evidence_marker_card/evidence_marker_card_trim.png", Vector2(721, 386), Vector2(0.02, 0.02), 14, true, 6.0)
+	_add_reusable_prop("evidence_marker_phone", "res://art/reusable/props/evidence_marker_card/evidence_marker_card_trim.png", Vector2(645, 456), Vector2(0.018, 0.018), 14, false, 12.0)
+	_add_reusable_prop("cracked_phone_evidence", "res://art/reusable/props/cracked_phone_evidence/cracked_phone_evidence_trim.png", Vector2(647, 459), Vector2(0.034, 0.034), 13, false, 12.0)
+	_add_reusable_prop("receipt_wet_close_prop", "res://art/reusable/props/receipt_wet_close_prop/receipt_wet_close_prop_trim.png", Vector2(692, 371), Vector2(0.032, 0.032), 13, false, -7.0)
+	_add_reusable_prop("ironbound_crate_office_left", "res://art/reusable/props/ironbound_crate/ironbound_crate_trim.png", Vector2(468, 468), Vector2(0.048, 0.048), 8)
+	_add_reusable_prop("ironbound_crate_gate_block", "res://art/reusable/props/ironbound_crate/ironbound_crate_trim.png", Vector2(1114, 642), Vector2(0.058, 0.058), 10, true)
+	_add_reusable_prop("wet_crate_police_stack_low", "res://art/reusable/props/wet_wooden_crate/wet_wooden_crate_trim.png", Vector2(1516, 790), Vector2(0.058, 0.058), 10)
+	_add_reusable_prop("wet_crate_police_stack_high", "res://art/reusable/props/wet_wooden_crate/wet_wooden_crate_trim.png", Vector2(1565, 742), Vector2(0.052, 0.052), 12, true)
+	_add_reusable_prop("barrel_row_left_shadow", "res://art/reusable/props/rusty_oil_drum/rusty_oil_drum_trim.png", Vector2(812, 635), Vector2(0.04, 0.04), 8, true)
+	_add_reusable_prop("barrel_row_left_lit", "res://art/reusable/props/rusty_oil_drum/rusty_oil_drum_trim.png", Vector2(770, 604), Vector2(0.038, 0.038), 8)
+	_add_reusable_prop("hand_plane_on_desk", "res://art/reusable/props/rusty_hand_plane/rusty_hand_plane_trim.png", Vector2(648, 360), Vector2(0.018, 0.018), 14, false, -8.0)
+	_add_reusable_prop("tape_container_backline", "res://art/reusable/props/straight_hazard_tape/straight_hazard_tape_trim.png", Vector2(742, 516), Vector2(0.22, 0.016), 9, true, -1.5)
+	_add_reusable_prop("dock_strip_inner_edge", "res://art/reusable/props/long_pier_dock_edge_strip/long_pier_dock_edge_strip_trim.png", Vector2(1010, 1018), Vector2(1.25, 0.14), -4)
+	_add_reusable_prop("police_radio_crate_reyes", "res://art/reusable/props/police_radio_crate/police_radio_crate_default.png", Vector2(975, 842), Vector2(0.05, 0.05), 8)
+	_add_reusable_prop("case_board_leaning_gate", "res://art/reusable/props/vellmouth_pd_case_board/vellmouth_pd_case_board_default.png", Vector2(1370, 775), Vector2(0.06, 0.06), 9, false, -4.0)
+	_add_reusable_prop("evidence_bag_phone_table", "res://art/reusable/props/evidence_bag/evidence_bag_phone.png", Vector2(785, 430), Vector2(0.04, 0.04), 12, false, -8.0)
+	_add_reusable_prop("coffee_cup_office", "res://art/reusable/props/coffee_cup/coffee_cup_default.png", Vector2(735, 386), Vector2(0.028, 0.028), 12)
+	_add_reusable_prop("notebook_near_reyes", "res://art/reusable/props/police_notebook/police_notebook_default.png", Vector2(934, 815), Vector2(0.036, 0.036), 8, false, 9.0)
+	_add_reusable_prop("chain_link_fence_left_return", "res://art/reusable/props/chain_link_fence_section/chain_link_fence_section_broken_edge.png", Vector2(330, 700), Vector2(0.095, 0.095), 14, false, -28.0)
+	_add_reusable_prop("dock_drain_runoff_gate", "res://art/reusable/props/dock_drain_runoff/dock_drain_runoff_default.png", Vector2(1285, 725), Vector2(0.07, 0.07), 7)
+	_add_reusable_prop("evidence_bag_receipt_lower_path", "res://art/reusable/props/evidence_bag/evidence_bag_receipt.png", Vector2(628, 810), Vector2(0.045, 0.045), 8, false, -11.0)
+	_add_reusable_prop("wet_crate_lower_path", "res://art/reusable/props/wet_wooden_crate/wet_wooden_crate_trim.png", Vector2(520, 805), Vector2(0.052, 0.052), 8, false, 0.0)
+	_add_reusable_prop("radio_crate_lower_path", "res://art/reusable/props/police_radio_crate/police_radio_crate_default.png", Vector2(745, 850), Vector2(0.048, 0.048), 8, true, 2.0)
+	_add_reusable_prop("oil_drum_lower_shadow", "res://art/reusable/props/rusty_oil_drum/rusty_oil_drum_trim.png", Vector2(1042, 920), Vector2(0.044, 0.044), 9, true, 0.0)
 	_add_reusable_decal("blood_spatter_low_wall_a", "res://art/reusable/decals/blood_spatter/arterial_low_01.svg", Vector2(528, 395), Vector2(0.18, 0.18), 8, -6.0, Color(0.36, 0.03, 0.025, 0.72))
 	_add_reusable_decal("blood_spatter_low_wall_b", "res://art/reusable/decals/blood_spatter/arterial_low_02.svg", Vector2(584, 418), Vector2(0.13, 0.13), 8, 7.0, Color(0.34, 0.025, 0.025, 0.62))
 	_add_reusable_decal("drag_scuff_wetness_decal", "res://art/reusable/decals/drag_scuff_wetness_decal/a.png", Vector2(598, 492), Vector2(0.22, 0.12), 5, -9.0, Color(0.6, 0.72, 0.74, 0.32))
+	_add_reusable_decal("oil_slick_lower_path_a", "res://art/reusable/decals/oil_slick_pack/a.png", Vector2(720, 775), Vector2(0.2, 0.09), 4, -8.0, Color(0.48, 0.62, 0.66, 0.36))
+	_add_reusable_decal("puddle_reflection_lower_path_b", "res://art/reusable/decals/puddle_reflection_pack/b.png", Vector2(930, 845), Vector2(0.24, 0.11), 4, 5.0, Color(0.52, 0.72, 0.78, 0.32))
+	_add_reusable_decal("rust_runoff_under_tape", "res://art/reusable/decals/rust_runoff_pack/a.png", Vector2(845, 670), Vector2(0.18, 0.08), 4, 4.0, Color(0.42, 0.22, 0.12, 0.36))
 
 	atmosphere = preload("res://scripts/Chapter1Atmosphere.gd").new()
-	atmosphere.name = "Chapter1RainAndLighting"
+	atmosphere.name = "Chapter1GroundWetnessAndLight"
+	atmosphere.set_layer_mode("ground", 2)
 	add_child(atmosphere)
 	atmosphere.configure(
 		[
@@ -157,6 +177,12 @@ func _build_scene_art() -> void:
 			{"pos": Vector2(1120, 690), "radius": 180.0, "color": Color(0.45, 0.62, 0.72, 0.06)},
 		]
 	)
+
+	foreground_atmosphere = preload("res://scripts/Chapter1Atmosphere.gd").new()
+	foreground_atmosphere.name = "Chapter1ForegroundRain"
+	foreground_atmosphere.set_layer_mode("foreground", 35)
+	add_child(foreground_atmosphere)
+	foreground_atmosphere.configure(atmosphere.puddles, atmosphere.light_pools)
 
 func _add_reusable_prop(piece_name: String, asset_path: String, pos: Vector2, sprite_scale: Vector2, z: int, flip_sprite: bool = false, rotation_deg: float = 0.0, tint: Color = Color.WHITE) -> Sprite2D:
 	var prop: Sprite2D = preload("res://scripts/ReusableProp2D.gd").new()
@@ -191,17 +217,28 @@ func _build_player() -> void:
 	# actually visible on the plate.
 	player.movement_bounds = Rect2(Vector2(300, 320), Vector2(1650, 720))
 	player.walkable_areas = [
-		Rect2(Vector2(360, 390), Vector2(550, 270)),
-		Rect2(Vector2(420, 620), Vector2(650, 320)),
-		Rect2(Vector2(760, 500), Vector2(700, 190)),
-		Rect2(Vector2(820, 690), Vector2(630, 310)),
-		Rect2(Vector2(1460, 850), Vector2(420, 170)),
+		Rect2(Vector2(365, 430), Vector2(410, 120)),
+		Rect2(Vector2(650, 405), Vector2(160, 80)),
+		Rect2(Vector2(420, 600), Vector2(430, 240)),
+		Rect2(Vector2(810, 520), Vector2(250, 145)),
+		Rect2(Vector2(860, 710), Vector2(470, 250)),
+		Rect2(Vector2(1460, 850), Vector2(360, 160)),
 	]
 	player.blocked_areas = [
-		Rect2(Vector2(520, 315), Vector2(230, 80)),
-		Rect2(Vector2(910, 250), Vector2(990, 260)),
-		Rect2(Vector2(1140, 570), Vector2(520, 300)),
+		Rect2(Vector2(510, 395), Vector2(155, 105)),
+		Rect2(Vector2(825, 235), Vector2(1050, 285)),
+		Rect2(Vector2(1110, 540), Vector2(575, 335)),
 		Rect2(Vector2(1515, 380), Vector2(360, 440)),
+		Rect2(Vector2(460, 555), Vector2(720, 88)),
+		Rect2(Vector2(388, 515), Vector2(86, 58)),
+		Rect2(Vector2(690, 580), Vector2(150, 105)),
+		Rect2(Vector2(920, 780), Vector2(120, 105)),
+		Rect2(Vector2(1250, 730), Vector2(190, 110)),
+		Rect2(Vector2(1555, 905), Vector2(280, 120)),
+		Rect2(Vector2(492, 780), Vector2(78, 64)),
+		Rect2(Vector2(602, 790), Vector2(58, 46)),
+		Rect2(Vector2(720, 828), Vector2(74, 58)),
+		Rect2(Vector2(1018, 895), Vector2(68, 78)),
 	]
 	player.z_index = 10
 	player.footstep_sound = load("res://sfx/foley/footstep_wood_dock_v01.ogg") if ResourceLoader.exists("res://sfx/foley/footstep_wood_dock_v01.ogg") else null
@@ -232,7 +269,7 @@ func _build_body() -> void:
 		4,
 		false,
 		-3.0,
-		Color(0.82, 0.84, 0.84, 0.86)
+		Color.WHITE
 	)
 
 func _build_npc() -> void:
