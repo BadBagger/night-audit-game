@@ -185,6 +185,7 @@ func _build_body() -> void:
 		0.88,
 		Vector2(0, -48)
 	)
+	mick_body.set_noir_style(true, Color(0.66, 0.68, 0.64, 0.52))
 	mick_body.position = Vector2(610, 452)
 	mick_body.z_index = 4
 	add_child(mick_body)
@@ -263,6 +264,7 @@ func _make_character_visual(root_path: String, animations: Dictionary, scale: fl
 	visual.visual_scale = scale
 	visual.visual_offset = offset
 	visual.setup_from_folders(root_path, animations)
+	visual.set_noir_style(true)
 	return visual
 
 func _on_dialogue_line_started(speaker: String) -> void:
