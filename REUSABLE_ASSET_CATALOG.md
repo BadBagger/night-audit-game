@@ -152,6 +152,19 @@ Rendered from Meshy FBX exports through Blender fixed isometric camera into `art
 | `straight_hazard_tape` | Rendered and imported |
 | `evidence_marker_card` | Rendered and imported; usable but slightly shiny/raw, may get a later paintover |
 
+### 2026-08-09 - Chapter I Structural Props Pass 1
+
+Rendered from Meshy FBX exports through the same Blender fixed isometric camera. Four assets are now wired into Chapter I; two extras are kept as reusable dock/workshop clutter.
+
+| Asset ID | Status |
+| --- | --- |
+| `open_container_office_clutter` | Rendered and wired into Chapter I |
+| `dock_security_gate` | Rendered and wired into Chapter I |
+| `portable_police_barricade` | Rendered and wired into Chapter I |
+| `harbor_tiedown_ropeburn_fixture` | Rendered and wired into Chapter I rope-burn clue area |
+| `ironbound_crate` | Rendered as extra reusable dock clutter |
+| `rusty_hand_plane` | Rendered as extra reusable dock/workshop clutter |
+
 ## Suggested File Layout
 
 ```text

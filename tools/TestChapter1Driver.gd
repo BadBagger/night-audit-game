@@ -18,8 +18,9 @@ func _ready() -> void:
 	_check("chapter1 has dense dockyard set dressing", main_scene.set_dressing_root.get_child_count() >= 16)
 	_check("chapter1 has rain, puddles, and light pools", main_scene.atmosphere.rain_lines >= 80 and main_scene.atmosphere.puddles.size() >= 4 and main_scene.atmosphere.light_pools.size() >= 3)
 	_check("chapter1 key props are named for tuning", main_scene.set_dressing_root.has_node("security_barrier_gate") and main_scene.set_dressing_root.has_node("container_office_clutter") and main_scene.set_dressing_root.has_node("dock_edge_harbor"))
-	_check("chapter1 uses real reusable prop sprites", _count_reusable_props() >= 12)
+	_check("chapter1 uses real reusable prop sprites", _count_reusable_props() >= 16)
 	_check("chapter1 reusable props load expected assets", _has_reusable_asset("portable_dock_lamp") and _has_reusable_asset("straight_hazard_tape") and _has_reusable_asset("wet_wooden_crate") and _has_reusable_asset("rusty_oil_drum") and _has_reusable_asset("coiled_rope") and _has_reusable_asset("evidence_marker_card"))
+	_check("chapter1 structural placeholders use reusable sprites", _has_reusable_asset("open_container_office_clutter") and _has_reusable_asset("dock_security_gate") and _has_reusable_asset("portable_police_barricade") and _has_reusable_asset("harbor_tiedown_ropeburn_fixture"))
 
 	await _drain_dialogue()
 
