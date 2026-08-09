@@ -97,20 +97,20 @@ func _build_scene_art() -> void:
 
 	_add_set_piece("dock_edge_harbor", "dock_edge", Vector2(1500, 1088), Vector2(1120, 96), Color(0.04, 0.052, 0.06, 0.92), Color(0.42, 0.52, 0.56, 0.62), -5)
 	_add_set_piece("container_office_clutter", "office_clutter", Vector2(630, 350), Vector2(280, 110), Color(0.12, 0.08, 0.05, 0.82), Color(0.84, 0.56, 0.28, 0.7), 3)
-	_add_set_piece("work_lamp_container", "work_lamp", Vector2(730, 330), Vector2(120, 70), Color(1.0, 0.72, 0.32, 0.8), Color(1.0, 0.72, 0.32, 0.8), 5)
-	_add_set_piece("crime_scene_tape_left", "tape", Vector2(558, 624), Vector2(430, 16), Color(0.95, 0.72, 0.22, 0.9), Color(0.95, 0.72, 0.22, 0.9), 8)
-	_add_set_piece("crime_scene_tape_right", "tape", Vector2(890, 655), Vector2(500, 16), Color(0.95, 0.72, 0.22, 0.9), Color(0.95, 0.72, 0.22, 0.9), 8)
+	_add_reusable_prop("work_lamp_container", "res://art/reusable/props/portable_dock_lamp/portable_dock_lamp_trim.png", Vector2(730, 330), Vector2(0.11, 0.11), 5)
+	_add_reusable_prop("crime_scene_tape_left", "res://art/reusable/props/straight_hazard_tape/straight_hazard_tape_trim.png", Vector2(558, 624), Vector2(0.38, 0.04), 8, false, -2.5)
+	_add_reusable_prop("crime_scene_tape_right", "res://art/reusable/props/straight_hazard_tape/straight_hazard_tape_trim.png", Vector2(890, 655), Vector2(0.44, 0.04), 8, false, 2.0)
 	_add_set_piece("security_barrier_gate", "barrier", Vector2(1135, 685), Vector2(230, 42), Color(0.12, 0.13, 0.14, 0.9), Color(0.92, 0.58, 0.18, 0.82), 8)
 	_add_set_piece("police_barrier_car_area", "barrier", Vector2(1430, 850), Vector2(270, 46), Color(0.12, 0.13, 0.14, 0.9), Color(0.3, 0.58, 0.96, 0.55), 8)
-	_add_set_piece("crate_stack_near_gate", "crate", Vector2(1215, 575), Vector2(150, 92), Color(0.19, 0.11, 0.055, 0.92), Color(0.75, 0.46, 0.2, 0.7), 4)
-	_add_set_piece("crate_stack_container_shadow", "crate", Vector2(900, 492), Vector2(128, 82), Color(0.13, 0.085, 0.055, 0.9), Color(0.58, 0.36, 0.17, 0.6), 4)
-	_add_set_piece("barrel_cluster_gate", "barrel", Vector2(1330, 610), Vector2(86, 110), Color(0.14, 0.18, 0.2, 0.9), Color(0.52, 0.62, 0.66, 0.45), 4)
-	_add_set_piece("barrel_near_harbor", "barrel", Vector2(1640, 948), Vector2(92, 118), Color(0.16, 0.13, 0.1, 0.88), Color(0.52, 0.5, 0.45, 0.42), 6)
-	_add_set_piece("rope_coil_tiedown", "rope", Vector2(424, 536), Vector2(90, 64), Color(0.63, 0.48, 0.28, 0.92), Color(0.63, 0.48, 0.28, 0.92), 5)
-	_add_set_piece("rope_coil_harbor", "rope", Vector2(1775, 980), Vector2(120, 80), Color(0.58, 0.42, 0.24, 0.88), Color(0.58, 0.42, 0.24, 0.88), 6)
-	_add_set_piece("evidence_marker_spatter", "evidence_card", Vector2(570, 428), Vector2(34, 24), Color(0.92, 0.84, 0.55, 0.92), Color(0.18, 0.13, 0.05, 0.78), 7)
-	_add_set_piece("evidence_marker_receipt", "evidence_card", Vector2(721, 386), Vector2(34, 24), Color(0.92, 0.84, 0.55, 0.92), Color(0.18, 0.13, 0.05, 0.78), 7)
-	_add_set_piece("evidence_marker_phone", "evidence_card", Vector2(645, 456), Vector2(30, 22), Color(0.92, 0.84, 0.55, 0.92), Color(0.18, 0.13, 0.05, 0.78), 7)
+	_add_reusable_prop("crate_stack_near_gate", "res://art/reusable/props/wet_wooden_crate/wet_wooden_crate_trim.png", Vector2(1215, 575), Vector2(0.11, 0.11), 4)
+	_add_reusable_prop("crate_stack_container_shadow", "res://art/reusable/props/wet_wooden_crate/wet_wooden_crate_trim.png", Vector2(900, 492), Vector2(0.09, 0.09), 4, true)
+	_add_reusable_prop("barrel_cluster_gate", "res://art/reusable/props/rusty_oil_drum/rusty_oil_drum_trim.png", Vector2(1330, 610), Vector2(0.08, 0.08), 4)
+	_add_reusable_prop("barrel_near_harbor", "res://art/reusable/props/rusty_oil_drum/rusty_oil_drum_trim.png", Vector2(1640, 948), Vector2(0.09, 0.09), 6, true)
+	_add_reusable_prop("rope_coil_tiedown", "res://art/reusable/props/coiled_rope/coiled_rope_trim.png", Vector2(424, 536), Vector2(0.07, 0.07), 5)
+	_add_reusable_prop("rope_coil_harbor", "res://art/reusable/props/coiled_rope/coiled_rope_trim.png", Vector2(1775, 980), Vector2(0.09, 0.09), 6, true)
+	_add_reusable_prop("evidence_marker_spatter", "res://art/reusable/props/evidence_marker_card/evidence_marker_card_trim.png", Vector2(570, 428), Vector2(0.03, 0.03), 7, false, -8.0)
+	_add_reusable_prop("evidence_marker_receipt", "res://art/reusable/props/evidence_marker_card/evidence_marker_card_trim.png", Vector2(721, 386), Vector2(0.03, 0.03), 7, true, 6.0)
+	_add_reusable_prop("evidence_marker_phone", "res://art/reusable/props/evidence_marker_card/evidence_marker_card_trim.png", Vector2(645, 456), Vector2(0.027, 0.027), 7, false, 12.0)
 
 	atmosphere = preload("res://scripts/Chapter1Atmosphere.gd").new()
 	atmosphere.name = "Chapter1RainAndLighting"
@@ -137,6 +137,15 @@ func _add_set_piece(piece_name: String, kind: String, pos: Vector2, piece_size: 
 	piece.configure(kind, piece_size, color, accent)
 	set_dressing_root.add_child(piece)
 	return piece
+
+func _add_reusable_prop(piece_name: String, asset_path: String, pos: Vector2, sprite_scale: Vector2, z: int, flip_sprite: bool = false, rotation_deg: float = 0.0) -> Sprite2D:
+	var prop: Sprite2D = preload("res://scripts/ReusableProp2D.gd").new()
+	prop.name = piece_name
+	prop.position = pos
+	prop.z_index = z
+	prop.configure(asset_path, sprite_scale, flip_sprite, rotation_deg)
+	set_dressing_root.add_child(prop)
+	return prop
 
 func _build_player() -> void:
 	player = preload("res://scripts/Player.gd").new()
