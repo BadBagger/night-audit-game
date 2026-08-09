@@ -268,7 +268,7 @@ func _distance_to_segment(point: Vector2, a: Vector2, b: Vector2) -> float:
 	var ab := b - a
 	if ab.length_squared() <= 0.0001:
 		return point.distance_to(a)
-	var t := clamp((point - a).dot(ab) / ab.length_squared(), 0.0, 1.0)
+	var t: float = clamp((point - a).dot(ab) / ab.length_squared(), 0.0, 1.0)
 	return point.distance_to(a + ab * t)
 
 func _has_selection() -> bool:
@@ -301,7 +301,7 @@ func _frame_background() -> void:
 	var texture_size := Vector2(1680, 945)
 	if background != null and background.texture != null:
 		texture_size = background.texture.get_size()
-	var fit_zoom := min((viewport_size.x - 56.0) / texture_size.x, (viewport_size.y - 118.0) / texture_size.y)
+	var fit_zoom: float = min((viewport_size.x - 56.0) / texture_size.x, (viewport_size.y - 118.0) / texture_size.y)
 	view_zoom = clamp(fit_zoom, 0.25, 1.35)
 	view_offset = Vector2((viewport_size.x - texture_size.x * view_zoom) * 0.5, 86.0)
 	_apply_view_transform()
