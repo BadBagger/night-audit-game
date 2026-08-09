@@ -6,6 +6,8 @@ const FOOTSTEP_INTERVAL := 0.38
 var nearby_interactables: Array = []
 var reach: Area2D
 var movement_bounds: Rect2 = Rect2()
+var walkable_areas: Array = []
+var blocked_areas: Array = []
 var character_visual: AnimatedCharacter2D
 var use_placeholder_art := true
 var footstep_sound: AudioStream = null
@@ -52,6 +54,7 @@ func _draw() -> void:
 	draw_circle(Vector2(0, -18), 8, Color(0.043, 0.047, 0.063))
 
 func _physics_process(delta: float) -> void:
+	var previous_position := position
 	var dir := Vector2.ZERO
 	if Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP):
 		dir.y -= 1
@@ -80,6 +83,8 @@ func _physics_process(delta: float) -> void:
 	if movement_bounds.size != Vector2.ZERO:
 		position.x = clamp(position.x, movement_bounds.position.x, movement_bounds.end.x)
 		position.y = clamp(position.y, movement_bounds.position.y, movement_bounds.end.y)
+	if not can_stand_at(position):
+		position = previous_position
 
 func _on_reach_entered(area: Area2D) -> void:
 	if area.has_method("interact"):
@@ -94,3 +99,17 @@ func _unhandled_input(event: InputEvent) -> void:
 			if character_visual:
 				character_visual.play_interact()
 			nearby_interactables[0].interact()
+
+func can_stand_at(candidate: Vector2) -> bool:
+	if walkable_areas.size() > 0:
+		var inside_walkable := false
+		for area in walkable_areas:
+			if area.has_point(candidate):
+				inside_walkable = true
+				break
+		if not inside_walkable:
+			return false
+	for area in blocked_areas:
+		if area.has_point(candidate):
+			return false
+	return true

@@ -5,8 +5,6 @@ var sprite: AnimatedSprite2D
 var visual_scale := 0.72
 var visual_offset := Vector2(0, -72)
 var current_mode := "idle"
-var noir_style_enabled := false
-var noir_tint := Color(0.78, 0.84, 0.9, 0.92)
 
 func _ready() -> void:
 	if sprite == null:
@@ -27,7 +25,8 @@ func setup_from_folders(root_path: String, animations: Dictionary, start_animati
 		frames.add_animation(animation_name)
 		frames.set_animation_speed(animation_name, def.get("fps", 6.0))
 		frames.set_animation_loop(animation_name, def.get("loop", true))
-		var frame_paths := _collect_frame_paths("%s/%s" % [root_path, animation_name])
+		var source_folder: String = def.get("source", animation_name)
+		var frame_paths := _collect_frame_paths("%s/%s" % [root_path, source_folder])
 		for frame_path in frame_paths:
 			var texture: Texture2D = load(frame_path)
 			if texture:
@@ -37,15 +36,9 @@ func setup_from_folders(root_path: String, animations: Dictionary, start_animati
 
 	sprite.sprite_frames = frames
 	_apply_visual_transform()
-	_apply_noir_style()
 	if frames.has_animation(start_animation):
 		sprite.play(start_animation)
 		current_mode = start_animation
-
-func set_noir_style(enabled: bool, tint: Color = Color(0.78, 0.84, 0.9, 0.92)) -> void:
-	noir_style_enabled = enabled
-	noir_tint = tint
-	_apply_noir_style()
 
 func play_idle() -> void:
 	_play_if_available("idle")
@@ -81,20 +74,6 @@ func _apply_visual_transform() -> void:
 		return
 	sprite.scale = Vector2(visual_scale, visual_scale)
 	sprite.position = visual_offset
-
-func _apply_noir_style() -> void:
-	if sprite == null:
-		return
-	if not noir_style_enabled:
-		sprite.material = null
-		return
-	var shader_path := "res://shaders/noir_character_sprite.gdshader"
-	if not ResourceLoader.exists(shader_path):
-		return
-	var material := ShaderMaterial.new()
-	material.shader = load(shader_path)
-	material.set_shader_parameter("tint_color", noir_tint)
-	sprite.material = material
 
 func _collect_frame_paths(folder_path: String) -> Array:
 	var paths := []

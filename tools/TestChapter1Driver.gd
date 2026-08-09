@@ -21,6 +21,11 @@ func _ready() -> void:
 	_check("chapter1 uses real reusable prop sprites", _count_reusable_props() >= 17)
 	_check("chapter1 reusable props load expected assets", _has_reusable_asset("portable_dock_lamp") and _has_reusable_asset("straight_hazard_tape") and _has_reusable_asset("wet_wooden_crate") and _has_reusable_asset("rusty_oil_drum") and _has_reusable_asset("coiled_rope") and _has_reusable_asset("evidence_marker_card"))
 	_check("chapter1 structural placeholders use reusable sprites", _has_reusable_asset("long_pier_dock_edge_strip") and _has_reusable_asset("open_container_office_clutter") and _has_reusable_asset("dock_security_gate") and _has_reusable_asset("portable_police_barricade") and _has_reusable_asset("harbor_tiedown_ropeburn_fixture"))
+	_check("chapter1 player has walkable areas and building blockers", main_scene.player.walkable_areas.size() >= 3 and main_scene.player.blocked_areas.size() >= 3)
+	_check("chapter1 blocks roof and building stand positions", not main_scene.player.can_stand_at(Vector2(1220, 710)) and not main_scene.player.can_stand_at(Vector2(1640, 500)))
+	_check("chapter1 keeps evidence reachable from legal walk path", _has_reachable_standpoint(Vector2(520, 410)) and _has_reachable_standpoint(Vector2(690, 370)) and _has_reachable_standpoint(Vector2(425, 515)))
+	_check("chapter1 living idles use animated source frames", main_scene.player.character_visual.sprite.sprite_frames.get_frame_count("idle") > 1 and main_scene.reyes.character_visual.sprite.sprite_frames.get_frame_count("idle") > 1 and main_scene.frank.character_visual.sprite.sprite_frames.get_frame_count("idle") > 1)
+	_check("chapter1 body is staged as background evidence", main_scene.mick_body.visual_scale <= 0.45 and main_scene.mick_body.modulate.a < 0.9)
 
 	await _drain_dialogue()
 
@@ -120,6 +125,14 @@ func _has_reusable_asset(asset_id: String) -> bool:
 			continue
 		if child.get("asset_id") == asset_id and child.get("texture") != null:
 			return true
+	return false
+
+func _has_reachable_standpoint(target: Vector2) -> bool:
+	for x_offset in range(-56, 57, 14):
+		for y_offset in range(-56, 57, 14):
+			var candidate := target + Vector2(x_offset, y_offset)
+			if candidate.distance_to(target) <= 56.0 and main_scene.player.can_stand_at(candidate):
+				return true
 	return false
 
 func _drain_dialogue(max_steps: int = 20) -> void:

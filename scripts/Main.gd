@@ -158,13 +158,26 @@ func _build_player() -> void:
 	# margin for the player's 40px interact radius; retune once Dana is
 	# actually visible on the plate.
 	player.movement_bounds = Rect2(Vector2(300, 320), Vector2(1650, 720))
+	player.walkable_areas = [
+		Rect2(Vector2(360, 390), Vector2(550, 270)),
+		Rect2(Vector2(420, 620), Vector2(650, 320)),
+		Rect2(Vector2(760, 500), Vector2(700, 190)),
+		Rect2(Vector2(820, 690), Vector2(630, 310)),
+		Rect2(Vector2(1460, 850), Vector2(420, 170)),
+	]
+	player.blocked_areas = [
+		Rect2(Vector2(520, 315), Vector2(230, 80)),
+		Rect2(Vector2(910, 250), Vector2(990, 260)),
+		Rect2(Vector2(1140, 570), Vector2(520, 300)),
+		Rect2(Vector2(1515, 380), Vector2(360, 440)),
+	]
 	player.z_index = 10
 	player.footstep_sound = load("res://sfx/foley/footstep_wood_dock_v01.ogg") if ResourceLoader.exists("res://sfx/foley/footstep_wood_dock_v01.ogg") else null
 	add_child(player)
 	player.set_character_visual(_make_character_visual(
 		"res://art/characters/chapter1/dana",
-		{"idle": {"fps": 1.0}, "walk": {"fps": 10.0}, "talk": {"fps": 6.0}, "interact": {"fps": 8.0, "loop": false}},
-		0.64,
+		{"idle": {"source": "talk", "fps": 1.4}, "walk": {"fps": 10.0}, "talk": {"fps": 6.0}, "interact": {"fps": 8.0, "loop": false}},
+		0.56,
 		Vector2(0, -76)
 	))
 
@@ -182,11 +195,12 @@ func _build_body() -> void:
 	mick_body = _make_character_visual(
 		"res://art/characters/chapter1/mick_body",
 		{"idle": {"fps": 1.0}},
-		0.88,
-		Vector2(0, -48)
+		0.42,
+		Vector2(0, -28)
 	)
-	mick_body.set_noir_style(true, Color(0.66, 0.68, 0.64, 0.52))
-	mick_body.position = Vector2(610, 452)
+	mick_body.rotation_degrees = -8.0
+	mick_body.modulate = Color(0.72, 0.72, 0.68, 0.72)
+	mick_body.position = Vector2(590, 424)
 	mick_body.z_index = 4
 	add_child(mick_body)
 
@@ -198,8 +212,8 @@ func _build_npc() -> void:
 	add_child(reyes)
 	reyes.set_character_visual(_make_character_visual(
 		"res://art/characters/chapter1/reyes",
-		{"idle": {"fps": 1.0}, "walk": {"fps": 8.0}, "talk": {"fps": 5.0}},
-		0.66,
+		{"idle": {"source": "talk", "fps": 1.2}, "walk": {"fps": 8.0}, "talk": {"fps": 5.0}},
+		0.58,
 		Vector2(0, -76)
 	))
 	reyes.interacted.connect(_on_reyes_interact)
@@ -212,8 +226,8 @@ func _build_npc() -> void:
 	add_child(frank)
 	frank.set_character_visual(_make_character_visual(
 		"res://art/characters/chapter1/frank",
-		{"idle": {"fps": 1.0}, "walk": {"fps": 7.0}, "talk": {"fps": 4.0}},
-		0.66,
+		{"idle": {"source": "talk", "fps": 1.0}, "walk": {"fps": 7.0}, "talk": {"fps": 4.0}},
+		0.58,
 		Vector2(0, -76)
 	))
 
@@ -264,7 +278,6 @@ func _make_character_visual(root_path: String, animations: Dictionary, scale: fl
 	visual.visual_scale = scale
 	visual.visual_offset = offset
 	visual.setup_from_folders(root_path, animations)
-	visual.set_noir_style(true)
 	return visual
 
 func _on_dialogue_line_started(speaker: String) -> void:
