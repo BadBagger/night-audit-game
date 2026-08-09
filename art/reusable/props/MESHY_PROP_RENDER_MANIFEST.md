@@ -19,22 +19,3 @@ Reusable prop sprites rendered from Meshy FBX exports. Source zips live in `C:/U
 | `long_pier_dock_edge_strip` | Long modular pier / dock edge strip | `art/reusable/props/long_pier_dock_edge_strip/long_pier_dock_edge_strip_trim.png` | `art/reusable/props/long_pier_dock_edge_strip/long_pier_dock_edge_strip_iso.png` | `Meshy_AI_Ironbound_Cargo_Crate_0809031637_texture_fbx.zip` |
 
 `*_trim.png` files are the intended Godot placement sprites. `*_iso.png` files preserve the full square Blender camera render for future recrops.
-
-## 2D Worldbuilding Elements
-
-Reusable 2D overlay elements generated for Chapter 1 world dressing. Larger physical props came from ComfyUI using `Juggernaut-XL_v9_RunDiffusionPhoto_v2.safetensors` plus local matte cleanup; thin decals were cleaned or redrawn as deterministic transparent PNGs for better in-scene readability.
-
-| Asset ID | Description | Placement Sprite | Source |
-| --- | --- | --- | --- |
-| `chain_of_custody_bag` | Plastic evidence bag / chain-of-custody prop | `art/reusable/props/chain_of_custody_bag/chain_of_custody_bag_trim.png` | ComfyUI + local background removal |
-| `strike_flyer_cluster` | Wet dockworker strike flyer cluster | `art/reusable/props/strike_flyer_cluster/strike_flyer_cluster_trim.png` | ComfyUI + local background removal |
-| `calloway_cargo_label` | Corporate cargo label / shipping sticker | `art/reusable/props/calloway_cargo_label/calloway_cargo_label_trim.png` | ComfyUI + local background removal |
-| `cracked_phone_glow` | Cracked smartphone with blue screen glow | `art/reusable/props/cracked_phone_glow/cracked_phone_glow_trim.png` | ComfyUI + local background removal |
-| `police_case_placard` | Temporary police case placard board | `art/reusable/props/police_case_placard/police_case_placard_trim.png` | Deterministic 2D transparent PNG |
-| `dock_drain_runoff` | Rusted dock drain grate with runoff | `art/reusable/props/dock_drain_runoff/dock_drain_runoff_trim.png` | ComfyUI + local background removal |
-| `puddle_reflection` | Rain puddle / amber-blue reflection decal | `art/reusable/decals/puddle_reflection/puddle_reflection_trim.png` | Deterministic 2D transparent PNG |
-| `blood_spatter_low_wall` | Low-wall blood spatter / rain-diluted streak decal | `art/reusable/decals/blood_spatter/blood_spatter_low_wall_trim.png` | Deterministic 2D transparent PNG |
-| `rust_water_runoff` | Rust and rainwater runoff decal | `art/reusable/decals/rust_water_runoff/rust_water_runoff_trim.png` | ComfyUI + local background removal |
-| `container_serial` | Weathered container serial/barcode decal with unreadable marks | `art/reusable/decals/container_serial/container_serial_trim.png` | Deterministic 2D transparent PNG |
-
-`art/reusable/generated_asset_contact_sheet.png` is a QA preview sheet only.
