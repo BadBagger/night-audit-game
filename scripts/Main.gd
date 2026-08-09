@@ -5,7 +5,7 @@ var dialogue: DialogueBoxUI
 var board: DeductionBoardUI
 var reyes: StoryNPC
 var frank: StoryNPC
-var mick_body: AnimatedCharacter2D
+var mick_body: Sprite2D
 var foreground_occluder: Sprite2D
 var occlusion_controller: Pier9OcclusionController
 var atmosphere: Node2D
@@ -221,17 +221,16 @@ func _build_player() -> void:
 	player.add_child(cam)
 
 func _build_body() -> void:
-	mick_body = _make_character_visual(
-		"res://art/characters/chapter1/mick_body",
-		{"idle": {"fps": 1.0}},
-		0.42,
-		Vector2(0, -28)
+	mick_body = _add_reusable_prop(
+		"mick_tarp_body",
+		"res://art/reusable/props/mick_tarp_body/mick_tarp_body_trim.png",
+		Vector2(590, 438),
+		Vector2(0.18, 0.18),
+		4,
+		false,
+		-3.0,
+		Color(0.82, 0.84, 0.84, 0.86)
 	)
-	mick_body.rotation_degrees = -8.0
-	mick_body.modulate = Color(0.72, 0.72, 0.68, 0.72)
-	mick_body.position = Vector2(590, 424)
-	mick_body.z_index = 4
-	add_child(mick_body)
 
 func _build_npc() -> void:
 	reyes = preload("res://scripts/StoryNPC.gd").new()
