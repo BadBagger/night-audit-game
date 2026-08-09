@@ -9,6 +9,7 @@ var examine_audio: String = ""
 var examine_sfx: String = ""
 var color: Color = Color(0.851, 0.522, 0.184)
 var examined := false
+var show_marker := true
 
 func _ready() -> void:
 	var shape := CircleShape2D.new()
@@ -19,6 +20,8 @@ func _ready() -> void:
 	queue_redraw()
 
 func _draw() -> void:
+	if not show_marker:
+		return
 	var c := color
 	if examined:
 		c = c.darkened(0.55)
