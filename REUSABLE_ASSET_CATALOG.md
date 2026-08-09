@@ -165,6 +165,12 @@ Rendered from Meshy FBX exports through the same Blender fixed isometric camera.
 | `ironbound_crate` | Rendered as extra reusable dock clutter |
 | `rusty_hand_plane` | Rendered as extra reusable dock/workshop clutter |
 
+### 2026-08-09 - Chapter I Dock Edge Pass 1
+
+| Asset ID | Status |
+| --- | --- |
+| `long_pier_dock_edge_strip` | Rendered and wired into Chapter I; dark industrial strip, may get a brighter paintover later |
+
 ## Suggested File Layout
 
 ```text

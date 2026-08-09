@@ -16,5 +16,6 @@ Reusable prop sprites rendered from Meshy FBX exports. Source zips live in `C:/U
 | `dock_security_gate` | Heavy dock security gate / blocked passage barrier | `art/reusable/props/dock_security_gate/dock_security_gate_trim.png` | `art/reusable/props/dock_security_gate/dock_security_gate_iso.png` | `Meshy_AI_Rusty_Hazard_Barricad_0809030148_texture_fbx.zip` |
 | `ironbound_crate` | Ironbound dock crate / heavy reusable clutter | `art/reusable/props/ironbound_crate/ironbound_crate_trim.png` | `art/reusable/props/ironbound_crate/ironbound_crate_iso.png` | `Meshy_AI_Ironbound_Crate_0809030104_texture_fbx.zip` |
 | `rusty_hand_plane` | Rusty hand-plane tool / small dock workshop clutter | `art/reusable/props/rusty_hand_plane/rusty_hand_plane_trim.png` | `art/reusable/props/rusty_hand_plane/rusty_hand_plane_iso.png` | `Meshy_AI_Rusty_Hand_Plane_0809030045_texture_fbx.zip` |
+| `long_pier_dock_edge_strip` | Long modular pier / dock edge strip | `art/reusable/props/long_pier_dock_edge_strip/long_pier_dock_edge_strip_trim.png` | `art/reusable/props/long_pier_dock_edge_strip/long_pier_dock_edge_strip_iso.png` | `Meshy_AI_Ironbound_Cargo_Crate_0809031637_texture_fbx.zip` |
 
 `*_trim.png` files are the intended Godot placement sprites. `*_iso.png` files preserve the full square Blender camera render for future recrops.

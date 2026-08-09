@@ -95,7 +95,7 @@ func _build_scene_art() -> void:
 	set_dressing_root.name = "Chapter1SetDressing"
 	add_child(set_dressing_root)
 
-	_add_set_piece("dock_edge_harbor", "dock_edge", Vector2(1500, 1088), Vector2(1120, 96), Color(0.04, 0.052, 0.06, 0.92), Color(0.42, 0.52, 0.56, 0.62), -5)
+	_add_reusable_prop("dock_edge_harbor", "res://art/reusable/props/long_pier_dock_edge_strip/long_pier_dock_edge_strip_trim.png", Vector2(1500, 1088), Vector2(1.95, 0.25), -5)
 	_add_reusable_prop("container_office_clutter", "res://art/reusable/props/open_container_office_clutter/open_container_office_clutter_trim.png", Vector2(630, 350), Vector2(0.25, 0.25), 3)
 	_add_reusable_prop("work_lamp_container", "res://art/reusable/props/portable_dock_lamp/portable_dock_lamp_trim.png", Vector2(730, 330), Vector2(0.11, 0.11), 5)
 	_add_reusable_prop("crime_scene_tape_left", "res://art/reusable/props/straight_hazard_tape/straight_hazard_tape_trim.png", Vector2(558, 624), Vector2(0.38, 0.04), 8, false, -2.5)
