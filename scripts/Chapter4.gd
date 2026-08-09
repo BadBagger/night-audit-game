@@ -5,9 +5,9 @@ var dialogue: DialogueBoxUI
 var reyes: StoryNPC
 var priya: StoryNPC
 
-const PRIYA_SCENE_POSITION := Vector2(1010, 565)
-const PRIYA_ENTRY_POSITION := Vector2(1160, 560)
-const PRIYA_DOOR_POSITION := Vector2(1100, 540)
+const PRIYA_SCENE_POSITION := Vector2(905, 610)
+const PRIYA_ENTRY_POSITION := Vector2(1040, 600)
+const PRIYA_DOOR_POSITION := Vector2(1010, 565)
 
 func _ready() -> void:
 	_build_environment()
@@ -29,7 +29,7 @@ func _build_environment() -> void:
 
 func _build_player() -> void:
 	player = preload("res://scripts/Player.gd").new()
-	player.position = Vector2(540, 610)
+	player.position = Vector2(500, 570)
 	player.movement_bounds = Rect2(Vector2(260, 300), Vector2(820, 340))
 	add_child(player)
 	player.set_character_visual(_make_character_visual(
@@ -46,7 +46,7 @@ func _build_player() -> void:
 	player.add_child(cam)
 
 func _build_npcs() -> void:
-	reyes = _make_npc("REYES", Vector2(925, 560), "res://art/characters/chapter1/reyes")
+	reyes = _make_npc("REYES", Vector2(785, 540), "res://art/characters/chapter1/reyes")
 	priya = _make_npc("PRIYA", PRIYA_ENTRY_POSITION, "res://art/characters/chapter2/priya")
 	priya.interact_enabled = false
 	priya.visible = false

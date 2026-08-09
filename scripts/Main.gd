@@ -183,7 +183,7 @@ func _add_reusable_decal(piece_name: String, asset_path: String, pos: Vector2, s
 
 func _build_player() -> void:
 	player = preload("res://scripts/Player.gd").new()
-	player.position = Vector2(652, 758)
+	player.position = Vector2(610, 735)
 	# Handoff's rect (250,480)-(2000,1040) leaves the spatter/receipt clues
 	# (y=410/370) unreachably above the top edge, so this is widened to
 	# actually cover every marker in GODOT_INTEGRATION_HANDOFF.md with

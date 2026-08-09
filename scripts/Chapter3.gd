@@ -46,7 +46,7 @@ func _build_ambience() -> void:
 
 func _build_player() -> void:
 	player = preload("res://scripts/Player.gd").new()
-	player.position = Vector2(780, 560)
+	player.position = Vector2(860, 600)
 	player.movement_bounds = Rect2(Vector2(360, 300), Vector2(860, 420))
 	player.footstep_sound = load("res://sfx/foley/footstep_metal_deck_v01.ogg") if ResourceLoader.exists("res://sfx/foley/footstep_metal_deck_v01.ogg") else null
 	add_child(player)
@@ -66,8 +66,8 @@ func _build_player() -> void:
 func _build_npcs() -> void:
 	voss = preload("res://scripts/PatrolNPC.gd").new()
 	voss.npc_name = "VOSS"
-	voss.point_a = Vector2(1060, 470)
-	voss.point_b = Vector2(1130, 620)
+	voss.point_a = Vector2(1000, 580)
+	voss.point_b = Vector2(1080, 620)
 	add_child(voss)
 	voss.set_character_visual(_make_character_visual(
 		"res://art/characters/chapter3/voss",

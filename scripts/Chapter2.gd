@@ -67,7 +67,7 @@ func _build_player() -> void:
 
 func _build_npcs() -> void:
 	sal = preload("res://scripts/StoryNPC.gd").new()
-	sal.position = Vector2(325, 450)
+	sal.position = Vector2(390, 450)
 	sal.npc_name = "SAL"
 	add_child(sal)
 	sal.set_character_visual(_make_character_visual(
@@ -79,7 +79,7 @@ func _build_npcs() -> void:
 	sal.interacted.connect(_on_sal_interact)
 
 	priya = preload("res://scripts/StoryNPC.gd").new()
-	priya.position = Vector2(1035, 380)
+	priya.position = Vector2(950, 390)
 	priya.npc_name = "PRIYA"
 	add_child(priya)
 	priya.set_character_visual(_make_character_visual(
@@ -91,7 +91,7 @@ func _build_npcs() -> void:
 	priya.interacted.connect(_on_priya_interact)
 
 	costigan = preload("res://scripts/StoryNPC.gd").new()
-	costigan.position = Vector2(710, 555)
+	costigan.position = Vector2(760, 430)
 	costigan.npc_name = "COSTIGAN"
 	add_child(costigan)
 	costigan.set_character_visual(_make_character_visual(
