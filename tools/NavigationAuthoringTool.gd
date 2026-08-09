@@ -6,8 +6,8 @@ const POINT_PICK_RADIUS := 14.0
 const EDGE_PICK_DISTANCE := 12.0
 
 var background: Sprite2D
-var camera: Camera2D
 var hud_label: Label
+var map_layer: Node2D
 var mode := "walkable"
 var polygons := {
 	"walkable": [],
@@ -20,27 +20,25 @@ var selected_kind := ""
 var selected_polygon_index := -1
 var selected_point_index := -1
 var dragging_point := false
+var view_offset := Vector2(28, 86)
+var view_zoom := 0.78
 
 func _ready() -> void:
-	_build_background()
-	_build_camera()
+	_build_map_layer()
 	_build_hud()
 	_load_existing()
+	_frame_background()
 	queue_redraw()
 
-func _build_background() -> void:
+func _build_map_layer() -> void:
+	map_layer = Node2D.new()
+	add_child(map_layer)
 	background = Sprite2D.new()
 	background.texture = load(DEFAULT_BACKGROUND)
 	background.centered = false
 	background.z_index = -100
-	add_child(background)
-
-func _build_camera() -> void:
-	camera = Camera2D.new()
-	camera.position = Vector2(840, 472)
-	camera.zoom = Vector2(1.0, 1.0)
-	camera.enabled = true
-	add_child(camera)
+	map_layer.add_child(background)
+	_apply_view_transform()
 
 func _build_hud() -> void:
 	var canvas := CanvasLayer.new()
@@ -64,19 +62,20 @@ func _process(delta: float) -> void:
 	if Input.is_key_pressed(KEY_S):
 		pan.y += 1.0
 	if pan != Vector2.ZERO:
-		camera.position += pan.normalized() * 520.0 * delta / camera.zoom.x
+		view_offset -= pan.normalized() * 520.0 * delta
+		_apply_view_transform()
 	_update_hud()
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
-		mouse_world = get_global_mouse_position()
+		mouse_world = _screen_to_world(event.position)
 		if dragging_point:
 			_move_selected_point(mouse_world)
 		_update_hud()
 		queue_redraw()
 	elif event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-			var click_pos := get_global_mouse_position()
+			var click_pos := _screen_to_world(event.position)
 			if _select_nearest_point(click_pos):
 				dragging_point = true
 			elif event.shift_pressed and _insert_point_on_nearest_edge(click_pos):
@@ -90,9 +89,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		elif event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
 			_commit_current_polygon()
 		elif event.button_index == MOUSE_BUTTON_WHEEL_UP and event.pressed:
-			camera.zoom *= 1.08
+			_zoom_at(event.position, 1.08)
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN and event.pressed:
-			camera.zoom /= 1.08
+			_zoom_at(event.position, 1.0 / 1.08)
 	elif event is InputEventKey and event.pressed and not event.echo:
 		_handle_key(event)
 
@@ -132,8 +131,7 @@ func _handle_key(event: InputEventKey) -> void:
 				current_points.clear()
 				_clear_selection()
 		KEY_F:
-			camera.position = Vector2(840, 472)
-			camera.zoom = Vector2.ONE
+			_frame_background()
 		KEY_P:
 			_print_export()
 		KEY_SPACE:
@@ -150,10 +148,14 @@ func _commit_current_polygon() -> void:
 	current_points.clear()
 
 func _draw() -> void:
+	if map_layer == null:
+		return
+	draw_set_transform(view_offset, 0.0, Vector2(view_zoom, view_zoom))
 	_draw_polygons("walkable", Color(0.16, 0.9, 0.36, 0.22), Color(0.3, 1.0, 0.48, 0.92))
 	_draw_polygons("blocked", Color(1.0, 0.18, 0.14, 0.24), Color(1.0, 0.32, 0.26, 0.95))
 	_draw_polygons("occluder_foreground", Color(0.56, 0.26, 1.0, 0.24), Color(0.72, 0.46, 1.0, 0.95))
 	_draw_current()
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 func _draw_polygons(kind: String, fill: Color, stroke: Color) -> void:
 	for polygon_index in range(polygons[kind].size()):
@@ -278,6 +280,33 @@ func _clear_selection() -> void:
 	selected_point_index = -1
 	dragging_point = false
 
+func _apply_view_transform() -> void:
+	if map_layer == null:
+		return
+	map_layer.position = view_offset
+	map_layer.scale = Vector2(view_zoom, view_zoom)
+
+func _screen_to_world(screen_pos: Vector2) -> Vector2:
+	return (screen_pos - view_offset) / view_zoom
+
+func _zoom_at(screen_pos: Vector2, factor: float) -> void:
+	var before := _screen_to_world(screen_pos)
+	view_zoom = clamp(view_zoom * factor, 0.25, 2.5)
+	view_offset = screen_pos - before * view_zoom
+	_apply_view_transform()
+	queue_redraw()
+
+func _frame_background() -> void:
+	var viewport_size := get_viewport_rect().size
+	var texture_size := Vector2(1680, 945)
+	if background != null and background.texture != null:
+		texture_size = background.texture.get_size()
+	var fit_zoom := min((viewport_size.x - 56.0) / texture_size.x, (viewport_size.y - 118.0) / texture_size.y)
+	view_zoom = clamp(fit_zoom, 0.25, 1.35)
+	view_offset = Vector2((viewport_size.x - texture_size.x * view_zoom) * 0.5, 86.0)
+	_apply_view_transform()
+	queue_redraw()
+
 func _load_existing() -> void:
 	if not FileAccess.file_exists(SAVE_PATH):
 		return
@@ -335,11 +364,12 @@ func _update_hud() -> void:
 	var selected_text := "none"
 	if _has_selection():
 		selected_text = "%s poly %d point %d" % [selected_kind, selected_polygon_index + 1, selected_point_index + 1]
-	hud_label.text = "Navigation Authoring | mode: %s | selected: %s | mouse: %d,%d | polygons W:%d B:%d O:%d\n1 walkable  2 blocked/no-travel  3 foreground/3D occluder | Left click add/select  Drag selected point  Shift+click edge insert | Right click/Enter close | Backspace/Delete selected point  Z undo polygon  Shift+Delete clear mode  F frame  Ctrl+S save | WASD pan  wheel zoom" % [
+	hud_label.text = "Navigation Authoring | mode: %s | selected: %s | mouse: %d,%d | zoom: %.2f | polygons W:%d B:%d O:%d\n1 walkable  2 blocked/no-travel  3 foreground/3D occluder | Left click add/select  Drag selected point  Shift+click edge insert | Right click/Enter close | Backspace/Delete selected point  Z undo polygon  Shift+Delete clear mode  F frame  Ctrl+S save | WASD pan  wheel zoom" % [
 		mode,
 		selected_text,
 		round(mouse_world.x),
 		round(mouse_world.y),
+		view_zoom,
 		polygons["walkable"].size(),
 		polygons["blocked"].size(),
 		polygons["occluder_foreground"].size(),
