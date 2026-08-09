@@ -64,6 +64,25 @@ def count_local_maxima(values: list[int], min_prominence_ratio: float) -> int:
     return peaks
 
 
+def aspect_ratio_ok(bbox: tuple[int, int, int, int]) -> bool:
+    left, top, right, bottom = bbox
+    width = right - left
+    height = bottom - top
+    if height <= 0:
+        return False
+    ratio = width / height
+    return 2.0 <= ratio <= 4.2
+
+
+def coverage_ok(values: list[int], bbox: tuple[int, int, int, int]) -> bool:
+    left, top, right, bottom = bbox
+    height = bottom - top
+    if height <= 0 or not values:
+        return False
+    avg_span = sum(values) / len(values)
+    return avg_span / height >= 0.42
+
+
 def edge_taper_ok(values: list[int]) -> bool:
     if len(values) < 20:
         return False
@@ -81,20 +100,30 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("image", type=Path)
     parser.add_argument("--threshold", type=int, default=32)
-    parser.add_argument("--min-peaks", type=int, default=3)
+    parser.add_argument("--max-peaks", type=int, default=4)
     args = parser.parse_args()
 
     profile, bbox = alpha_profile(args.image, args.threshold)
     peaks = count_local_maxima(profile, 0.07)
+    aspect = aspect_ratio_ok(bbox)
+    coverage = coverage_ok(profile, bbox)
     taper = edge_taper_ok(profile)
 
     print(f"bbox={bbox}")
     print(f"profile_samples={len(profile)}")
     print(f"local_maxima={peaks}")
+    print(f"aspect_ratio_ok={aspect}")
+    print(f"coverage_ok={coverage}")
     print(f"edge_taper={taper}")
 
-    if peaks < args.min_peaks:
-        print(f"FAIL expected at least {args.min_peaks} body-profile maxima")
+    if peaks > args.max_peaks:
+        print(f"FAIL expected no more than {args.max_peaks} major silhouette peaks")
+        return 1
+    if not aspect:
+        print("FAIL expected a long low covered-body aspect ratio")
+        return 1
+    if not coverage:
+        print("FAIL expected continuous draped fabric coverage, not a thin profile")
         return 1
     if not taper:
         print("FAIL expected taper at both long-axis ends")

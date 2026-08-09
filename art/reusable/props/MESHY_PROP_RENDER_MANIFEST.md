@@ -27,4 +27,4 @@ acceptance gate.
 
 | Asset ID | Description | Placement Sprite | Source |
 | --- | --- | --- | --- |
-| `mick_tarp_body` | Low tarp-covered staged body prop for Chapter 1 | `art/reusable/props/mick_tarp_body/mick_tarp_body_trim.png` | Deterministic render from validated blockout/depth/mask source |
+| `mick_tarp_body` | Low tarp-covered staged body prop for Chapter 1 | `art/reusable/props/mick_tarp_body/mick_tarp_body_trim.png` | Direct generated replacement with chroma-key extraction; validated against revised tarp silhouette gate |
