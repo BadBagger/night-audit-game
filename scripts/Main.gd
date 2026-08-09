@@ -95,23 +95,23 @@ func _build_scene_art() -> void:
 	set_dressing_root.name = "Chapter1SetDressing"
 	add_child(set_dressing_root)
 
-	_add_reusable_prop("dock_edge_harbor", "res://art/reusable/props/long_pier_dock_edge_strip/long_pier_dock_edge_strip_trim.png", Vector2(1500, 1088), Vector2(1.95, 0.25), -5)
-	_add_reusable_prop("container_office_clutter", "res://art/reusable/props/open_container_office_clutter/open_container_office_clutter_trim.png", Vector2(630, 350), Vector2(0.25, 0.25), 3)
-	_add_reusable_prop("work_lamp_container", "res://art/reusable/props/portable_dock_lamp/portable_dock_lamp_trim.png", Vector2(730, 330), Vector2(0.11, 0.11), 5)
-	_add_reusable_prop("crime_scene_tape_left", "res://art/reusable/props/straight_hazard_tape/straight_hazard_tape_trim.png", Vector2(558, 624), Vector2(0.38, 0.04), 8, false, -2.5)
-	_add_reusable_prop("crime_scene_tape_right", "res://art/reusable/props/straight_hazard_tape/straight_hazard_tape_trim.png", Vector2(890, 655), Vector2(0.44, 0.04), 8, false, 2.0)
-	_add_reusable_prop("security_barrier_gate", "res://art/reusable/props/dock_security_gate/dock_security_gate_trim.png", Vector2(1135, 685), Vector2(0.22, 0.22), 8)
-	_add_reusable_prop("police_barrier_car_area", "res://art/reusable/props/portable_police_barricade/portable_police_barricade_trim.png", Vector2(1430, 850), Vector2(0.26, 0.26), 8, true, -4.0)
-	_add_reusable_prop("crate_stack_near_gate", "res://art/reusable/props/wet_wooden_crate/wet_wooden_crate_trim.png", Vector2(1215, 575), Vector2(0.11, 0.11), 4)
-	_add_reusable_prop("crate_stack_container_shadow", "res://art/reusable/props/wet_wooden_crate/wet_wooden_crate_trim.png", Vector2(900, 492), Vector2(0.09, 0.09), 4, true)
-	_add_reusable_prop("barrel_cluster_gate", "res://art/reusable/props/rusty_oil_drum/rusty_oil_drum_trim.png", Vector2(1330, 610), Vector2(0.08, 0.08), 4)
-	_add_reusable_prop("barrel_near_harbor", "res://art/reusable/props/rusty_oil_drum/rusty_oil_drum_trim.png", Vector2(1640, 948), Vector2(0.09, 0.09), 6, true)
-	_add_reusable_prop("rope_coil_tiedown", "res://art/reusable/props/coiled_rope/coiled_rope_trim.png", Vector2(424, 536), Vector2(0.07, 0.07), 5)
-	_add_reusable_prop("rope_coil_harbor", "res://art/reusable/props/coiled_rope/coiled_rope_trim.png", Vector2(1775, 980), Vector2(0.09, 0.09), 6, true)
-	_add_reusable_prop("ropeburn_tiedown_fixture", "res://art/reusable/props/harbor_tiedown_ropeburn_fixture/harbor_tiedown_ropeburn_fixture_trim.png", Vector2(430, 515), Vector2(0.08, 0.08), 4)
-	_add_reusable_prop("evidence_marker_spatter", "res://art/reusable/props/evidence_marker_card/evidence_marker_card_trim.png", Vector2(570, 428), Vector2(0.03, 0.03), 7, false, -8.0)
-	_add_reusable_prop("evidence_marker_receipt", "res://art/reusable/props/evidence_marker_card/evidence_marker_card_trim.png", Vector2(721, 386), Vector2(0.03, 0.03), 7, true, 6.0)
-	_add_reusable_prop("evidence_marker_phone", "res://art/reusable/props/evidence_marker_card/evidence_marker_card_trim.png", Vector2(645, 456), Vector2(0.027, 0.027), 7, false, 12.0)
+	_add_reusable_prop("dock_edge_harbor", "res://art/reusable/props/long_pier_dock_edge_strip/long_pier_dock_edge_strip_trim.png", Vector2(1500, 1088), Vector2(1.65, 0.2), -5, false, 0.0, Color(0.72, 0.78, 0.82, 0.78))
+	_add_reusable_prop("container_office_clutter", "res://art/reusable/props/open_container_office_clutter/open_container_office_clutter_trim.png", Vector2(610, 354), Vector2(0.16, 0.16), 3, false, 0.0, Color(0.86, 0.82, 0.76, 0.82))
+	_add_reusable_prop("work_lamp_container", "res://art/reusable/props/portable_dock_lamp/portable_dock_lamp_trim.png", Vector2(710, 336), Vector2(0.07, 0.07), 5, false, 0.0, Color(1.0, 0.88, 0.72, 0.8))
+	_add_reusable_prop("crime_scene_tape_left", "res://art/reusable/props/straight_hazard_tape/straight_hazard_tape_trim.png", Vector2(552, 620), Vector2(0.24, 0.018), 6, false, -2.5, Color(0.95, 0.9, 0.7, 0.7))
+	_add_reusable_prop("crime_scene_tape_right", "res://art/reusable/props/straight_hazard_tape/straight_hazard_tape_trim.png", Vector2(888, 655), Vector2(0.28, 0.018), 6, false, 2.0, Color(0.95, 0.9, 0.7, 0.7))
+	_add_reusable_prop("security_barrier_gate", "res://art/reusable/props/dock_security_gate/dock_security_gate_trim.png", Vector2(1142, 692), Vector2(0.12, 0.12), 6, false, 0.0, Color(0.78, 0.82, 0.84, 0.82))
+	_add_reusable_prop("police_barrier_car_area", "res://art/reusable/props/portable_police_barricade/portable_police_barricade_trim.png", Vector2(1430, 850), Vector2(0.12, 0.12), 6, true, -4.0, Color(0.82, 0.84, 0.84, 0.82))
+	_add_reusable_prop("crate_stack_near_gate", "res://art/reusable/props/wet_wooden_crate/wet_wooden_crate_trim.png", Vector2(1215, 575), Vector2(0.065, 0.065), 4, false, 0.0, Color(0.78, 0.78, 0.74, 0.82))
+	_add_reusable_prop("crate_stack_container_shadow", "res://art/reusable/props/wet_wooden_crate/wet_wooden_crate_trim.png", Vector2(900, 492), Vector2(0.055, 0.055), 4, true, 0.0, Color(0.72, 0.72, 0.7, 0.78))
+	_add_reusable_prop("barrel_cluster_gate", "res://art/reusable/props/rusty_oil_drum/rusty_oil_drum_trim.png", Vector2(1330, 610), Vector2(0.045, 0.045), 4, false, 0.0, Color(0.68, 0.74, 0.8, 0.8))
+	_add_reusable_prop("barrel_near_harbor", "res://art/reusable/props/rusty_oil_drum/rusty_oil_drum_trim.png", Vector2(1640, 948), Vector2(0.052, 0.052), 6, true, 0.0, Color(0.68, 0.74, 0.8, 0.8))
+	_add_reusable_prop("rope_coil_tiedown", "res://art/reusable/props/coiled_rope/coiled_rope_trim.png", Vector2(424, 536), Vector2(0.045, 0.045), 5, false, 0.0, Color(0.88, 0.82, 0.7, 0.86))
+	_add_reusable_prop("rope_coil_harbor", "res://art/reusable/props/coiled_rope/coiled_rope_trim.png", Vector2(1775, 980), Vector2(0.055, 0.055), 6, true, 0.0, Color(0.82, 0.78, 0.68, 0.84))
+	_add_reusable_prop("ropeburn_tiedown_fixture", "res://art/reusable/props/harbor_tiedown_ropeburn_fixture/harbor_tiedown_ropeburn_fixture_trim.png", Vector2(430, 515), Vector2(0.052, 0.052), 4, false, 0.0, Color(0.72, 0.74, 0.76, 0.82))
+	_add_reusable_prop("evidence_marker_spatter", "res://art/reusable/props/evidence_marker_card/evidence_marker_card_trim.png", Vector2(570, 428), Vector2(0.02, 0.02), 7, false, -8.0, Color(1.0, 0.92, 0.64, 0.86))
+	_add_reusable_prop("evidence_marker_receipt", "res://art/reusable/props/evidence_marker_card/evidence_marker_card_trim.png", Vector2(721, 386), Vector2(0.02, 0.02), 7, true, 6.0, Color(1.0, 0.92, 0.64, 0.86))
+	_add_reusable_prop("evidence_marker_phone", "res://art/reusable/props/evidence_marker_card/evidence_marker_card_trim.png", Vector2(645, 456), Vector2(0.018, 0.018), 7, false, 12.0, Color(1.0, 0.92, 0.64, 0.86))
 
 	atmosphere = preload("res://scripts/Chapter1Atmosphere.gd").new()
 	atmosphere.name = "Chapter1RainAndLighting"
@@ -139,11 +139,12 @@ func _add_set_piece(piece_name: String, kind: String, pos: Vector2, piece_size: 
 	set_dressing_root.add_child(piece)
 	return piece
 
-func _add_reusable_prop(piece_name: String, asset_path: String, pos: Vector2, sprite_scale: Vector2, z: int, flip_sprite: bool = false, rotation_deg: float = 0.0) -> Sprite2D:
+func _add_reusable_prop(piece_name: String, asset_path: String, pos: Vector2, sprite_scale: Vector2, z: int, flip_sprite: bool = false, rotation_deg: float = 0.0, tint: Color = Color.WHITE) -> Sprite2D:
 	var prop: Sprite2D = preload("res://scripts/ReusableProp2D.gd").new()
 	prop.name = piece_name
 	prop.position = pos
 	prop.z_index = z
+	prop.modulate = tint
 	prop.configure(asset_path, sprite_scale, flip_sprite, rotation_deg)
 	set_dressing_root.add_child(prop)
 	return prop
