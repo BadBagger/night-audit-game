@@ -22,12 +22,16 @@ var selected_point_index := -1
 var dragging_point := false
 var view_offset := Vector2(28, 86)
 var view_zoom := 0.78
+var undo_stack: Array = []
+var redo_stack: Array = []
+var drag_snapshot: Dictionary = {}
 
 func _ready() -> void:
 	_build_map_layer()
 	_build_hud()
 	_load_existing()
 	_frame_background()
+	_capture_history_baseline()
 	queue_redraw()
 
 func _build_map_layer() -> void:
@@ -77,14 +81,20 @@ func _unhandled_input(event: InputEvent) -> void:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 			var click_pos := _screen_to_world(event.position)
 			if _select_nearest_point(click_pos):
+				drag_snapshot = _snapshot_state()
 				dragging_point = true
 			elif event.shift_pressed and _insert_point_on_nearest_edge(click_pos):
 				pass
 			else:
+				_push_undo_state()
 				_clear_selection()
 				current_points.append(click_pos)
 			queue_redraw()
 		elif event.button_index == MOUSE_BUTTON_LEFT and not event.pressed:
+			if dragging_point and not drag_snapshot.is_empty() and not _states_equal(drag_snapshot, _snapshot_state()):
+				undo_stack.append(drag_snapshot)
+				redo_stack.clear()
+				drag_snapshot = {}
 			dragging_point = false
 		elif event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
 			_commit_current_polygon()
@@ -96,6 +106,19 @@ func _unhandled_input(event: InputEvent) -> void:
 		_handle_key(event)
 
 func _handle_key(event: InputEventKey) -> void:
+	if event.ctrl_pressed and event.keycode == KEY_Z:
+		if event.shift_pressed:
+			_redo()
+		else:
+			_undo()
+		_update_hud()
+		queue_redraw()
+		return
+	if event.ctrl_pressed and event.keycode == KEY_Y:
+		_redo()
+		_update_hud()
+		queue_redraw()
+		return
 	match event.keycode:
 		KEY_1:
 			mode = "walkable"
@@ -113,20 +136,24 @@ func _handle_key(event: InputEventKey) -> void:
 			_commit_current_polygon()
 		KEY_BACKSPACE:
 			if current_points.size() > 0:
+				_push_undo_state()
 				current_points.remove_at(current_points.size() - 1)
 			elif _has_selection():
 				_delete_selected_point()
 		KEY_Z:
+			_push_undo_state()
 			if polygons[mode].size() > 0:
 				polygons[mode].pop_back()
 				_clear_selection()
 		KEY_C:
+			_push_undo_state()
 			current_points.clear()
 			_clear_selection()
 		KEY_DELETE:
 			if _has_selection():
 				_delete_selected_point()
 			elif event.shift_pressed:
+				_push_undo_state()
 				polygons[mode].clear()
 				current_points.clear()
 				_clear_selection()
@@ -144,6 +171,7 @@ func _handle_key(event: InputEventKey) -> void:
 func _commit_current_polygon() -> void:
 	if current_points.size() < 3:
 		return
+	_push_undo_state()
 	polygons[mode].append(current_points.duplicate())
 	current_points.clear()
 
@@ -228,6 +256,7 @@ func _move_selected_point(pos: Vector2) -> void:
 func _delete_selected_point() -> void:
 	if not _has_selection():
 		return
+	_push_undo_state()
 	var polygon: PackedVector2Array = polygons[selected_kind][selected_polygon_index]
 	polygon.remove_at(selected_point_index)
 	if polygon.size() < 3:
@@ -256,6 +285,7 @@ func _insert_point_on_nearest_edge(pos: Vector2) -> bool:
 				}
 	if best["polygon_index"] < 0:
 		return false
+	_push_undo_state()
 	var target: PackedVector2Array = polygons[mode][best["polygon_index"]]
 	target.insert(best["insert_index"], pos)
 	polygons[mode][best["polygon_index"]] = target
@@ -279,6 +309,69 @@ func _clear_selection() -> void:
 	selected_polygon_index = -1
 	selected_point_index = -1
 	dragging_point = false
+
+func _capture_history_baseline() -> void:
+	undo_stack.clear()
+	redo_stack.clear()
+	drag_snapshot = {}
+
+func _push_undo_state() -> void:
+	undo_stack.append(_snapshot_state())
+	if undo_stack.size() > 80:
+		undo_stack.pop_front()
+	redo_stack.clear()
+
+func _undo() -> void:
+	if undo_stack.is_empty():
+		return
+	redo_stack.append(_snapshot_state())
+	_restore_state(undo_stack.pop_back())
+
+func _redo() -> void:
+	if redo_stack.is_empty():
+		return
+	undo_stack.append(_snapshot_state())
+	_restore_state(redo_stack.pop_back())
+
+func _snapshot_state() -> Dictionary:
+	return {
+		"polygons": {
+			"walkable": _clone_polygons(polygons["walkable"]),
+			"blocked": _clone_polygons(polygons["blocked"]),
+			"occluder_foreground": _clone_polygons(polygons["occluder_foreground"]),
+		},
+		"current_points": current_points.duplicate(),
+		"mode": mode,
+	}
+
+func _restore_state(state: Dictionary) -> void:
+	var state_polygons: Dictionary = state.get("polygons", {})
+	for key in polygons.keys():
+		polygons[key] = _clone_polygons(state_polygons.get(key, []))
+	current_points = state.get("current_points", PackedVector2Array()).duplicate()
+	mode = state.get("mode", mode)
+	_clear_selection()
+
+func _clone_polygons(raw_polygons: Array) -> Array:
+	var out := []
+	for polygon in raw_polygons:
+		out.append(PackedVector2Array(polygon))
+	return out
+
+func _states_equal(a: Dictionary, b: Dictionary) -> bool:
+	return JSON.stringify(_state_to_jsonable(a)) == JSON.stringify(_state_to_jsonable(b))
+
+func _state_to_jsonable(state: Dictionary) -> Dictionary:
+	var state_polygons: Dictionary = state.get("polygons", {})
+	return {
+		"polygons": {
+			"walkable": _serialize_polygons(state_polygons.get("walkable", [])),
+			"blocked": _serialize_polygons(state_polygons.get("blocked", [])),
+			"occluder_foreground": _serialize_polygons(state_polygons.get("occluder_foreground", [])),
+		},
+		"current_points": _serialize_points(state.get("current_points", PackedVector2Array())),
+		"mode": state.get("mode", ""),
+	}
 
 func _apply_view_transform() -> void:
 	if map_layer == null:
@@ -345,11 +438,14 @@ func _save() -> void:
 func _serialize_polygons(raw_polygons: Array) -> Array:
 	var out := []
 	for polygon in raw_polygons:
-		var points := []
-		for point in polygon:
-			points.append([round(point.x), round(point.y)])
-		out.append(points)
+		out.append(_serialize_points(polygon))
 	return out
+
+func _serialize_points(raw_points) -> Array:
+	var points := []
+	for point in raw_points:
+		points.append([round(point.x), round(point.y)])
+	return points
 
 func _print_export() -> void:
 	print(JSON.stringify({
@@ -364,12 +460,14 @@ func _update_hud() -> void:
 	var selected_text := "none"
 	if _has_selection():
 		selected_text = "%s poly %d point %d" % [selected_kind, selected_polygon_index + 1, selected_point_index + 1]
-	hud_label.text = "Navigation Authoring | mode: %s | selected: %s | mouse: %d,%d | zoom: %.2f | polygons W:%d B:%d O:%d\n1 walkable  2 blocked/no-travel  3 foreground/3D occluder | Left click add/select  Drag selected point  Shift+click edge insert | Right click/Enter close | Backspace/Delete selected point  Z undo polygon  Shift+Delete clear mode  F frame  Ctrl+S save | WASD pan  wheel zoom" % [
+	hud_label.text = "Navigation Authoring | mode: %s | selected: %s | mouse: %d,%d | zoom: %.2f | undo:%d redo:%d | polygons W:%d B:%d O:%d\n1 walkable  2 blocked/no-travel  3 foreground/3D occluder | Left click add/select  Drag selected point  Shift+click edge insert | Ctrl+Z undo  Ctrl+Y/Ctrl+Shift+Z redo | Right click/Enter close | Backspace/Delete selected point  Z undo polygon  Shift+Delete clear mode  F frame  Ctrl+S save" % [
 		mode,
 		selected_text,
 		round(mouse_world.x),
 		round(mouse_world.y),
 		view_zoom,
+		undo_stack.size(),
+		redo_stack.size(),
 		polygons["walkable"].size(),
 		polygons["blocked"].size(),
 		polygons["occluder_foreground"].size(),
