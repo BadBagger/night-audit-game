@@ -6,6 +6,10 @@ var visual_scale := 0.72
 var visual_offset := Vector2(0, -72)
 var current_mode := "idle"
 var shadow_color := Color(0.0, 0.0, 0.0, 0.28)
+var motion_strength := 1.0
+
+var _last_walk_direction := Vector2.DOWN
+var _motion_tween: Tween
 
 func _ready() -> void:
 	if sprite == null:
@@ -49,6 +53,8 @@ func play_idle() -> void:
 func play_walk(direction: Vector2 = Vector2.ZERO) -> void:
 	if direction.x != 0:
 		set_facing(direction.x)
+	if direction.length_squared() > 0.001:
+		_last_walk_direction = direction.normalized()
 	_play_if_available("walk")
 
 func play_talk() -> void:
@@ -71,12 +77,43 @@ func _play_if_available(animation_name: String) -> void:
 		return
 	sprite.play(animation_name)
 	current_mode = animation_name
+	_restart_motion_tween()
 
 func _apply_visual_transform() -> void:
 	if sprite == null:
 		return
 	sprite.scale = Vector2(visual_scale, visual_scale)
 	sprite.position = visual_offset
+	sprite.rotation = 0.0
+
+func _restart_motion_tween() -> void:
+	if sprite == null:
+		return
+	if _motion_tween:
+		_motion_tween.kill()
+	_apply_visual_transform()
+
+	match current_mode:
+		"walk":
+			_motion_tween = create_tween().set_loops()
+			_motion_tween.tween_property(sprite, "position", visual_offset + Vector2(0, -3.0 * motion_strength), 0.13).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+			_motion_tween.parallel().tween_property(sprite, "rotation", 0.018 * motion_strength, 0.13).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+			_motion_tween.tween_property(sprite, "position", visual_offset + Vector2(0, 1.0 * motion_strength), 0.13).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+			_motion_tween.parallel().tween_property(sprite, "rotation", -0.018 * motion_strength, 0.13).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+		"talk":
+			_motion_tween = create_tween().set_loops()
+			_motion_tween.tween_property(sprite, "position", visual_offset + Vector2(0, -1.4 * motion_strength), 0.22).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+			_motion_tween.tween_property(sprite, "position", visual_offset, 0.22).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+		"interact":
+			_motion_tween = create_tween()
+			_motion_tween.tween_property(sprite, "position", visual_offset + Vector2(0, 4.0 * motion_strength), 0.16).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+			_motion_tween.parallel().tween_property(sprite, "rotation", 0.02 * motion_strength, 0.16).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+			_motion_tween.tween_property(sprite, "position", visual_offset, 0.22).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+			_motion_tween.parallel().tween_property(sprite, "rotation", 0.0, 0.22).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+		_:
+			_motion_tween = create_tween().set_loops()
+			_motion_tween.tween_property(sprite, "position", visual_offset + Vector2(0, -0.9 * motion_strength), 0.9).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+			_motion_tween.tween_property(sprite, "position", visual_offset, 0.9).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 
 func _draw() -> void:
 	var points := PackedVector2Array()
