@@ -7,6 +7,7 @@ var visual_offset := Vector2(0, -72)
 var current_mode := "idle"
 var shadow_color := Color(0.0, 0.0, 0.0, 0.28)
 var motion_strength := 1.0
+var invert_horizontal_facing := false
 
 var _last_walk_direction := Vector2.DOWN
 var _motion_tween: Tween
@@ -66,7 +67,8 @@ func play_interact() -> void:
 func set_facing(x_direction: float) -> void:
 	if sprite == null or is_equal_approx(x_direction, 0.0):
 		return
-	sprite.flip_h = x_direction < 0.0
+	var face_left := x_direction < 0.0
+	sprite.flip_h = not face_left if invert_horizontal_facing else face_left
 
 func _play_if_available(animation_name: String) -> void:
 	if sprite == null or sprite.sprite_frames == null:

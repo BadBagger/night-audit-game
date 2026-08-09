@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://test_navigation_authoring_tool"]
+
+[ext_resource type="Script" path="res://tools/TestNavigationAuthoringToolDriver.gd" id="1"]
+
+[node name="TestNavigationAuthoringTool" type="Node"]
+script = ExtResource("1")

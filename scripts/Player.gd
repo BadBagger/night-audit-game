@@ -8,6 +8,8 @@ var reach: Area2D
 var movement_bounds: Rect2 = Rect2()
 var walkable_areas: Array = []
 var blocked_areas: Array = []
+var walkable_polygons: Array = []
+var blocked_polygons: Array = []
 var character_visual: AnimatedCharacter2D
 var use_placeholder_art := true
 var footstep_sound: AudioStream = null
@@ -109,7 +111,18 @@ func can_stand_at(candidate: Vector2) -> bool:
 				break
 		if not inside_walkable:
 			return false
+	if walkable_polygons.size() > 0:
+		var inside_walkable_polygon := false
+		for polygon in walkable_polygons:
+			if Geometry2D.is_point_in_polygon(candidate, polygon):
+				inside_walkable_polygon = true
+				break
+		if not inside_walkable_polygon:
+			return false
 	for area in blocked_areas:
 		if area.has_point(candidate):
+			return false
+	for polygon in blocked_polygons:
+		if Geometry2D.is_point_in_polygon(candidate, polygon):
 			return false
 	return true

@@ -1,0 +1,21 @@
+{
+  "background": "res://art/backgrounds/pier9_ch1_background_v2.png",
+  "notes": "Authored with tools/NavigationAuthoringTool.tscn. Walkable and blocked are used by Chapter 1. occluder_foreground marks painted elements that need a foreground cutout or 3D depth layer so Dana can travel behind them.",
+  "walkable": [
+    [[170, 390], [1290, 340], [1485, 570], [1330, 770], [720, 785], [260, 720], [135, 560]]
+  ],
+  "blocked": [
+    [[310, 70], [720, 70], [720, 280], [405, 290], [280, 210]],
+    [[730, 45], [1500, 45], [1515, 285], [735, 285]],
+    [[325, 470], [535, 470], [535, 565], [310, 565]],
+    [[55, 590], [215, 590], [215, 775], [35, 775]],
+    [[1325, 175], [1585, 175], [1585, 435], [1325, 435]],
+    [[1120, 720], [1680, 720], [1680, 945], [1110, 945]],
+    [[865, 765], [1110, 765], [1110, 900], [865, 900]]
+  ],
+  "occluder_foreground": [
+    [[45, 610], [210, 590], [215, 775], [35, 785]],
+    [[1110, 720], [1680, 720], [1680, 945], [1110, 945]],
+    [[285, 70], [735, 70], [720, 285], [395, 295], [275, 220]]
+  ]
+}

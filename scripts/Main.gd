@@ -47,6 +47,8 @@ const BOARD_SLOTS = [
 	{"tag": "staging_evidence", "label": "Staging evidence"},
 ]
 
+const NAV_AUTHORING_PATH := "res://art/navigation/chapter1_navigation_authoring.json"
+
 func _ready() -> void:
 	_build_environment()
 	_build_ambience()
@@ -145,22 +147,7 @@ func _build_player() -> void:
 	player = preload("res://scripts/Player.gd").new()
 	player.position = Vector2(760, 650)
 	player.movement_bounds = Rect2(Vector2(120, 205), Vector2(1390, 650))
-	player.walkable_areas = [
-		Rect2(Vector2(140, 350), Vector2(1180, 410)),
-		Rect2(Vector2(360, 205), Vector2(360, 250)),
-		Rect2(Vector2(700, 305), Vector2(660, 280)),
-		Rect2(Vector2(1030, 560), Vector2(470, 250)),
-	]
-	player.blocked_areas = [
-		Rect2(Vector2(300, 70), Vector2(420, 205)),
-		Rect2(Vector2(120, 70), Vector2(210, 260)),
-		Rect2(Vector2(720, 45), Vector2(770, 245)),
-		Rect2(Vector2(320, 470), Vector2(210, 95)),
-		Rect2(Vector2(40, 585), Vector2(170, 180)),
-		Rect2(Vector2(1320, 185), Vector2(255, 245)),
-		Rect2(Vector2(1115, 720), Vector2(560, 225)),
-		Rect2(Vector2(870, 770), Vector2(230, 110)),
-	]
+	_apply_authored_navigation()
 	player.z_index = 10
 	player.footstep_sound = load("res://sfx/foley/footstep_wood_dock_v01.ogg") if ResourceLoader.exists("res://sfx/foley/footstep_wood_dock_v01.ogg") else null
 	add_child(player)
@@ -168,7 +155,8 @@ func _build_player() -> void:
 		"res://art/characters/chapter1/dana",
 		{"idle": {"source": "talk", "fps": 1.4}, "walk": {"fps": 10.0}, "talk": {"fps": 6.0}, "interact": {"fps": 8.0, "loop": false}},
 		0.56,
-		Vector2(0, -76)
+		Vector2(0, -76),
+		true
 	))
 
 	var cam := Camera2D.new()
@@ -260,10 +248,56 @@ func _build_ui() -> void:
 	hint.add_theme_color_override("font_color", Color(0.6, 0.62, 0.68))
 	hud.add_child(hint)
 
-func _make_character_visual(root_path: String, animations: Dictionary, scale: float, offset: Vector2) -> AnimatedCharacter2D:
+func _apply_authored_navigation() -> void:
+	var data := _load_navigation_authoring()
+	if data.is_empty():
+		player.walkable_areas = [
+			Rect2(Vector2(140, 350), Vector2(1180, 410)),
+			Rect2(Vector2(360, 205), Vector2(360, 250)),
+			Rect2(Vector2(700, 305), Vector2(660, 280)),
+			Rect2(Vector2(1030, 560), Vector2(470, 250)),
+		]
+		player.blocked_areas = [
+			Rect2(Vector2(300, 70), Vector2(420, 205)),
+			Rect2(Vector2(120, 70), Vector2(210, 260)),
+			Rect2(Vector2(720, 45), Vector2(770, 245)),
+			Rect2(Vector2(320, 470), Vector2(210, 95)),
+			Rect2(Vector2(40, 585), Vector2(170, 180)),
+			Rect2(Vector2(1320, 185), Vector2(255, 245)),
+			Rect2(Vector2(1115, 720), Vector2(560, 225)),
+			Rect2(Vector2(870, 770), Vector2(230, 110)),
+		]
+		return
+	player.walkable_polygons = _json_polygons_to_packed(data.get("walkable", []))
+	player.blocked_polygons = _json_polygons_to_packed(data.get("blocked", []))
+
+func _load_navigation_authoring() -> Dictionary:
+	if not FileAccess.file_exists(NAV_AUTHORING_PATH):
+		return {}
+	var file := FileAccess.open(NAV_AUTHORING_PATH, FileAccess.READ)
+	if file == null:
+		return {}
+	var parsed = JSON.parse_string(file.get_as_text())
+	if parsed is Dictionary:
+		return parsed
+	return {}
+
+func _json_polygons_to_packed(raw_polygons: Array) -> Array:
+	var polygons := []
+	for raw_polygon in raw_polygons:
+		var points := PackedVector2Array()
+		for raw_point in raw_polygon:
+			if raw_point is Array and raw_point.size() >= 2:
+				points.append(Vector2(float(raw_point[0]), float(raw_point[1])))
+		if points.size() >= 3:
+			polygons.append(points)
+	return polygons
+
+func _make_character_visual(root_path: String, animations: Dictionary, scale: float, offset: Vector2, invert_horizontal_facing: bool = false) -> AnimatedCharacter2D:
 	var visual: AnimatedCharacter2D = preload("res://scripts/AnimatedCharacter2D.gd").new()
 	visual.visual_scale = scale
 	visual.visual_offset = offset
+	visual.invert_horizontal_facing = invert_horizontal_facing
 	visual.setup_from_folders(root_path, animations)
 	return visual
 

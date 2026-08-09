@@ -22,7 +22,7 @@ func _ready() -> void:
 	_check("chapter1 has no procedural set-piece drawings in scene", _count_procedural_set_pieces() == 0)
 	_check("chapter1 leaves wetness and worldbuilding baked into the plate", main_scene.atmosphere.puddles.is_empty() and main_scene.atmosphere.light_pools.is_empty())
 	_check("chapter1 spatial soundscape uses imported audio", main_scene.world_audio.ambient_players.size() >= 5 and main_scene.world_audio.one_shot_players.size() >= 6)
-	_check("chapter1 player has walkable areas and building blockers", main_scene.player.walkable_areas.size() >= 3 and main_scene.player.blocked_areas.size() >= 3)
+	_check("chapter1 player has authored polygon walk and block maps", main_scene.player.walkable_polygons.size() >= 1 and main_scene.player.blocked_polygons.size() >= 3)
 	_check("chapter1 allows broad movement through the generated yard", main_scene.player.can_stand_at(Vector2(760, 650)) and main_scene.player.can_stand_at(Vector2(1000, 600)) and main_scene.player.can_stand_at(Vector2(1240, 640)))
 	_check("chapter1 blocks office, body, containers, and harbor edge", not main_scene.player.can_stand_at(Vector2(470, 180)) and not main_scene.player.can_stand_at(Vector2(430, 520)) and not main_scene.player.can_stand_at(Vector2(1390, 310)) and not main_scene.player.can_stand_at(Vector2(1300, 820)))
 	_check("chapter1 keeps evidence reachable from legal walk path", _has_reachable_standpoint(Vector2(445, 520)) and _has_reachable_standpoint(Vector2(595, 500)) and _has_reachable_standpoint(Vector2(245, 650)))
