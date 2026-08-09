@@ -9,28 +9,34 @@ var mick_body: AnimatedCharacter2D
 var foreground_occluder: Sprite2D
 var occlusion_controller: Pier9OcclusionController
 var atmosphere: Node2D
+var world_audio: Node2D
 var set_dressing_root: Node2D
 
 const CLUE_DEFS = [
 	{"id": "spatter", "tag": "cause_location_mismatch", "label": "Arterial spatter, low, wrong wall",
 	 "examine": "The blood pattern is low against the far wall. Wrong angle for someone standing here.",
 	 "audio": "res://vo/chapter1/D-004.mp3",
+	 "sfx": "res://sfx/foley/paper_rustle_v01.ogg",
 	 "pos": Vector2(520, 410)},
 	{"id": "receipt", "tag": "timeline_marker", "label": "Receipt, soaked but legible",
 	 "examine": "Rain-soaked, but the ink held. It wasn't out here long before the rain started.",
 	 "audio": "res://vo/chapter1/D-005.mp3",
+	 "sfx": "res://sfx/foley/paper_rustle_v01.ogg",
 	 "pos": Vector2(690, 370)},
 	{"id": "ropeburn", "tag": "staging_evidence", "label": "Rope burn on the tie-down",
 	 "examine": "A burn mark on the tie-down. Nothing here should have had rope on it.",
 	 "audio": "res://vo/chapter1/D-006.mp3",
+	 "sfx": "res://sfx/foley/gate_creak_v01.ogg",
 	 "pos": Vector2(425, 515)},
 	{"id": "cup", "tag": "irrelevant", "label": "Discarded coffee cup",
 	 "examine": "Just a cup. Doesn't connect to anything.",
 	 "audio": "res://vo/chapter1/D-007.mp3",
+	 "sfx": "res://sfx/foley/footstep_concrete_wet_v01.ogg",
 	 "pos": Vector2(1100, 500)},
 	{"id": "footprint", "tag": "irrelevant", "label": "Smudged footprint",
 	 "examine": "Too smeared by the rain to mean anything on its own.",
 	 "audio": "res://vo/chapter1/D-008.mp3",
+	 "sfx": "res://sfx/foley/footstep_wood_dock_v01.ogg",
 	 "pos": Vector2(550, 700)},
 ]
 
@@ -75,20 +81,22 @@ func _build_environment() -> void:
 	add_child(foreground_occluder)
 
 func _build_ambience() -> void:
-	for entry in [
-		{"path": "res://sfx/ambience/dock_ambience_night_v01.ogg", "volume_db": -10.0},
-		{"path": "res://sfx/ambience/rain_loop_v01.ogg", "volume_db": -6.0},
-	]:
-		if not ResourceLoader.exists(entry["path"]):
-			continue
-		var stream: AudioStream = load(entry["path"])
-		if stream is AudioStreamOggVorbis:
-			stream.loop = true
-		var loop_player := AudioStreamPlayer.new()
-		loop_player.stream = stream
-		loop_player.volume_db = entry["volume_db"]
-		add_child(loop_player)
-		loop_player.play()
+	world_audio = preload("res://scripts/Chapter1WorldAudio.gd").new()
+	world_audio.name = "Chapter1WorldAudio"
+	add_child(world_audio)
+	world_audio.configure(
+		[
+			{"name": "RainOnContainers", "path": "res://sfx/ambience/rain_loop_v01.ogg", "pos": Vector2(760, 420), "volume_db": -5.5, "max_distance": 1800.0},
+			{"name": "HarborAir", "path": "res://sfx/ambience/dock_ambience_night_v01.ogg", "pos": Vector2(1450, 980), "volume_db": -10.0, "max_distance": 2200.0},
+			{"name": "CallowayEngineMass", "path": "res://sfx/ambience/boat_engine_idle_v01.ogg", "pos": Vector2(2060, 520), "volume_db": -18.0, "max_distance": 1600.0},
+			{"name": "DistantHarborHorn", "path": "res://sfx/ambience/foghorn_distant_v01.ogg", "pos": Vector2(2180, 360), "volume_db": -20.0, "max_distance": 2000.0},
+		],
+		[
+			{"name": "PoliceRadioBursts", "path": "res://sfx/mechanical/radio_static_burst_v01.ogg", "pos": Vector2(1460, 850), "volume_db": -17.0, "max_distance": 900.0},
+			{"name": "BarrierMetalCreak", "path": "res://sfx/foley/gate_creak_v01.ogg", "pos": Vector2(1142, 692), "volume_db": -18.0, "max_distance": 760.0},
+			{"name": "DistantAlarmWash", "path": "res://sfx/tension/alarm_klaxon_distant_v01.ogg", "pos": Vector2(1980, 610), "volume_db": -24.0, "max_distance": 1200.0},
+		]
+	)
 
 func _build_scene_art() -> void:
 	set_dressing_root = Node2D.new()
@@ -112,6 +120,17 @@ func _build_scene_art() -> void:
 	_add_reusable_prop("evidence_marker_spatter", "res://art/reusable/props/evidence_marker_card/evidence_marker_card_trim.png", Vector2(570, 428), Vector2(0.02, 0.02), 7, false, -8.0, Color(1.0, 0.92, 0.64, 0.86))
 	_add_reusable_prop("evidence_marker_receipt", "res://art/reusable/props/evidence_marker_card/evidence_marker_card_trim.png", Vector2(721, 386), Vector2(0.02, 0.02), 7, true, 6.0, Color(1.0, 0.92, 0.64, 0.86))
 	_add_reusable_prop("evidence_marker_phone", "res://art/reusable/props/evidence_marker_card/evidence_marker_card_trim.png", Vector2(645, 456), Vector2(0.018, 0.018), 7, false, 12.0, Color(1.0, 0.92, 0.64, 0.86))
+	_add_reusable_prop("ironbound_crate_office_left", "res://art/reusable/props/ironbound_crate/ironbound_crate_trim.png", Vector2(468, 468), Vector2(0.048, 0.048), 3, false, 0.0, Color(0.72, 0.74, 0.72, 0.78))
+	_add_reusable_prop("ironbound_crate_gate_block", "res://art/reusable/props/ironbound_crate/ironbound_crate_trim.png", Vector2(1114, 642), Vector2(0.058, 0.058), 5, true, 0.0, Color(0.74, 0.76, 0.74, 0.8))
+	_add_reusable_prop("wet_crate_police_stack_low", "res://art/reusable/props/wet_wooden_crate/wet_wooden_crate_trim.png", Vector2(1516, 790), Vector2(0.058, 0.058), 5, false, 0.0, Color(0.66, 0.7, 0.72, 0.78))
+	_add_reusable_prop("wet_crate_police_stack_high", "res://art/reusable/props/wet_wooden_crate/wet_wooden_crate_trim.png", Vector2(1565, 742), Vector2(0.052, 0.052), 6, true, 0.0, Color(0.64, 0.68, 0.7, 0.78))
+	_add_reusable_prop("barrel_row_left_shadow", "res://art/reusable/props/rusty_oil_drum/rusty_oil_drum_trim.png", Vector2(812, 635), Vector2(0.04, 0.04), 4, true, 0.0, Color(0.56, 0.62, 0.66, 0.72))
+	_add_reusable_prop("barrel_row_left_lit", "res://art/reusable/props/rusty_oil_drum/rusty_oil_drum_trim.png", Vector2(770, 604), Vector2(0.038, 0.038), 4, false, 0.0, Color(0.76, 0.72, 0.64, 0.76))
+	_add_reusable_prop("hand_plane_on_desk", "res://art/reusable/props/rusty_hand_plane/rusty_hand_plane_trim.png", Vector2(648, 360), Vector2(0.018, 0.018), 8, false, -8.0, Color(0.78, 0.74, 0.66, 0.9))
+	_add_reusable_prop("tape_container_backline", "res://art/reusable/props/straight_hazard_tape/straight_hazard_tape_trim.png", Vector2(742, 516), Vector2(0.22, 0.016), 7, true, -1.5, Color(0.95, 0.86, 0.58, 0.62))
+	_add_reusable_prop("dock_strip_inner_edge", "res://art/reusable/props/long_pier_dock_edge_strip/long_pier_dock_edge_strip_trim.png", Vector2(1010, 1018), Vector2(1.25, 0.14), -4, false, 0.0, Color(0.5, 0.58, 0.62, 0.46))
+	_add_reusable_decal("blood_spatter_low_wall_a", "res://art/reusable/decals/blood_spatter/arterial_low_01.svg", Vector2(528, 395), Vector2(0.18, 0.18), 8, -6.0, Color(0.36, 0.03, 0.025, 0.72))
+	_add_reusable_decal("blood_spatter_low_wall_b", "res://art/reusable/decals/blood_spatter/arterial_low_02.svg", Vector2(584, 418), Vector2(0.13, 0.13), 8, 7.0, Color(0.34, 0.025, 0.025, 0.62))
 
 	atmosphere = preload("res://scripts/Chapter1Atmosphere.gd").new()
 	atmosphere.name = "Chapter1RainAndLighting"
@@ -122,22 +141,19 @@ func _build_scene_art() -> void:
 			{"pos": Vector2(860, 820), "radius": Vector2(230, 42), "color": Color(0.32, 0.48, 0.58, 0.16)},
 			{"pos": Vector2(1510, 920), "radius": Vector2(260, 46), "color": Color(0.26, 0.42, 0.52, 0.18)},
 			{"pos": Vector2(1110, 570), "radius": Vector2(135, 24), "color": Color(0.5, 0.58, 0.6, 0.12)},
+			{"pos": Vector2(505, 438), "radius": Vector2(140, 20), "color": Color(0.56, 0.55, 0.48, 0.13)},
+			{"pos": Vector2(732, 420), "radius": Vector2(190, 28), "color": Color(0.8, 0.62, 0.34, 0.11)},
+			{"pos": Vector2(1260, 660), "radius": Vector2(210, 34), "color": Color(0.24, 0.42, 0.54, 0.12)},
+			{"pos": Vector2(1740, 990), "radius": Vector2(240, 38), "color": Color(0.32, 0.58, 0.66, 0.13)},
 		],
 		[
 			{"pos": Vector2(705, 360), "radius": 260.0, "color": Color(1.0, 0.62, 0.24, 0.12)},
 			{"pos": Vector2(1410, 815), "radius": 240.0, "color": Color(0.24, 0.48, 1.0, 0.08)},
 			{"pos": Vector2(1660, 1040), "radius": 220.0, "color": Color(0.36, 0.78, 0.9, 0.07)},
+			{"pos": Vector2(515, 430), "radius": 190.0, "color": Color(0.96, 0.72, 0.38, 0.08)},
+			{"pos": Vector2(1120, 690), "radius": 180.0, "color": Color(0.45, 0.62, 0.72, 0.06)},
 		]
 	)
-
-func _add_set_piece(piece_name: String, kind: String, pos: Vector2, piece_size: Vector2, color: Color, accent: Color, z: int) -> Node2D:
-	var piece: Node2D = preload("res://scripts/Chapter1SetPiece.gd").new()
-	piece.name = piece_name
-	piece.position = pos
-	piece.z_index = z
-	piece.configure(kind, piece_size, color, accent)
-	set_dressing_root.add_child(piece)
-	return piece
 
 func _add_reusable_prop(piece_name: String, asset_path: String, pos: Vector2, sprite_scale: Vector2, z: int, flip_sprite: bool = false, rotation_deg: float = 0.0, tint: Color = Color.WHITE) -> Sprite2D:
 	var prop: Sprite2D = preload("res://scripts/ReusableProp2D.gd").new()
@@ -148,6 +164,19 @@ func _add_reusable_prop(piece_name: String, asset_path: String, pos: Vector2, sp
 	prop.configure(asset_path, sprite_scale, flip_sprite, rotation_deg)
 	set_dressing_root.add_child(prop)
 	return prop
+
+func _add_reusable_decal(piece_name: String, asset_path: String, pos: Vector2, sprite_scale: Vector2, z: int, rotation_deg: float = 0.0, tint: Color = Color.WHITE) -> Sprite2D:
+	var decal := Sprite2D.new()
+	decal.name = piece_name
+	decal.texture = load(asset_path)
+	decal.position = pos
+	decal.scale = sprite_scale
+	decal.rotation_degrees = rotation_deg
+	decal.modulate = tint
+	decal.z_index = z
+	decal.add_to_group("reusable_decal_sprite")
+	set_dressing_root.add_child(decal)
+	return decal
 
 func _build_player() -> void:
 	player = preload("res://scripts/Player.gd").new()
@@ -248,6 +277,7 @@ func _build_clues() -> void:
 		c.label = def["label"]
 		c.examine_text = def["examine"]
 		c.examine_audio = def["audio"]
+		c.examine_sfx = def.get("sfx", "")
 		c.position = def["pos"]
 		if def["tag"] == "irrelevant":
 			c.color = Color(0.45, 0.47, 0.5)

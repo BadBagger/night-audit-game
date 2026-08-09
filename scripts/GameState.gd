@@ -31,10 +31,12 @@ func play_sfx(path: String, volume_db: float = 0.0) -> void:
 		return
 	var stream: AudioStream = load(path)
 	if stream:
-		sfx_player.stop()
-		sfx_player.stream = stream
-		sfx_player.volume_db = volume_db
-		sfx_player.play()
+		var player := AudioStreamPlayer.new()
+		player.stream = stream
+		player.volume_db = volume_db
+		player.finished.connect(player.queue_free)
+		add_child(player)
+		player.play()
 
 func apply_action(npc_id: String, action: String) -> void:
 	npc_actions[npc_id] = action

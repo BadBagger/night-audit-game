@@ -14,11 +14,15 @@ func _ready() -> void:
 	_check("intro dialogue opened", main_scene.dialogue.box_visible)
 	_check("intro line has audio loaded", main_scene.dialogue.audio_player.stream != null)
 	_check("chapter1 atmosphere layer exists", main_scene.atmosphere != null and main_scene.atmosphere.is_in_group("chapter1_atmosphere"))
+	_check("chapter1 world audio layer exists", main_scene.world_audio != null and main_scene.world_audio.is_in_group("chapter1_world_audio"))
 	_check("chapter1 set dressing root exists", main_scene.set_dressing_root != null)
-	_check("chapter1 has dense dockyard set dressing", main_scene.set_dressing_root.get_child_count() >= 16)
-	_check("chapter1 has rain, puddles, and light pools", main_scene.atmosphere.rain_lines >= 80 and main_scene.atmosphere.puddles.size() >= 4 and main_scene.atmosphere.light_pools.size() >= 3)
+	_check("chapter1 has dense dockyard set dressing", main_scene.set_dressing_root.get_child_count() >= 28)
+	_check("chapter1 has no procedural set-piece drawings in scene", _count_procedural_set_pieces() == 0)
+	_check("chapter1 has deeper rain, puddles, splashes, and light pools", main_scene.atmosphere.rain_lines >= 180 and main_scene.atmosphere.foreground_rain_lines >= 80 and main_scene.atmosphere.splash_count >= 50 and main_scene.atmosphere.puddles.size() >= 8 and main_scene.atmosphere.light_pools.size() >= 5)
+	_check("chapter1 spatial soundscape uses imported audio", main_scene.world_audio.ambient_players.size() >= 4 and main_scene.world_audio.one_shot_players.size() >= 3)
 	_check("chapter1 key props are named for tuning", main_scene.set_dressing_root.has_node("security_barrier_gate") and main_scene.set_dressing_root.has_node("container_office_clutter") and main_scene.set_dressing_root.has_node("dock_edge_harbor"))
-	_check("chapter1 uses real reusable prop sprites", _count_reusable_props() >= 17)
+	_check("chapter1 uses real reusable prop sprites", _count_reusable_props() >= 26)
+	_check("chapter1 uses imported reusable crime decals", _count_reusable_decals() >= 2)
 	_check("chapter1 reusable props load expected assets", _has_reusable_asset("portable_dock_lamp") and _has_reusable_asset("straight_hazard_tape") and _has_reusable_asset("wet_wooden_crate") and _has_reusable_asset("rusty_oil_drum") and _has_reusable_asset("coiled_rope") and _has_reusable_asset("evidence_marker_card"))
 	_check("chapter1 structural placeholders use reusable sprites", _has_reusable_asset("long_pier_dock_edge_strip") and _has_reusable_asset("open_container_office_clutter") and _has_reusable_asset("dock_security_gate") and _has_reusable_asset("portable_police_barricade") and _has_reusable_asset("harbor_tiedown_ropeburn_fixture"))
 	_check("chapter1 player has walkable areas and building blockers", main_scene.player.walkable_areas.size() >= 3 and main_scene.player.blocked_areas.size() >= 3)
@@ -116,6 +120,21 @@ func _count_reusable_props() -> int:
 	var count := 0
 	for child in main_scene.set_dressing_root.get_children():
 		if child.is_in_group("reusable_prop_sprite"):
+			count += 1
+	return count
+
+func _count_reusable_decals() -> int:
+	var count := 0
+	for child in main_scene.set_dressing_root.get_children():
+		if child.is_in_group("reusable_decal_sprite"):
+			count += 1
+	return count
+
+func _count_procedural_set_pieces() -> int:
+	var count := 0
+	for child in main_scene.set_dressing_root.get_children():
+		var script = child.get_script()
+		if script != null and script.resource_path == "res://scripts/Chapter1SetPiece.gd":
 			count += 1
 	return count
 

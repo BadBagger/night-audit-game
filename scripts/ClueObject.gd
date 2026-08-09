@@ -6,6 +6,7 @@ var tag: String = ""
 var label: String = ""
 var examine_text: String = ""
 var examine_audio: String = ""
+var examine_sfx: String = ""
 var color: Color = Color(0.851, 0.522, 0.184)
 var examined := false
 
@@ -30,5 +31,7 @@ func interact() -> void:
 		return
 	examined = true
 	queue_redraw()
+	if examine_sfx != "":
+		GameState.play_sfx(examine_sfx, -5.0)
 	GameState.add_clue(clue_id, tag, label)
 	GameState.show_message.emit("DANA", examine_text, examine_audio)
