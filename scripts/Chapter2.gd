@@ -30,7 +30,7 @@ func _build_environment() -> void:
 	plate.name = "chapter2_debts_owed_plate"
 	plate.texture = preload("res://art/backgrounds/chapter2_debts_owed_plate.png")
 	plate.position = Vector2(700, 450)
-	plate.scale = Vector2(0.84, 0.84)
+	plate.scale = Vector2(1.0, 1.0)
 	plate.z_index = -100
 	add_child(plate)
 
@@ -60,44 +60,44 @@ func _build_player() -> void:
 	))
 
 	var cam := Camera2D.new()
-	cam.zoom = Vector2(0.85, 0.85)
+	cam.zoom = Vector2(1.05, 1.05)
 	cam.position_smoothing_enabled = true
 	cam.enabled = true
 	player.add_child(cam)
 
 func _build_npcs() -> void:
 	sal = preload("res://scripts/StoryNPC.gd").new()
-	sal.position = Vector2(260, 320)
+	sal.position = Vector2(325, 450)
 	sal.npc_name = "SAL"
 	add_child(sal)
 	sal.set_character_visual(_make_character_visual(
 		"res://art/characters/chapter2/sal",
 		{"idle": {"fps": 1.0}, "walk": {"fps": 7.0}, "talk": {"fps": 5.0}},
-		0.64,
+		0.54,
 		Vector2(0, -76)
 	))
 	sal.interacted.connect(_on_sal_interact)
 
 	priya = preload("res://scripts/StoryNPC.gd").new()
-	priya.position = Vector2(1140, 320)
+	priya.position = Vector2(1035, 380)
 	priya.npc_name = "PRIYA"
 	add_child(priya)
 	priya.set_character_visual(_make_character_visual(
 		"res://art/characters/chapter2/priya",
 		{"idle": {"fps": 1.0}, "walk": {"fps": 8.0}, "talk": {"fps": 5.0}},
-		0.66,
+		0.54,
 		Vector2(0, -76)
 	))
 	priya.interacted.connect(_on_priya_interact)
 
 	costigan = preload("res://scripts/StoryNPC.gd").new()
-	costigan.position = Vector2(700, 720)
+	costigan.position = Vector2(710, 555)
 	costigan.npc_name = "COSTIGAN"
 	add_child(costigan)
 	costigan.set_character_visual(_make_character_visual(
 		"res://art/characters/chapter2/costigan",
 		{"idle": {"fps": 1.0}, "walk": {"fps": 7.0}, "talk": {"fps": 4.0}},
-		0.66,
+		0.54,
 		Vector2(0, -76)
 	))
 	costigan.interacted.connect(_on_costigan_interact)

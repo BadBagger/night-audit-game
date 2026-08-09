@@ -29,6 +29,7 @@ func _phase_retreat_rule() -> void:
 	_check("chapter3 retreat phase Dana has animated visual", _has_visual(ch3.player))
 	_check("chapter3 uses generated background plate", ch3.has_node("chapter3_calloway_star_plate") and ch3.get_node("chapter3_calloway_star_plate") is Sprite2D)
 	_check("chapter3 environment has no procedural Prop rectangles", _count_props(ch3) == 0)
+	_check("ledger and safe markers are interaction-only", not ch3.ledger_prop.use_placeholder_art and not ch3.safe_prop.use_placeholder_art)
 	_check("Voss has animated patrol visual", _has_visual(ch3.voss))
 	ch3.voss.advance_patrol(ch3.voss.dwell_a + 0.1)
 	ch3.voss.advance_patrol(0.2)

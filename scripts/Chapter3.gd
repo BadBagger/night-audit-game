@@ -27,7 +27,7 @@ func _build_environment() -> void:
 	plate.name = "chapter3_calloway_star_plate"
 	plate.texture = preload("res://art/backgrounds/chapter3_calloway_star_plate.png")
 	plate.position = Vector2(700, 450)
-	plate.scale = Vector2(0.84, 0.84)
+	plate.scale = Vector2(1.05, 1.05)
 	plate.z_index = -100
 	add_child(plate)
 
@@ -46,19 +46,19 @@ func _build_ambience() -> void:
 
 func _build_player() -> void:
 	player = preload("res://scripts/Player.gd").new()
-	player.position = Vector2(300, 650)
-	player.movement_bounds = Rect2(Vector2(120, 260), Vector2(1260, 480))
+	player.position = Vector2(780, 560)
+	player.movement_bounds = Rect2(Vector2(360, 300), Vector2(860, 420))
 	player.footstep_sound = load("res://sfx/foley/footstep_metal_deck_v01.ogg") if ResourceLoader.exists("res://sfx/foley/footstep_metal_deck_v01.ogg") else null
 	add_child(player)
 	player.set_character_visual(_make_character_visual(
 		"res://art/characters/chapter3/dana",
 		{"idle": {"fps": 1.0}, "walk": {"fps": 10.0}, "talk": {"fps": 6.0}, "interact": {"fps": 8.0, "loop": false}},
-		0.64,
+		0.54,
 		Vector2(0, -76)
 	))
 
 	var cam := Camera2D.new()
-	cam.zoom = Vector2(0.85, 0.85)
+	cam.zoom = Vector2(1.05, 1.05)
 	cam.position_smoothing_enabled = true
 	cam.enabled = true
 	player.add_child(cam)
@@ -66,13 +66,13 @@ func _build_player() -> void:
 func _build_npcs() -> void:
 	voss = preload("res://scripts/PatrolNPC.gd").new()
 	voss.npc_name = "VOSS"
-	voss.point_a = Vector2(300, 300)
-	voss.point_b = Vector2(1100, 300)
+	voss.point_a = Vector2(1060, 470)
+	voss.point_b = Vector2(1130, 620)
 	add_child(voss)
 	voss.set_character_visual(_make_character_visual(
 		"res://art/characters/chapter3/voss",
 		{"idle": {"fps": 1.0}, "walk": {"fps": 8.0}, "talk": {"fps": 5.0}},
-		0.66,
+		0.54,
 		Vector2(0, -76)
 	))
 	voss.interacted.connect(_on_voss_confrontation)
@@ -80,13 +80,15 @@ func _build_npcs() -> void:
 
 	ledger_prop = preload("res://scripts/StoryNPC.gd").new()
 	ledger_prop.npc_name = "LEDGER"
-	ledger_prop.position = Vector2(240, 340)
+	ledger_prop.position = Vector2(545, 430)
+	ledger_prop.use_placeholder_art = false
 	add_child(ledger_prop)
 	ledger_prop.interacted.connect(_on_ledger_interact)
 
 	safe_prop = preload("res://scripts/StoryNPC.gd").new()
 	safe_prop.npc_name = "SAFE"
-	safe_prop.position = Vector2(360, 340)
+	safe_prop.position = Vector2(465, 310)
+	safe_prop.use_placeholder_art = false
 	add_child(safe_prop)
 	safe_prop.interacted.connect(_on_safe_interact)
 

@@ -5,9 +5,9 @@ var dialogue: DialogueBoxUI
 var reyes: StoryNPC
 var priya: StoryNPC
 
-const PRIYA_SCENE_POSITION := Vector2(940, 520)
-const PRIYA_ENTRY_POSITION := Vector2(1080, 520)
-const PRIYA_DOOR_POSITION := Vector2(1040, 500)
+const PRIYA_SCENE_POSITION := Vector2(1010, 565)
+const PRIYA_ENTRY_POSITION := Vector2(1160, 560)
+const PRIYA_DOOR_POSITION := Vector2(1100, 540)
 
 func _ready() -> void:
 	_build_environment()
@@ -23,30 +23,30 @@ func _build_environment() -> void:
 	plate.name = "chapter4_apartment_plate"
 	plate.texture = preload("res://art/backgrounds/chapter4_apartment_plate.png")
 	plate.position = Vector2(640, 380)
-	plate.scale = Vector2(0.765, 0.765)
+	plate.scale = Vector2(1.0, 1.0)
 	plate.z_index = -100
 	add_child(plate)
 
 func _build_player() -> void:
 	player = preload("res://scripts/Player.gd").new()
-	player.position = Vector2(520, 560)
-	player.movement_bounds = Rect2(Vector2(260, 280), Vector2(760, 360))
+	player.position = Vector2(540, 610)
+	player.movement_bounds = Rect2(Vector2(260, 300), Vector2(820, 340))
 	add_child(player)
 	player.set_character_visual(_make_character_visual(
 		"res://art/characters/chapter3/dana",
 		{"idle": {"fps": 1.0}, "walk": {"fps": 10.0}, "talk": {"fps": 6.0}, "interact": {"fps": 8.0, "loop": false}},
-		0.64,
+		0.54,
 		Vector2(0, -76)
 	))
 
 	var cam := Camera2D.new()
-	cam.zoom = Vector2(0.9, 0.9)
+	cam.zoom = Vector2(1.05, 1.05)
 	cam.position_smoothing_enabled = true
 	cam.enabled = true
 	player.add_child(cam)
 
 func _build_npcs() -> void:
-	reyes = _make_npc("REYES", Vector2(790, 540), "res://art/characters/chapter1/reyes")
+	reyes = _make_npc("REYES", Vector2(925, 560), "res://art/characters/chapter1/reyes")
 	priya = _make_npc("PRIYA", PRIYA_ENTRY_POSITION, "res://art/characters/chapter2/priya")
 	priya.interact_enabled = false
 	priya.visible = false
@@ -143,7 +143,7 @@ func _make_npc(npc_name: String, pos: Vector2, root_path: String) -> StoryNPC:
 	npc.set_character_visual(_make_character_visual(
 		root_path,
 		{"idle": {"fps": 1.0}, "walk": {"fps": 7.0}, "talk": {"fps": 5.0}},
-		0.66,
+		0.54,
 		Vector2(0, -76)
 	))
 	return npc
