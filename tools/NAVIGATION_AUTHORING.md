@@ -18,7 +18,9 @@ Controls:
 - `WASD`: pan
 - Mouse wheel: zoom
 - `F`: frame the background
-- `Ctrl+S`: save
+- Click `Save`: save
+- `F5`: save
+- `Ctrl+S`: save when Godot receives the shortcut
 
 The tool writes `res://art/navigation/chapter1_navigation_authoring.json`.
 

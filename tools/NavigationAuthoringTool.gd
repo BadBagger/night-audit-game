@@ -7,6 +7,8 @@ const EDGE_PICK_DISTANCE := 12.0
 
 var background: Sprite2D
 var hud_label: Label
+var save_button: Button
+var save_status_label: Label
 var map_layer: Node2D
 var mode := "walkable"
 var polygons := {
@@ -53,6 +55,19 @@ func _build_hud() -> void:
 	hud_label.add_theme_font_size_override("font_size", 13)
 	hud_label.add_theme_color_override("font_color", Color(0.92, 0.94, 0.96))
 	canvas.add_child(hud_label)
+
+	save_button = Button.new()
+	save_button.text = "Save"
+	save_button.position = Vector2(12, 54)
+	save_button.custom_minimum_size = Vector2(86, 32)
+	save_button.pressed.connect(_save)
+	canvas.add_child(save_button)
+
+	save_status_label = Label.new()
+	save_status_label.position = Vector2(108, 61)
+	save_status_label.add_theme_font_size_override("font_size", 12)
+	save_status_label.add_theme_color_override("font_color", Color(0.84, 0.9, 0.86))
+	canvas.add_child(save_status_label)
 	_update_hud()
 
 func _process(delta: float) -> void:
@@ -63,7 +78,7 @@ func _process(delta: float) -> void:
 		pan.x += 1.0
 	if Input.is_key_pressed(KEY_W):
 		pan.y -= 1.0
-	if Input.is_key_pressed(KEY_S):
+	if Input.is_key_pressed(KEY_S) and not Input.is_key_pressed(KEY_CTRL):
 		pan.y += 1.0
 	if pan != Vector2.ZERO:
 		view_offset -= pan.normalized() * 520.0 * delta
@@ -119,6 +134,11 @@ func _handle_key(event: InputEventKey) -> void:
 		_update_hud()
 		queue_redraw()
 		return
+	if event.keycode == KEY_F5 or (event.ctrl_pressed and event.keycode == KEY_S):
+		_save()
+		_update_hud()
+		queue_redraw()
+		return
 	match event.keycode:
 		KEY_1:
 			mode = "walkable"
@@ -163,8 +183,6 @@ func _handle_key(event: InputEventKey) -> void:
 			_print_export()
 		KEY_SPACE:
 			_commit_current_polygon()
-	if event.keycode == KEY_S and event.ctrl_pressed:
-		_save()
 	_update_hud()
 	queue_redraw()
 
@@ -434,6 +452,8 @@ func _save() -> void:
 		return
 	file.store_string(JSON.stringify(payload, "\t"))
 	print("Saved navigation authoring: ", SAVE_PATH)
+	if save_status_label != null:
+		save_status_label.text = "Saved."
 
 func _serialize_polygons(raw_polygons: Array) -> Array:
 	var out := []
@@ -460,7 +480,7 @@ func _update_hud() -> void:
 	var selected_text := "none"
 	if _has_selection():
 		selected_text = "%s poly %d point %d" % [selected_kind, selected_polygon_index + 1, selected_point_index + 1]
-	hud_label.text = "Navigation Authoring | mode: %s | selected: %s | mouse: %d,%d | zoom: %.2f | undo:%d redo:%d | polygons W:%d B:%d O:%d\n1 walkable  2 blocked/no-travel  3 foreground/3D occluder | Left click add/select  Drag selected point  Shift+click edge insert | Ctrl+Z undo  Ctrl+Y/Ctrl+Shift+Z redo | Right click/Enter close | Backspace/Delete selected point  Z undo polygon  Shift+Delete clear mode  F frame  Ctrl+S save" % [
+	hud_label.text = "Navigation Authoring | mode: %s | selected: %s | mouse: %d,%d | zoom: %.2f | undo:%d redo:%d | polygons W:%d B:%d O:%d\n1 walkable  2 blocked/no-travel  3 foreground/3D occluder | Left click add/select  Drag selected point  Shift+click edge insert | Ctrl+Z undo  Ctrl+Y/Ctrl+Shift+Z redo | Right click/Enter close | Backspace/Delete selected point  Z undo polygon  F frame  F5/Save button saves" % [
 		mode,
 		selected_text,
 		round(mouse_world.x),
