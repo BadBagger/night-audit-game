@@ -8,6 +8,7 @@ or staged-crime contradiction.
 
 | Asset ID | Story Function | Route | Target Placement | Acceptance Criteria |
 | --- | --- | --- | --- | --- |
+| `mick_tarp_body` | Replaces full character body with a low staged-evidence silhouette | Blender blockout/depth-conditioned render | Container interior, around `Vector2(590, 424)` | Low horizontal silhouette, wet tarp texture, no floating read, no visible gore, passes `tools/check_body_tarp_silhouette.py` |
 | `cracked_phone_evidence` | Supports Chapter 1 phone choice and Mick trace | Meshy/Blender for prop, manual screen glow overlay | Near Mick/body, around `Vector2(645, 456)` | Phone silhouette clear, cracked screen visible, no readable AI text |
 | `receipt_wet_close_prop` | Supports timeline clue | deterministic 2D or Blender paper prop | Receipt clue, around `Vector2(690, 370)` | Small wet paper rectangle with legible visual contrast; any text must be manual or abstract |
 | `low_wall_spatter_decal` | Supports “killed elsewhere / staged here” deduction | deterministic 2D decal | Wall/spatter clue, around `Vector2(520, 410)` | Low horizontal spatter, rain drag, transparent PNG/SVG, no random gore mass |
@@ -47,11 +48,10 @@ or staged-crime contradiction.
 - `ironbound_crate`
 - `rusty_hand_plane`
 - `long_pier_dock_edge_strip`
-- `mick_tarp_body`
 - `arterial_low_01.svg`
 - `arterial_low_02.svg`
 
 ## Next Production Recommendation
 
-Generate `cracked_phone_evidence` and `receipt_wet_close_prop` next. These are
-case-critical and affect Chapter 1 more than broad background clutter.
+Generate `mick_tarp_body` next from a blockout/depth source. Then generate
+`cracked_phone_evidence` and `receipt_wet_close_prop`.

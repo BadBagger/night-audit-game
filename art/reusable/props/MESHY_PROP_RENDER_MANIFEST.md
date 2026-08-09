@@ -19,12 +19,3 @@ Reusable prop sprites rendered from Meshy FBX exports. Source zips live in `C:/U
 | `long_pier_dock_edge_strip` | Long modular pier / dock edge strip | `art/reusable/props/long_pier_dock_edge_strip/long_pier_dock_edge_strip_trim.png` | `art/reusable/props/long_pier_dock_edge_strip/long_pier_dock_edge_strip_iso.png` | `Meshy_AI_Ironbound_Cargo_Crate_0809031637_texture_fbx.zip` |
 
 `*_trim.png` files are the intended Godot placement sprites. `*_iso.png` files preserve the full square Blender camera render for future recrops.
-
-## Approved 2D Reusable Props
-
-These are non-Meshy assets that passed manual review and the reusable asset
-acceptance gate.
-
-| Asset ID | Description | Placement Sprite | Source |
-| --- | --- | --- | --- |
-| `mick_tarp_body` | Low tarp-covered staged body prop for Chapter 1 | `art/reusable/props/mick_tarp_body/mick_tarp_body_trim.png` | Image generation candidate with manual chroma-key cleanup |
