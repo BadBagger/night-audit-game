@@ -183,6 +183,7 @@ cover the first paper/decal/simple-prop library pass.
 | `chapter3_calloway_star_plate` | Generated and wired into Chapter III |
 | `chapter4_apartment_plate` | Generated and wired into Chapter IV |
 | `chapter5_settlement_plate` | Generated and wired into Chapter V |
+| `chapter5_settlement_plate_v2` | Generated and wired into Chapter V; replaces the first plate with clearer foreground walkable floor |
 | `cracked_phone_evidence` | Generated and wired into Chapter I |
 | `receipt_wet_close_prop` | Generated and wired into Chapter I |
 | paper/decal/simple-prop packs | Generated under `art/reusable/paper`, `art/reusable/decals`, and `art/reusable/props` |

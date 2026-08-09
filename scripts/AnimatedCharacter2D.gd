@@ -5,6 +5,7 @@ var sprite: AnimatedSprite2D
 var visual_scale := 0.72
 var visual_offset := Vector2(0, -72)
 var current_mode := "idle"
+var shadow_color := Color(0.0, 0.0, 0.0, 0.28)
 
 func _ready() -> void:
 	if sprite == null:
@@ -12,6 +13,7 @@ func _ready() -> void:
 		sprite.centered = true
 		add_child(sprite)
 	_apply_visual_transform()
+	queue_redraw()
 
 func setup_from_folders(root_path: String, animations: Dictionary, start_animation: String = "idle") -> void:
 	if sprite == null:
@@ -39,6 +41,7 @@ func setup_from_folders(root_path: String, animations: Dictionary, start_animati
 	if frames.has_animation(start_animation):
 		sprite.play(start_animation)
 		current_mode = start_animation
+	queue_redraw()
 
 func play_idle() -> void:
 	_play_if_available("idle")
@@ -74,6 +77,13 @@ func _apply_visual_transform() -> void:
 		return
 	sprite.scale = Vector2(visual_scale, visual_scale)
 	sprite.position = visual_offset
+
+func _draw() -> void:
+	var points := PackedVector2Array()
+	for i in range(28):
+		var angle := TAU * float(i) / 28.0
+		points.append(Vector2(cos(angle) * 18.0 * visual_scale, sin(angle) * 6.0 * visual_scale))
+	draw_colored_polygon(points, shadow_color)
 
 func _collect_frame_paths(folder_path: String) -> Array:
 	var paths := []

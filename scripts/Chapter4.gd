@@ -40,7 +40,7 @@ func _build_player() -> void:
 	))
 
 	var cam := Camera2D.new()
-	cam.zoom = Vector2(1.05, 1.05)
+	cam.zoom = Vector2(1.35, 1.35)
 	cam.position_smoothing_enabled = true
 	cam.enabled = true
 	player.add_child(cam)

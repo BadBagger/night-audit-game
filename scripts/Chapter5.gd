@@ -19,7 +19,7 @@ func _ready() -> void:
 func _build_environment() -> void:
 	var plate := Sprite2D.new()
 	plate.name = "chapter5_settlement_plate"
-	plate.texture = preload("res://art/backgrounds/chapter5_settlement_plate.png")
+	plate.texture = preload("res://art/backgrounds/chapter5_settlement_plate_v2.png")
 	plate.position = Vector2(700, 420)
 	plate.scale = Vector2(1.0, 1.0)
 	plate.z_index = -100
@@ -27,8 +27,8 @@ func _build_environment() -> void:
 
 func _build_player() -> void:
 	player = preload("res://scripts/Player.gd").new()
-	player.position = Vector2(700, 665)
-	player.movement_bounds = Rect2(Vector2(360, 300), Vector2(880, 360))
+	player.position = Vector2(720, 600)
+	player.movement_bounds = Rect2(Vector2(220, 360), Vector2(980, 300))
 	add_child(player)
 	player.set_character_visual(_make_character_visual(
 		"res://art/characters/chapter3/dana",
@@ -38,16 +38,16 @@ func _build_player() -> void:
 	))
 
 	var cam := Camera2D.new()
-	cam.zoom = Vector2(1.05, 1.05)
+	cam.zoom = Vector2(1.35, 1.35)
 	cam.position_smoothing_enabled = true
 	cam.enabled = true
 	player.add_child(cam)
 
 func _build_npcs() -> void:
-	calloway = _make_npc("CALLOWAY", Vector2(1115, 330), "res://art/characters/chapter5/calloway", 0.5)
-	voss = _make_npc("VOSS", Vector2(1210, 555), "res://art/characters/chapter3/voss", 0.52)
-	reyes = _make_npc("REYES", Vector2(500, 570), "res://art/characters/chapter1/reyes", 0.52)
-	priya = _make_npc("PRIYA", Vector2(395, 500), "res://art/characters/chapter2/priya", 0.52)
+	calloway = _make_npc("CALLOWAY", Vector2(840, 520), "res://art/characters/chapter5/calloway", 0.5)
+	voss = _make_npc("VOSS", Vector2(980, 555), "res://art/characters/chapter3/voss", 0.52)
+	reyes = _make_npc("REYES", Vector2(540, 575), "res://art/characters/chapter1/reyes", 0.52)
+	priya = _make_npc("PRIYA", Vector2(500, 625), "res://art/characters/chapter2/priya", 0.52)
 	reyes.visible = _is_reyes_present()
 	priya.visible = _is_priya_present()
 

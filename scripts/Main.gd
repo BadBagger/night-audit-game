@@ -214,7 +214,7 @@ func _build_player() -> void:
 	))
 
 	var cam := Camera2D.new()
-	cam.zoom = Vector2(1.0, 1.0)
+	cam.zoom = Vector2(1.28, 1.28)
 	cam.position_smoothing_enabled = true
 	cam.limit_left = 0
 	cam.limit_top = 0
